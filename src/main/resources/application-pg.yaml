@@ -1,0 +1,10 @@
+spring:
+  datasource: # https://jdbc.postgresql.org/documentation
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=${spring.datasource.name}
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 123456
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+

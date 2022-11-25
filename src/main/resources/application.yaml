@@ -1,0 +1,41 @@
+server:
+  port: 8080
+  compression:
+    enabled: true
+    min-response-size: 1KB
+
+spring:
+  profiles:
+    active: pg
+  application:
+    name: blog
+  datasource:
+    name: blog
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        auto_quote_keyword: true
+        format_sql: true
+        highlight_sql: true
+        generate_statistics: true
+        session.events.log.LOG_QUERIES_SLOWER_THAN_MS: 1000
+
+logging:
+#  config: classpath:logback-spring.xml
+  level:
+    root: info
+    org.hibernate.SQL: debug
+    org.hibernate.SQL_SLOW: debug
+#    org.hibernate.type: TRACE
+    org.hibernate.type.descriptor.jdbc.BasicBinder: trace
+    org.springframework.jdbc.core.JdbcTemplate: debug
+    org.springframework.jdbc.core.StatementCreatorUtils: trace
+  file:
+    name: ${spring.application.name}.log
+    path: ${user.dir}
+  logback:
+    rollingpolicy:
+      max-history: 7
+      max-file-size: 10MB
