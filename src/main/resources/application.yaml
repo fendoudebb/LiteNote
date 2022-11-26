@@ -6,12 +6,13 @@ server:
 
 spring:
   profiles:
-    active: pg
+    active: blog,h2,dev
   application:
     name: blog
   datasource:
     name: blog
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: update
     properties:
@@ -21,6 +22,25 @@ spring:
         highlight_sql: true
         generate_statistics: true
         session.events.log.LOG_QUERIES_SLOWER_THAN_MS: 1000
+  mvc:
+    servlet:
+      load-on-startup: 1
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+management:
+  endpoint:
+    health:
+      enabled: true
+      show-details: when_authorized
+      probes: # Kubernetes probes
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
 
 logging:
 #  config: classpath:logback-spring.xml
