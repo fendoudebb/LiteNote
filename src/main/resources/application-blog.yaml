@@ -2,4 +2,13 @@ blog:
   portal:
     title: Blog
     author: fendoudebb
+    keywords: >-
+      Java,
+      Spring Native,
+      Spring Boot,
+      Spring Data JPA,
+      Spring Security,
+      Spring Actuator,
+      PostgreSQL,
+      Thymeleaf
     github: https://github.com/fendoudebb/z-blog-spring-native
