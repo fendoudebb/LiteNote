@@ -1,27 +1,16 @@
-server:
-  port: 8080
-  compression:
-    enabled: true
-    min-response-size: 1KB
-
 spring:
   profiles:
-    active: blog,h2,dev
+    active: dev,h2
+    include:
+      - server
+      - blog
+      - jpa
+      - actuator
+      - logging
   application:
     name: blog
   datasource:
     name: blog
-  jpa:
-    open-in-view: false
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        auto_quote_keyword: true
-        format_sql: true
-        highlight_sql: true
-        generate_statistics: true
-        session.events.log.LOG_QUERIES_SLOWER_THAN_MS: 1000
   mvc:
     servlet:
       load-on-startup: 1
@@ -29,33 +18,3 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
-
-management:
-  endpoint:
-    health:
-      enabled: true
-      show-details: when_authorized
-      probes: # Kubernetes probes
-        enabled: true
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-
-logging:
-#  config: classpath:logback-spring.xml
-  level:
-    root: info
-    org.hibernate.SQL: debug
-    org.hibernate.SQL_SLOW: debug
-#    org.hibernate.type: TRACE
-    org.hibernate.type.descriptor.jdbc.BasicBinder: trace
-    org.springframework.jdbc.core.JdbcTemplate: debug
-    org.springframework.jdbc.core.StatementCreatorUtils: trace
-  file:
-    name: ${spring.application.name}.log
-    path: ${user.dir}
-  logback:
-    rollingpolicy:
-      max-history: 7
-      max-file-size: 10MB

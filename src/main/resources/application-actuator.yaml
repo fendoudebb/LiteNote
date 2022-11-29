@@ -1,0 +1,11 @@
+management:
+  endpoint:
+    health:
+      enabled: true
+      show-details: when_authorized
+      probes: # Kubernetes probes
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
