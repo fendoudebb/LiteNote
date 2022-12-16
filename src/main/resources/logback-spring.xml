@@ -7,7 +7,7 @@
     <springProfile name="!prod">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
-                <pattern>%X{spanId:-}${CONSOLE_LOG_PATTERN}</pattern>
+                <pattern>%X{traceId:-}${CONSOLE_LOG_PATTERN}</pattern>
                 <charset>${CONSOLE_LOG_CHARSET}</charset>
             </encoder>
         </appender>
