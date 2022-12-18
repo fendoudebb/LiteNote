@@ -1,71 +1,130 @@
 package dev.z.blog.config.security;
 
+import dev.z.blog.config.security.filter.LoginSessionFilter;
+import dev.z.blog.config.security.handler.ApiAccessDeniedHandler;
+import dev.z.blog.config.security.handler.ApiAuthenticationEntryPoint;
+import dev.z.blog.constant.mvc.Url;
+import dev.z.blog.repository.admin.SysUserRepository;
+import dev.z.blog.service.admin.SysUserDetailService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class WebSecurityConfig {
 
     @Profile("dev")
     @EnableWebSecurity(debug = true)
-    @SuppressWarnings("unused")
-    static class Dev {}
+    static class Dev {
+
+        @Bean
+        public UserDetailsService userDetailsService() {
+            return new InMemoryUserDetailsManager(new User("admin", "{noop}admin", AuthorityUtils.NO_AUTHORITIES));
+        }
+
+    }
 
     @Profile("prod")
     @EnableWebSecurity
-    @SuppressWarnings("unused")
-    static class Prod {}
+    static class Prod {
 
+        @Bean
+        public UserDetailsService userDetailsService(SysUserRepository sysUserRepository) {
+            return new SysUserDetailService(sysUserRepository);
+        }
+
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(AuthenticationManager.class)
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
 
     @Bean
     @Order(1)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
-        http
-             .securityMatcher("/api/**")
+        return http
+                .securityMatcher(Url.Api.PATTERN)
                 .csrf().disable()
+                .headers().disable()
+                .requestCache().disable()
+                .anonymous().disable()
                 .httpBasic().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-             .and()
-                .authorizeHttpRequests()
-                .requestMatchers( "/api/login")
-                .permitAll()
-            .and()
-                .authorizeHttpRequests()
-                .anyRequest()
-                .authenticated()
-            .and()
-                .exceptionHandling()
-                .authenticationEntryPoint((request, response, authException) -> {
-                    System.out.println("auth exception#" + request.toString());
+                .formLogin().disable()
+                .logout().disable()
+                .addFilterAfter(new LoginSessionFilter(), SecurityContextHolderAwareRequestFilter.class)
+                .authorizeHttpRequests(authorizeHttpRequests -> {
+                    authorizeHttpRequests.requestMatchers(HttpMethod.POST, Url.Api.LOGIN).permitAll();
+                    authorizeHttpRequests.requestMatchers(HttpMethod.GET, Url.Api.CAPTCHA).permitAll();
+                    authorizeHttpRequests.anyRequest().authenticated();
                 })
-                .accessDeniedHandler((request, response, accessDeniedException) -> {
-                    System.out.println("access deny#" + request.toString());
-                });
-        return http.build();
+                .exceptionHandling(exceptionHandling -> {
+                    exceptionHandling.authenticationEntryPoint(new ApiAuthenticationEntryPoint());
+                    exceptionHandling.accessDeniedHandler(new ApiAccessDeniedHandler());
+                })
+                .build();
     }
 
     @Bean
-    SecurityFilterChain portalFilterChain(HttpSecurity http) throws Exception {
-        http
-             .securityMatcher("/**")
-                .authorizeHttpRequests()
-                .anyRequest()
-                .permitAll()
-             .and()
-                .formLogin()
-                .disable()
-                .logout()
-                .disable()
-//                .headers().frameOptions().disable(); // resolve iframe x-frame-options deny
-                .headers().frameOptions().sameOrigin(); // iframe url must be same origin
-        return http.build();
+    public SecurityFilterChain adminFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .securityMatcher(Url.Admin.PATTERN)
+                .csrf().disable()
+                .headers().disable()
+                .requestCache().disable()
+                .anonymous().disable()
+                .httpBasic().disable()
+                .formLogin().disable()
+                .logout().disable()
+//                .addFilterAfter(new LoginSessionFilter(), SecurityContextHolderAwareRequestFilter.class)
+                .authorizeHttpRequests(authorizeHttpRequests -> {
+                    authorizeHttpRequests.requestMatchers(HttpMethod.GET, Url.Admin.LOGIN).permitAll();
+                    authorizeHttpRequests.anyRequest().authenticated();
+                })
+                .exceptionHandling(exceptionHandling -> {
+                    exceptionHandling.authenticationEntryPoint(new ApiAuthenticationEntryPoint());
+                    exceptionHandling.accessDeniedHandler(new ApiAccessDeniedHandler());
+                })
+                .build();
+    }
 
+    @Bean
+    public SecurityFilterChain portalFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .securityMatcher(Url.Portal.PATTERN)
+                .csrf().disable()
+                .requestCache().disable()
+//                .anonymous().disable()
+                .httpBasic().disable()
+                .formLogin().disable()
+                .logout().disable()
+                .headers(headersSecurity -> {
+                    headersSecurity.frameOptions().disable(); // resolve iframe x-frame-options deny
+                    headersSecurity.frameOptions().sameOrigin(); // iframe url must be same origin
+                })
+                .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests.anyRequest().permitAll())
+                .build();
     }
 
 }
