@@ -7,6 +7,8 @@ spring:
       - jpa
       - actuator
       - logging
+      - shutdown
+      - concurrency
   application:
     name: blog
   datasource:
@@ -14,6 +16,8 @@ spring:
   mvc:
     servlet:
       load-on-startup: 1
+    problemdetails:
+      enabled: true
   servlet:
     multipart:
       max-file-size: 20MB

@@ -1,0 +1,23 @@
+spring:
+  task:
+    execution:
+      thread-name-prefix: blog-execution-
+      pool:
+        core-size: 8
+        max-size: 16
+        keep-alive: 60s
+        queue-capacity: 100
+    scheduling:
+      thread-name-prefix: blog-scheduling-
+      pool:
+        size: 8
+
+server:
+  tomcat:
+    accept-count: 100 # queue capacity
+    max-connections: 8192 # tcp connection pool size
+    keep-alive-timeout: 60s # keep alive
+    connection-timeout: 60s # accept time out
+    threads:
+      min-spare: 10 # core size
+      max: 200 # max size

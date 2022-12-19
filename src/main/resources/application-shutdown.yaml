@@ -1,0 +1,6 @@
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 1m
+
+server:
+  shutdown: graceful
