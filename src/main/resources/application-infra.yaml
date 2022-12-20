@@ -1,0 +1,7 @@
+infra:
+  cache:
+    type: jdk
+  lock:
+    type: jdk
+  queue:
+    type: jdk

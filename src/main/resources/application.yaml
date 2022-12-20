@@ -9,6 +9,7 @@ spring:
       - logging
       - shutdown
       - concurrency
+      - infra
   application:
     name: blog
   datasource:
