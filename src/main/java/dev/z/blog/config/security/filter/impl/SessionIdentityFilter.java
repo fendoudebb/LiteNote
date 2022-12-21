@@ -1,5 +1,6 @@
-package dev.z.blog.config.security.filter;
+package dev.z.blog.config.security.filter.impl;
 
+import dev.z.blog.config.security.filter.IdentityFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-public class LoginSessionFilter extends OncePerRequestFilter {
+public class SessionIdentityFilter extends OncePerRequestFilter implements IdentityFilter {
 
     private static final String ATTR = "token";
 

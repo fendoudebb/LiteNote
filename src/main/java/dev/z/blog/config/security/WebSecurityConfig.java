@@ -1,6 +1,7 @@
 package dev.z.blog.config.security;
 
-import dev.z.blog.config.security.filter.LoginSessionFilter;
+import dev.z.blog.config.security.authentication.provider.IdentityAuthenticationProvider;
+import dev.z.blog.config.security.filter.IdentityFilter;
 import dev.z.blog.config.security.handler.ApiAccessDeniedHandler;
 import dev.z.blog.config.security.handler.ApiAuthenticationEntryPoint;
 import dev.z.blog.constant.mvc.Url;
@@ -63,7 +64,7 @@ public class WebSecurityConfig {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain apiFilterChain(HttpSecurity http, IdentityFilter identityFilter) throws Exception {
         return http
                 .securityMatcher(Url.Api.PATTERN)
                 .csrf().disable()
@@ -73,7 +74,8 @@ public class WebSecurityConfig {
                 .httpBasic().disable()
                 .formLogin().disable()
                 .logout().disable()
-                .addFilterAfter(new LoginSessionFilter(), SecurityContextHolderAwareRequestFilter.class)
+                .authenticationProvider(new IdentityAuthenticationProvider())
+                .addFilterAfter(identityFilter, SecurityContextHolderAwareRequestFilter.class)
                 .authorizeHttpRequests(authorizeHttpRequests -> {
                     authorizeHttpRequests.requestMatchers(HttpMethod.POST, Url.Api.LOGIN).permitAll();
                     authorizeHttpRequests.requestMatchers(HttpMethod.GET, Url.Api.CAPTCHA).permitAll();

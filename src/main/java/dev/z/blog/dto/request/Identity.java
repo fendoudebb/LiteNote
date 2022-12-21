@@ -1,10 +1,15 @@
 package dev.z.blog.dto.request;
 
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
 
 public record Identity(
+        @NotBlank
         String username,
+
+        @NotBlank
         String password,
+
+        @NotBlank
         String captcha
 
 ) {

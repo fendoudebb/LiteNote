@@ -1,4 +1,7 @@
 blog:
+  api:
+    login: session
+    captcha: graphic
   portal:
     title: Blog
     author: fendoudebb
