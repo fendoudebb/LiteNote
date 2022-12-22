@@ -1,4 +1,4 @@
-package dev.z.blog.config.security.authentication.token;
+package dev.z.blog.security.authentication.token;
 
 import dev.z.blog.dto.request.Identity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

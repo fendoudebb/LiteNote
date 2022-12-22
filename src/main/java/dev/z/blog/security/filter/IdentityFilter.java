@@ -1,4 +1,4 @@
-package dev.z.blog.config.security.filter;
+package dev.z.blog.security.filter;
 
 import jakarta.servlet.Filter;
 

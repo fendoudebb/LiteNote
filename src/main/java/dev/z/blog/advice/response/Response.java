@@ -1,4 +1,4 @@
-package dev.z.blog.handler.response;
+package dev.z.blog.advice.response;
 
 import lombok.Builder;
 import lombok.Getter;

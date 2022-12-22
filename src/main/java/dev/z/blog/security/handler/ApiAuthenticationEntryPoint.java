@@ -1,4 +1,4 @@
-package dev.z.blog.config.security.handler;
+package dev.z.blog.security.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

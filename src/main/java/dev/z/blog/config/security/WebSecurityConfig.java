@@ -1,9 +1,9 @@
 package dev.z.blog.config.security;
 
-import dev.z.blog.config.security.authentication.provider.IdentityAuthenticationProvider;
-import dev.z.blog.config.security.filter.IdentityFilter;
-import dev.z.blog.config.security.handler.ApiAccessDeniedHandler;
-import dev.z.blog.config.security.handler.ApiAuthenticationEntryPoint;
+import dev.z.blog.security.authentication.provider.IdentityAuthenticationProvider;
+import dev.z.blog.security.filter.IdentityFilter;
+import dev.z.blog.security.handler.ApiAccessDeniedHandler;
+import dev.z.blog.security.handler.ApiAuthenticationEntryPoint;
 import dev.z.blog.constant.mvc.Url;
 import dev.z.blog.repository.admin.SysUserRepository;
 import dev.z.blog.service.admin.SysUserDetailService;

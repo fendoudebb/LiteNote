@@ -1,8 +1,8 @@
-package dev.z.blog.config.security.authentication;
+package dev.z.blog.config.security;
 
-import dev.z.blog.config.security.filter.IdentityFilter;
-import dev.z.blog.config.security.filter.impl.JwtIdentityFilter;
-import dev.z.blog.config.security.filter.impl.SessionIdentityFilter;
+import dev.z.blog.security.filter.IdentityFilter;
+import dev.z.blog.security.filter.impl.JwtIdentityFilter;
+import dev.z.blog.security.filter.impl.SessionIdentityFilter;
 import dev.z.blog.service.admin.CaptchaService;
 import dev.z.blog.service.admin.LoginService;
 import dev.z.blog.service.admin.impl.GraphicCaptchaService;

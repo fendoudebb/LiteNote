@@ -1,4 +1,4 @@
-package dev.z.blog.config.logging;
+package dev.z.blog.interceptor.logging;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,7 +11,7 @@ public class TraceIdInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        MDC.put(TRACE_ID, String.format("TraceId=%-15s", System.currentTimeMillis()));
+        MDC.put(TRACE_ID, String.format("[%-13s] ", System.currentTimeMillis()));
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 

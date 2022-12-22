@@ -1,6 +1,6 @@
 package dev.z.blog.service.admin.impl;
 
-import dev.z.blog.config.security.authentication.token.IdentityAuthenticationToken;
+import dev.z.blog.security.authentication.token.IdentityAuthenticationToken;
 import dev.z.blog.dto.request.Identity;
 import dev.z.blog.dto.response.Credentials;
 import dev.z.blog.service.admin.LoginService;

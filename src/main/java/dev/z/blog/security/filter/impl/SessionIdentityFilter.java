@@ -1,6 +1,6 @@
-package dev.z.blog.config.security.filter.impl;
+package dev.z.blog.security.filter.impl;
 
-import dev.z.blog.config.security.filter.IdentityFilter;
+import dev.z.blog.security.filter.IdentityFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
