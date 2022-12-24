@@ -6,6 +6,8 @@ public interface Url {
 
         String PATTERN = "/api/**";
 
+        String FILTER_PATTERN = "/api/*";
+
         String LOGIN = "/api/login";
 
         String CAPTCHA = "/api/captcha";
@@ -28,6 +30,8 @@ public interface Url {
 
     interface Root {
         String PATTERN = "/**";
+
+        String FILTER_PATTERN = "/*";
     }
 
 }
