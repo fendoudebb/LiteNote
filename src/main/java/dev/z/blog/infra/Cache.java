@@ -12,4 +12,10 @@ public interface Cache {
 
     void remove(Object key);
 
+    interface Prefix {
+
+        String CAPTCHA = "Captcha_";
+
+    }
+
 }
