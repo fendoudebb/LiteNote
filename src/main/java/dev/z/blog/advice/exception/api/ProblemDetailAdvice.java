@@ -3,6 +3,7 @@ package dev.z.blog.advice.exception.api;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +14,7 @@ import java.net.URI;
 @Slf4j
 @RequiredArgsConstructor
 @RestControllerAdvice
+@Order
 public class ProblemDetailAdvice/* extends ResponseEntityExceptionHandler */{
 
     @ExceptionHandler

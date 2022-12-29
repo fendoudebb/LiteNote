@@ -21,8 +21,8 @@ public class ResponseAdvice/* extends ResponseEntityExceptionHandler */{
     private final MessageSource messageSource;
 
     @ExceptionHandler
-    public Response onAuthenticationException(CaptchaMismatchException e, HttpServletRequest request) {
-        log.error("Captcha Mismatch: {} {}", request.getMethod(), request.getRequestURL(), e);
+    public Response onCaptchaMismatchException(CaptchaMismatchException e, HttpServletRequest request) {
+        log.error("Method: {} URI: {} Error: {}", request.getMethod(), request.getRequestURI(), e.getMessage());
         String message = messageSource.getMessage("captcha_mismatch", null, LocaleContextHolder.getLocale());
         return Response.builder().code(-1).msg(message).build();
     }
