@@ -14,6 +14,8 @@ public interface Cache {
 
     interface Prefix {
 
+        String REPLAY_ATTACKS = "ReplayAttacks_";
+
         String CAPTCHA = "Captcha_";
 
     }

@@ -13,7 +13,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -74,7 +73,7 @@ public class ReplayAttacksFilter extends OncePerRequestFilter {
                 log.error("Replay Attacks[{}] Exists Nonce[{}], Timestamp is {}", request.getRequestURI(), nonce, value);
                 throw new ReplayAttacksException();
             }
-            cache.put(text, timestamp, EXPIRE_MILLIS, TimeUnit.MILLISECONDS);
+            cache.put(Cache.Prefix.REPLAY_ATTACKS + signature, timestamp, EXPIRE_MILLIS, TimeUnit.MILLISECONDS);
             filterChain.doFilter(request, response);
         } catch (ReplayAttacksException | NumberFormatException e) {
             response.setStatus(HttpStatus.FORBIDDEN.value());

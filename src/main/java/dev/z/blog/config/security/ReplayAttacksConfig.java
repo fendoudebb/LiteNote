@@ -13,10 +13,10 @@ import java.util.Collections;
 public class ReplayAttacksConfig {
 
     @Bean
-    public FilterRegistrationBean<ReplayAttacksFilter> filterRegistrationBean(Cache cache) {
+    public FilterRegistrationBean<ReplayAttacksFilter> replayAttacksFilter(Cache cache) {
         FilterRegistrationBean<ReplayAttacksFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new ReplayAttacksFilter(cache));
-        filterRegistrationBean.setOrder(FilterRegistrationBean.HIGHEST_PRECEDENCE);
+        filterRegistrationBean.setOrder(FilterRegistrationBean.HIGHEST_PRECEDENCE + 1); // after TraceFilter
         filterRegistrationBean.setUrlPatterns(Collections.singleton(Url.Api.FILTER_PATTERN));
         return filterRegistrationBean;
     }

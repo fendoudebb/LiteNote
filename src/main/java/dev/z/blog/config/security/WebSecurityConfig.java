@@ -1,11 +1,12 @@
 package dev.z.blog.config.security;
 
+import dev.z.blog.constant.mvc.Url;
+import dev.z.blog.infra.Cache;
+import dev.z.blog.repository.admin.SysUserRepository;
 import dev.z.blog.security.authentication.provider.IdentityAuthenticationProvider;
 import dev.z.blog.security.filter.IdentityFilter;
 import dev.z.blog.security.handler.ApiAccessDeniedHandler;
 import dev.z.blog.security.handler.ApiAuthenticationEntryPoint;
-import dev.z.blog.constant.mvc.Url;
-import dev.z.blog.repository.admin.SysUserRepository;
 import dev.z.blog.service.admin.SysUserDetailService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -58,6 +60,13 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, Cache cache) {
+        IdentityAuthenticationProvider authenticationProvider = new IdentityAuthenticationProvider(cache);
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        return authenticationProvider;
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
@@ -74,7 +83,6 @@ public class WebSecurityConfig {
                 .httpBasic().disable()
                 .formLogin().disable()
                 .logout().disable()
-                .authenticationProvider(new IdentityAuthenticationProvider())
                 .addFilterAfter(identityFilter, SecurityContextHolderAwareRequestFilter.class)
                 .authorizeHttpRequests(authorizeHttpRequests -> {
                     authorizeHttpRequests.requestMatchers(HttpMethod.POST, Url.Api.LOGIN).permitAll();
