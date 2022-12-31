@@ -8,7 +8,7 @@ public interface CaptchaService {
         return String.format("%04d", ThreadLocalRandom.current().nextInt(0, 10000));
     }
 
-    void produce(String code);
+    void produce(String username, String code);
 
     default void store(String code) {
 

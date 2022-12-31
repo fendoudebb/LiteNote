@@ -1,5 +1,6 @@
 package dev.z.blog.controller.api;
 
+import dev.z.blog.advice.cipher.annotation.Decode;
 import dev.z.blog.advice.cipher.annotation.Encode;
 import dev.z.blog.dto.request.Identity;
 import dev.z.blog.dto.response.Credentials;
@@ -27,7 +28,7 @@ public class LoginController {
 
     @PostMapping("/login")
     @Encode
-    public Credentials login(@Valid @RequestBody Identity identity) {
+    public Credentials login(@Decode @Valid @RequestBody Identity identity) {
         log.info("login request body: {}" , identity);
         return loginService.login(identity);
     }
@@ -36,7 +37,7 @@ public class LoginController {
     public void captcha(@RequestParam String username) {
         String code = captchaService.verificationCode();
         log.info("Captcha code: {}", code);
-        captchaService.produce(code);
+        captchaService.produce(username, code);
     }
 
 }

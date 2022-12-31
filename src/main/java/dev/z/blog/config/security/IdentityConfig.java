@@ -1,5 +1,6 @@
 package dev.z.blog.config.security;
 
+import dev.z.blog.infra.Cache;
 import dev.z.blog.security.filter.IdentityFilter;
 import dev.z.blog.security.filter.impl.JwtIdentityFilter;
 import dev.z.blog.security.filter.impl.SessionIdentityFilter;
@@ -42,8 +43,8 @@ public class IdentityConfig {
 
     @Bean
     @ConditionalOnProperty(prefix = "blog.api", name = "captcha", havingValue = "graphic")
-    public CaptchaService graphicCaptchaService() {
-        return new GraphicCaptchaService();
+    public CaptchaService graphicCaptchaService(Cache cache) {
+        return new GraphicCaptchaService(cache);
     }
 
 }
