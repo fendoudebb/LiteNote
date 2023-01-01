@@ -1,4 +1,4 @@
-blog:
+preferences:
   api:
     login: session
     captcha: graphic

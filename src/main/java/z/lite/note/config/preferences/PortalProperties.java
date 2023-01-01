@@ -1,9 +1,9 @@
-package z.lite.note.config.property;
+package z.lite.note.config.preferences;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
-@ConfigurationProperties(prefix = "blog.portal")
+@ConfigurationProperties(prefix = "preferences.portal")
 public record PortalProperties(
         @DefaultValue("Blog") String title,
         @DefaultValue("fendoudebb") String author,
