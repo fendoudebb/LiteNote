@@ -11,9 +11,9 @@ spring:
       - concurrency
       - infra
   application:
-    name: blog
+    name: lite-note
   datasource:
-    name: blog
+    name: lite-note
   mvc:
     servlet:
       load-on-startup: 1
