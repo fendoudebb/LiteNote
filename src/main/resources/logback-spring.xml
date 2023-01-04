@@ -2,9 +2,9 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
-    <logger name="dev.z" level="DEBUG"/>
-
     <springProfile name="!prod">
+        <logger name="z.lite.note" level="DEBUG"/>
+
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>%X{traceId:-}${CONSOLE_LOG_PATTERN}</pattern>
@@ -17,9 +17,11 @@
     </springProfile>
 
     <springProfile name="prod">
+        <logger name="z.lite.note" level="INFO"/>
+
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <encoder>
-                <pattern>%X{traceId:--}${FILE_LOG_PATTERN}</pattern>
+                <pattern>%X{traceId:-}${FILE_LOG_PATTERN}</pattern>
                 <charset>${FILE_LOG_CHARSET}</charset>
             </encoder>
             <file>${LOG_FILE}</file>

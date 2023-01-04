@@ -3,7 +3,7 @@ preferences:
     login: session
     captcha: graphic
   portal:
-    title: Blog
+    title: LiteNote
     author: fendoudebb
     keywords: >-
       Java,
@@ -14,4 +14,4 @@ preferences:
       Spring Actuator,
       PostgreSQL,
       Thymeleaf
-    github: https://github.com/fendoudebb/z-blog-spring-native
+    github: https://github.com/fendoudebb/LiteNote

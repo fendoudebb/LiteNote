@@ -1,14 +1,14 @@
 spring:
   task:
     execution:
-      thread-name-prefix: blog-execution-
+      thread-name-prefix: LiteNote-execution-
       pool:
         core-size: 8
         max-size: 16
         keep-alive: 60s
         queue-capacity: 100
     scheduling:
-      thread-name-prefix: blog-scheduling-
+      thread-name-prefix: LiteNote-scheduling-
       pool:
         size: 8
 

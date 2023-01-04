@@ -3,13 +3,14 @@ spring:
     active: dev,h2
     include:
       - preferences
+      - web
       - server
       - blog
       - jpa
       - actuator
       - logging
       - shutdown
-      - concurrency
+      - task
       - infra
   application:
     name: lite-note
@@ -19,7 +20,7 @@ spring:
     servlet:
       load-on-startup: 1
     problemdetails:
-      enabled: true
+      enabled: false
   servlet:
     multipart:
       max-file-size: 20MB
