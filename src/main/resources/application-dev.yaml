@@ -1,4 +1,7 @@
 spring:
+  messages:
+    basename: file:${user.dir}/i18n/messages,classpath:i18n/messages
+    cache-duration: 0
   thymeleaf:
     cache: false
     prefix: file:${user.dir}/src/main/resources/templates/

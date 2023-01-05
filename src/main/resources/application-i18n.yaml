@@ -1,0 +1,4 @@
+spring:
+  messages:
+    basename: file:${user.dir}/i18n/messages,classpath:i18n/messages
+    cache-duration: 1h
