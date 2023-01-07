@@ -8,8 +8,8 @@
 		<version>3.0.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>z.lite</groupId>
-	<artifactId>note</artifactId>
+	<groupId>z.note</groupId>
+	<artifactId>lite-note</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>LiteNote</name>
 	<description>LiteNote build by Spring Boot 3 and Spring Native</description>
