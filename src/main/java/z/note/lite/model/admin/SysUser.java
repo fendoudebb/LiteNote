@@ -1,16 +1,15 @@
 package z.note.lite.model.admin;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.MappedCollection;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.Set;
 
 @Setter
 @Getter
-@Entity
 @Table(name = "sys_user")
 public class SysUser extends Base {
 
@@ -24,9 +23,10 @@ public class SysUser extends Base {
 
     private boolean credentialsExpired;
 
-    private boolean enabled;
+    private boolean disabled;
 
-    @OneToMany
+    @MappedCollection
+    @Transient
     private Set<SysPermission> permissions;
 
 }

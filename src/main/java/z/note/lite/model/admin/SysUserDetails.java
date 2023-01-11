@@ -47,6 +47,6 @@ public class SysUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return sysUser.isEnabled();
+        return !sysUser.isDisabled();
     }
 }

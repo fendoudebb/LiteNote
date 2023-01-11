@@ -20,7 +20,7 @@ public class SessionIdentityFilter extends OncePerRequestFilter implements Ident
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute(ATTR) instanceof Authentication authentication) {
-            SecurityContextHolder.createEmptyContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
     }

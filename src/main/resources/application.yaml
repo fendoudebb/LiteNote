@@ -6,16 +6,16 @@ spring:
       - web
       - server
       - i18n
-      - jpa
+      - sql
       - actuator
       - logging
       - shutdown
       - task
       - infra
   application:
-    name: lite-note
+    name: LiteNote
   datasource:
-    name: lite-note
+    name: lite_note
   mvc:
     servlet:
       load-on-startup: 1
