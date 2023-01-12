@@ -1,4 +1,4 @@
-package z.note.lite.service.admin.impl;
+package z.note.lite.service.api.impl;
 
 import com.wf.captcha.GifCaptcha;
 import com.wf.captcha.SpecCaptcha;
@@ -12,7 +12,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import z.note.lite.infra.Cache;
 import z.note.lite.lib.captcha.ArithmeticCaptcha;
-import z.note.lite.service.admin.CaptchaService;
+import z.note.lite.service.api.CaptchaService;
 
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;

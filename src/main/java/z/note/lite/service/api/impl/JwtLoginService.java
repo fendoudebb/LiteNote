@@ -1,8 +1,8 @@
-package z.note.lite.service.admin.impl;
+package z.note.lite.service.api.impl;
 
 import z.note.lite.dto.request.Identity;
 import z.note.lite.dto.response.Credentials;
-import z.note.lite.service.admin.LoginService;
+import z.note.lite.service.api.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;

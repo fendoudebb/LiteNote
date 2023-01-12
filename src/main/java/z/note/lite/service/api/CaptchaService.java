@@ -1,4 +1,4 @@
-package z.note.lite.service.admin;
+package z.note.lite.service.api;
 
 import java.util.concurrent.ThreadLocalRandom;
 

@@ -1,4 +1,4 @@
-package z.note.lite.service.admin;
+package z.note.lite.service.api;
 
 import z.note.lite.dto.request.Identity;
 import z.note.lite.dto.response.Credentials;
