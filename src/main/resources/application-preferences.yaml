@@ -2,6 +2,8 @@ preferences:
   api:
     login: session
     captcha: graphic
+  admin:
+    supervisor: admin
   portal:
     title: LiteNote
     author: fendoudebb
