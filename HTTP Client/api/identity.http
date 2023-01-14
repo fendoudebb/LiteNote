@@ -1,0 +1,51 @@
+# @name Login
+< header.js
+POST {{host}}/api/login
+Content-Type: application/json
+#Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
+Accept-Language: en
+X-Ca-Timestamp: {{timestamp}}
+X-Ca-Nonce: {{nonce}}
+X-Ca-Signature: {{signature}}
+
+#{
+#  "id": "{{$random.uuid}}",
+#  "payload": {
+#    "username": "admin",
+#    "password": "admin",
+#    "captcha": "1234"
+#  }
+#}
+
+//{
+//  "username": "admin",
+//  "password": "admin",
+//  "captcha": "1234"
+//}
+
+eyAgICJ1c2VybmFtZSI6ICJhZG1pbiIsICAgInBhc3N3b3JkIjogImFkbWluIiwgICAiY2FwdGNoYSI6ICIxMjM0IiB9
+
+
+> {%
+// http-dynamic-variables.json
+// http-client.pre-request.d.ts
+// http-client.common.d.ts
+// http-client.d.ts
+// http-client.crypto.d.ts
+
+    // response.body
+    if (response.status === 200) {
+        client.log(JSON.stringify(response.body));
+    }
+%}
+
+
+###
+
+# @name Captcha
+< header.js
+GET {{host}}/api/captcha?username={{username}}
+X-Ca-Timestamp: {{timestamp}}
+X-Ca-Nonce: {{nonce}}
+X-Ca-Signature: {{signature}}
+###
