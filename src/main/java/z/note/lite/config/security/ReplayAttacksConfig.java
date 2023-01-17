@@ -1,6 +1,6 @@
 package z.note.lite.config.security;
 
-import z.note.lite.constant.mvc.Url;
+import z.note.lite.constant.mvc.Endpoint;
 import z.note.lite.filter.security.ReplayAttacksFilter;
 import z.note.lite.infra.Cache;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -17,7 +17,7 @@ public class ReplayAttacksConfig {
         FilterRegistrationBean<ReplayAttacksFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new ReplayAttacksFilter(cache));
         filterRegistrationBean.setOrder(FilterRegistrationBean.HIGHEST_PRECEDENCE + 1); // after TraceFilter
-        filterRegistrationBean.setUrlPatterns(Collections.singleton(Url.Api.FILTER_PATTERN));
+        filterRegistrationBean.setUrlPatterns(Collections.singleton(Endpoint.Api.FILTER_PATTERN));
         return filterRegistrationBean;
     }
 

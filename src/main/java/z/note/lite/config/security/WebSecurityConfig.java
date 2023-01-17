@@ -1,7 +1,7 @@
 package z.note.lite.config.security;
 
 import z.note.lite.config.preferences.AdminProperties;
-import z.note.lite.constant.mvc.Url;
+import z.note.lite.constant.mvc.Endpoint;
 import z.note.lite.infra.Cache;
 import z.note.lite.repository.api.SysUserRepository;
 import z.note.lite.security.authentication.provider.IdentityAuthenticationProvider;
@@ -70,7 +70,7 @@ public class WebSecurityConfig {
     @Order(1)
     public SecurityFilterChain apiFilterChain(HttpSecurity http, IdentityFilter identityFilter, AdminProperties adminProperties) throws Exception {
         return http
-                .securityMatcher(Url.Api.PATTERN)
+                .securityMatcher(Endpoint.Api.PATTERN)
                 .csrf().disable()
                 .headers().disable()
                 .requestCache().disable()
@@ -80,8 +80,8 @@ public class WebSecurityConfig {
                 .logout().disable()
                 .addFilterAfter(identityFilter, SecurityContextHolderAwareRequestFilter.class)
                 .authorizeHttpRequests(authorizeHttpRequests -> {
-                    authorizeHttpRequests.requestMatchers(HttpMethod.POST, Url.Api.LOGIN).permitAll();
-                    authorizeHttpRequests.requestMatchers(HttpMethod.GET, Url.Api.CAPTCHA).permitAll();
+                    authorizeHttpRequests.requestMatchers(HttpMethod.POST, Endpoint.Api.LOGIN).permitAll();
+                    authorizeHttpRequests.requestMatchers(HttpMethod.GET, Endpoint.Api.CAPTCHA).permitAll();
                     authorizeHttpRequests.anyRequest().access(new AdminAuthorizationManager(adminProperties));
                 })
                 .exceptionHandling(exceptionHandling -> {
@@ -94,7 +94,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain adminFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher(Url.Admin.PATTERN)
+                .securityMatcher(Endpoint.Admin.PATTERN)
                 .csrf().disable()
                 .headers().disable()
                 .requestCache().disable()
@@ -104,7 +104,7 @@ public class WebSecurityConfig {
                 .logout().disable()
 //                .addFilterAfter(new LoginSessionFilter(), SecurityContextHolderAwareRequestFilter.class)
                 .authorizeHttpRequests(authorizeHttpRequests -> {
-                    authorizeHttpRequests.requestMatchers(HttpMethod.GET, Url.Admin.LOGIN).permitAll();
+                    authorizeHttpRequests.requestMatchers(HttpMethod.GET, Endpoint.Admin.LOGIN).permitAll();
                     authorizeHttpRequests.anyRequest().authenticated();
                 })
                 .exceptionHandling(exceptionHandling -> {
@@ -117,7 +117,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain portalFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher(Url.Portal.PATTERN)
+                .securityMatcher(Endpoint.Portal.PATTERN)
                 .csrf().disable()
                 .requestCache().disable()
 //                .anonymous().disable()

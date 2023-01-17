@@ -11,7 +11,7 @@ import org.springframework.util.DigestUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import z.note.lite.constant.mvc.Url;
+import z.note.lite.constant.mvc.Endpoint;
 import z.note.lite.infra.Cache;
 
 import java.io.IOException;
@@ -41,7 +41,7 @@ public class ReplayAttacksFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (Objects.equals(request.getRequestURI(), Url.Api.CAPTCHA)) {
+        if (Objects.equals(request.getRequestURI(), Endpoint.Api.CAPTCHA)) {
             filterChain.doFilter(request, response);
             return;
         }
