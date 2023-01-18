@@ -32,21 +32,21 @@ public class SysUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return !sysUser.isAccountExpired();
+        return !sysUser.getAccountExpired();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return !sysUser.isAccountLocked();
+        return !sysUser.getAccountLocked();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return !sysUser.isCredentialsExpired();
+        return !sysUser.getCredentialsExpired();
     }
 
     @Override
     public boolean isEnabled() {
-        return !sysUser.isDisabled();
+        return !sysUser.getDisabled();
     }
 }

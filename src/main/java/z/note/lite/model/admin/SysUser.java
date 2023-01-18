@@ -17,13 +17,13 @@ public class SysUser extends Base {
 
     private String password;
 
-    private boolean accountExpired;
+    private Boolean accountExpired;
 
-    private boolean accountLocked;
+    private Boolean accountLocked;
 
-    private boolean credentialsExpired;
+    private Boolean credentialsExpired;
 
-    private boolean disabled;
+    private Boolean disabled;
 
     @MappedCollection
     @Transient
