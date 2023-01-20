@@ -1,6 +1,6 @@
 spring:
   datasource: # https://www.h2database.com/html/features.html
-    url: jdbc:h2:mem:${spring.datasource.name};MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;NON_KEYWORDS=USER;AUTO_RECONNECT=TRUE
+    url: jdbc:h2:mem:${spring.datasource.name};MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;IGNORECASE=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;DEFAULT_NULL_ORDERING=HIGH;NON_KEYWORDS=USER;AUTO_RECONNECT=TRUE
     driver-class-name: org.h2.Driver
     username: sa
     password:
