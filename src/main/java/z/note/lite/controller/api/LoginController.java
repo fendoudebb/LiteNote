@@ -5,6 +5,7 @@ import z.note.lite.advice.cipher.annotation.Encode;
 import z.note.lite.constant.mvc.Endpoint;
 import z.note.lite.dto.request.Identity;
 import z.note.lite.dto.response.Credentials;
+import z.note.lite.infra.annoation.RateLimiter;
 import z.note.lite.service.api.CaptchaService;
 import z.note.lite.service.api.LoginService;
 import jakarta.validation.Valid;
@@ -25,13 +26,15 @@ public class LoginController {
 
     private final CaptchaService captchaService;
 
-    @PostMapping(value = Endpoint.Api.LOGIN)
     @Encode
+    @RateLimiter
+    @PostMapping(value = Endpoint.Api.LOGIN)
     public Credentials login(@Decode @Valid @RequestBody Identity identity) {
         log.info("login request body: {}" , identity);
         return loginService.login(identity);
     }
 
+    @RateLimiter
     @GetMapping(value = Endpoint.Api.CAPTCHA)
     public void captcha(@RequestParam String username) {
         captchaService.produce(username);

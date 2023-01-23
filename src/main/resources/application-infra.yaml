@@ -5,3 +5,7 @@ infra:
     type: jdk
   queue:
     type: jdk
+  rate-limiter:
+    type: jdk
+    duration: 1m
+    count: 100
