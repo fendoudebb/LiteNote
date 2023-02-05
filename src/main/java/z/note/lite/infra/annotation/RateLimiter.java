@@ -1,4 +1,4 @@
-package z.note.lite.infra.annoation;
+package z.note.lite.infra.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -5,7 +5,7 @@ import z.note.lite.advice.cipher.annotation.Encode;
 import z.note.lite.constant.mvc.Endpoint;
 import z.note.lite.dto.request.Identity;
 import z.note.lite.dto.response.Credentials;
-import z.note.lite.infra.annoation.RateLimiter;
+import z.note.lite.infra.annotation.RateLimiter;
 import z.note.lite.service.api.CaptchaService;
 import z.note.lite.service.api.LoginService;
 import jakarta.validation.Valid;
