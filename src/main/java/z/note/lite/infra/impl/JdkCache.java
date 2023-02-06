@@ -20,7 +20,7 @@ public class JdkCache implements Cache {
         cache = new ConcurrentHashMap<>(64);
         queue = new DelayQueue<>();
 
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             while (true) {
                 try {
                     ExpireCache ec = queue.take();
@@ -30,7 +30,9 @@ public class JdkCache implements Cache {
                     log.info("Clean Cache Error: {}", e.getMessage(), e);
                 }
             }
-        }, "Clean-Cache").start();
+        }, "Clean-Cache");
+        thread.setDaemon(true);
+        thread.start();
     }
 
     @Override
