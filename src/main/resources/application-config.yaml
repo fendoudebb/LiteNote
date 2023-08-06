@@ -17,3 +17,15 @@ preferences:
       PostgreSQL,
       Thymeleaf
     github: https://github.com/fendoudebb/LiteNote
+
+infra:
+  cache:
+    type: jdk
+  lock:
+    type: jdk
+  queue:
+    type: jdk
+  rate-limiter:
+    type: jdk
+    duration: 1m
+    count: 100

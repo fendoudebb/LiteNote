@@ -6,6 +6,7 @@ spring:
     password: 123456
   sql:
     init:
+      mode: always
       platform: postgresql
       schema-locations: optional:classpath:sql/schema-postgresql.sql
       data-locations: optional:classpath:sql/data-postgresql.sql

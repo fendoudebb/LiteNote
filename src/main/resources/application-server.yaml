@@ -1,5 +1,69 @@
 server:
   port: 8080
+  shutdown: graceful
   compression:
     enabled: true
     min-response-size: 1KB
+  tomcat:
+    accept-count: 100 # queue capacity
+    max-connections: 8192 # tcp connection pool size
+    keep-alive-timeout: 60s # keep alive
+    connection-timeout: 60s # accept time out
+    threads:
+      min-spare: 10 # core size
+      max: 200 # max size
+
+spring:
+  messages:
+    basename: file:${user.dir}/i18n/messages,classpath:i18n/messages
+    cache-duration: 1h
+  web:
+    locale: zh
+    locale-resolver: accept_header
+    resources:
+      static-locations:
+        - classpath:/META-INF/resources/
+        - classpath:/resources/
+        - classpath:/static/
+        - classpath:/public/
+  task:
+    execution:
+      thread-name-prefix: z-execution-
+      pool:
+        core-size: 8
+        max-size: 16
+        keep-alive: 60s
+        queue-capacity: 100
+    scheduling:
+      thread-name-prefix: z-scheduling-
+      pool:
+        size: 8
+  lifecycle:
+    timeout-per-shutdown-phase: 1m
+
+logging:
+  #  config: classpath:logback-spring.xml
+  level:
+    root: info
+    org.springframework.jdbc.core.JdbcTemplate: debug
+    org.springframework.jdbc.core.StatementCreatorUtils: trace
+  file:
+    name: ${spring.application.name}.log
+    path: ${user.dir}
+  logback:
+    rollingpolicy:
+      max-history: 7
+      max-file-size: 10MB
+
+management:
+  endpoint:
+    health:
+      enabled: true
+      show-details: when_authorized
+      probes: # Kubernetes probes
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+      base-path: /actuator

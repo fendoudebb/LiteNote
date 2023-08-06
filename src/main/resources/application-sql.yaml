@@ -1,9 +1,0 @@
-spring:
-  sql:
-    init:
-      mode: always
-#      schema-locations: classpath*:sql/*.sql
-#      data-locations: classpath*:sql/*.sql
-      # platform: # hsqldb, h2, oracle, mysql, postgresql, and so on
-#      username: ${spring.datasource.username}
-#      password: ${spring.datasource.password}

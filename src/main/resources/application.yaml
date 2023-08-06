@@ -2,16 +2,8 @@ spring:
   profiles:
     active: dev,h2
     include:
-      - preferences
-      - web
+      - config
       - server
-      - i18n
-      - sql
-      - actuator
-      - logging
-      - shutdown
-      - task
-      - infra
   application:
     name: LiteNote
   datasource:
@@ -20,7 +12,7 @@ spring:
     servlet:
       load-on-startup: 1
     problemdetails:
-      enabled: false
+      enabled: true
   servlet:
     multipart:
       max-file-size: 20MB
