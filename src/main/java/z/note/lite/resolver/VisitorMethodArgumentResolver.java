@@ -1,7 +1,6 @@
 package z.note.lite.resolver;
 
 import is.tagomor.woothee.Classifier;
-import is.tagomor.woothee.crawler.Crawlers;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -9,7 +8,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import z.note.lite.util.IpUtils;
-import z.note.lite.vo.Visitor;
+import z.note.lite.context.Visitor;
 
 public class VisitorMethodArgumentResolver implements HandlerMethodArgumentResolver {
     @Override

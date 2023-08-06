@@ -1,4 +1,4 @@
-package z.note.lite.vo;
+package z.note.lite.context;
 
 import lombok.Builder;
 import lombok.Getter;
