@@ -1,8 +1,8 @@
 package z.note.lite.advice.cipher.advice;
 
+import jakarta.annotation.Resource;
 import z.note.lite.advice.cipher.CipherService;
 import z.note.lite.advice.cipher.annotation.Decode;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.Ordered;
@@ -19,12 +19,12 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 
 @Slf4j
-@RequiredArgsConstructor
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class DecodeRequestAdvice extends RequestBodyAdviceAdapter {
 
-    private final CipherService cipherService;
+    @Resource
+    private CipherService cipherService;
 
     @Override
     public boolean supports(MethodParameter methodParameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {

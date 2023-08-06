@@ -2,9 +2,9 @@ package z.note.lite.advice.cipher.advice;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Resource;
 import z.note.lite.advice.cipher.CipherService;
 import z.note.lite.advice.cipher.annotation.Encode;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
@@ -16,14 +16,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 @Slf4j
-@RequiredArgsConstructor
 @RestControllerAdvice
 @Order // last response advice
 public class EncodeResponseAdvice implements ResponseBodyAdvice<Object> {
 
-    private final CipherService cipherService;
+    @Resource
+    private CipherService cipherService;
 
-    private final ObjectMapper objectMapper;
+    @Resource
+    private ObjectMapper objectMapper;
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {

@@ -1,12 +1,12 @@
 package z.note.lite.advice.exception.api;
 
+import jakarta.annotation.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import z.note.lite.advice.response.Response;
 import z.note.lite.infra.exception.RateLimitationException;
 import z.note.lite.security.authentication.exception.CaptchaMismatchException;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -19,12 +19,12 @@ import z.note.lite.util.IpUtils;
 import java.util.Objects;
 
 @Slf4j
-@RequiredArgsConstructor
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ResponseAdvice/* extends ResponseEntityExceptionHandler */{
 
-    private final MessageSource messageSource;
+    @Resource
+    private MessageSource messageSource;
 
     @ExceptionHandler({
             CaptchaMismatchException.class,

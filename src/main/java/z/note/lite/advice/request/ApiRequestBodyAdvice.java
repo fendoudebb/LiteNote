@@ -2,7 +2,7 @@ package z.note.lite.advice.request;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
@@ -17,12 +17,12 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 
 @Slf4j
-@RequiredArgsConstructor
 //@RestControllerAdvice
 @Order // last request advice, default is last
 public class ApiRequestBodyAdvice implements RequestBodyAdvice {
 
-    private final ObjectMapper objectMapper;
+    @Resource
+    private ObjectMapper objectMapper;
 
     @Override
     public boolean supports(MethodParameter methodParameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
