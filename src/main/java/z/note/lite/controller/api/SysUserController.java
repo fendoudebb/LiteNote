@@ -1,6 +1,6 @@
 package z.note.lite.controller.api;
 
-import lombok.RequiredArgsConstructor;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,13 +11,13 @@ import z.note.lite.dto.response.SysUserDto;
 import z.note.lite.service.api.SysUserService;
 
 @Slf4j
-@RequiredArgsConstructor
 @RestController
 public class SysUserController {
 
-    private final SysUserService sysUserService;
+    @Resource
+    private SysUserService sysUserService;
 
-    @GetMapping(value = Endpoint.Api.USERS)
+    @GetMapping(value = Endpoint.Api.USERS) // /api/users
     public Page<SysUserDto> users(Pageable pageable) {
         return sysUserService.getUsers(pageable);
     }

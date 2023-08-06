@@ -1,20 +1,19 @@
 package z.note.lite.controller.api;
 
-import lombok.RequiredArgsConstructor;
+import jakarta.annotation.Resource;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import z.note.lite.constant.mvc.Endpoint;
 
-@RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/clear/cache")
 public class ClearCacheController {
 
-    public final MessageSource messageSource;
+    @Resource
+    public MessageSource messageSource;
 
-    @DeleteMapping("/i18n")
+    @DeleteMapping(Endpoint.Api.CLEAN_CACHE_I18N) // /api/clear/cache/i18n
     public Boolean i18n() {
         if (messageSource instanceof ReloadableResourceBundleMessageSource reloadableMsgSrc) {
             reloadableMsgSrc.clearCacheIncludingAncestors();
