@@ -1,7 +1,8 @@
 spring:
   profiles:
-    active: dev,h2
+    active: dev
     include:
+      - pg
       - config
       - server
   application:
