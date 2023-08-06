@@ -1,4 +1,4 @@
-package z.note.lite.controller.api;
+package z.note.lite.controller.admin.api;
 
 import jakarta.annotation.Resource;
 import org.springframework.context.MessageSource;
