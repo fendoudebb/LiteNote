@@ -2,6 +2,8 @@ package z.note.lite.constant.mvc;
 
 public interface Endpoint {
 
+    String ERROR = "/error";
+
     interface Api {
 
         String CONTEXT = "/api";
@@ -28,22 +30,22 @@ public interface Endpoint {
 
         String LOGIN = CONTEXT + "/login";
 
-        String ERROR = CONTEXT + "/error";
-
     }
 
     interface Portal {
 
         String PATTERN = Root.PATTERN;
 
-        String ERROR = "/error";
+        String INDEX = "/";
 
     }
 
     interface Root {
+
         String PATTERN = "/**";
 
         String FILTER_PATTERN = "/*";
+
     }
 
 }
