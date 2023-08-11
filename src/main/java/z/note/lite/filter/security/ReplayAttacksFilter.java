@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class ReplayAttacksFilter extends OncePerRequestFilter {
 
-    private static final String X_CA_Key = "X-Ca-Key";
+    private static final String X_CA_KEY = "X-Ca-Key";
 
     private static final String X_CA_TIMESTAMP = "X-Ca-Timestamp";
 
@@ -46,7 +46,7 @@ public class ReplayAttacksFilter extends OncePerRequestFilter {
             return;
         }
         try {
-            String key = request.getHeader(X_CA_Key);
+            String key = request.getHeader(X_CA_KEY);
             String timestamp = request.getHeader(X_CA_TIMESTAMP);
             String nonce = request.getHeader(X_CA_NONCE);
             String signature = request.getHeader(X_CA_SIGNATURE);
