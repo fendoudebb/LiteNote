@@ -1,9 +1,16 @@
 package z.note.lite.config.preferences;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
+@Setter
+@Getter
+@ToString
 @ConfigurationProperties(prefix = "preferences.admin")
-public record AdminProperties(
-        @DefaultValue("admin") String supervisor) {
+public class Admin {
+
+    private String supervisor;
+
 }
