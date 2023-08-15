@@ -16,7 +16,7 @@ public class RateLimiterConfig {
     @Bean
     public RateLimiter rateLimiter(ThreadPoolTaskScheduler scheduler) {
 //        if (Objects.equals(rateLimiterProperties.type(), "jdk")) {}
-        return new JdkRateLimiter(scheduler, rateLimiterProperties.duration(), rateLimiterProperties.count());
+        return new JdkRateLimiter(scheduler, rateLimiterProperties.getDuration(), rateLimiterProperties.getCount());
     }
 
 }

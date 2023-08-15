@@ -1,13 +1,22 @@
 package z.note.lite.config.infra;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.Duration;
 
+@Setter
+@Getter
+@ToString
 @ConfigurationProperties(prefix = "infra.rate-limiter")
-public record RateLimiterProperties(
-        @DefaultValue("jdk") String type,
-        @DefaultValue("1m") Duration duration,
-        @DefaultValue("0") int count) {
+public class RateLimiterProperties {
+
+    private String type;
+
+    private Duration duration;
+
+    private int count;
+
 }

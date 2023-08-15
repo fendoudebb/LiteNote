@@ -1,16 +1,22 @@
 package z.note.lite.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-public record Identity(
-        @NotBlank
-        String username,
+@Setter
+@Getter
+@ToString
+public class Identity {
 
-        @NotBlank
-        String password,
+    @NotBlank
+    private String username;
 
-        @NotBlank
-        String captcha
+    @NotBlank
+    private String password;
 
-) {
+    @NotBlank
+    private String captcha;
+
 }
