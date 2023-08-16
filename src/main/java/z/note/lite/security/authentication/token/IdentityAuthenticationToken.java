@@ -12,8 +12,8 @@ public class IdentityAuthenticationToken extends UsernamePasswordAuthenticationT
     private final String captcha;
 
     public IdentityAuthenticationToken(Identity identity) {
-        super(identity.username(), identity.password());
-        this.captcha = identity.captcha();
+        super(identity.getUsername(), identity.getPassword());
+        this.captcha = identity.getCaptcha();
     }
 
 }
