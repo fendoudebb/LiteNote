@@ -20,6 +20,8 @@ public interface Endpoint {
 
         String USER = CONTEXT + "/user";
 
+        String CLEAN_CACHE = CONTEXT + "/cache/i18n";
+
     }
 
     interface Admin {

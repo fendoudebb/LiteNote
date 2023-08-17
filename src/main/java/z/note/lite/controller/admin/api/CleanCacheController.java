@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.RestController;
 import z.note.lite.constant.mvc.Endpoint;
 
 @RestController
-public class ClearCacheController {
+public class CleanCacheController {
 
     @Resource
     public MessageSource messageSource;
 
-    @DeleteMapping(Endpoint.Api.CLEAN_CACHE_I18N) // /api/clear/cache/i18n
+    @DeleteMapping(Endpoint.Api.CLEAN_CACHE) // /api/cache/i18n
     public Boolean i18n() {
         if (messageSource instanceof ReloadableResourceBundleMessageSource reloadableMsgSrc) {
             reloadableMsgSrc.clearCacheIncludingAncestors();
