@@ -1,8 +1,9 @@
 package z.note.lite.config.mvc;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.context.MessageSourceProperties;
+import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 import java.time.Duration;
@@ -21,13 +21,28 @@ import java.util.Locale;
 public class LocaleConfig {
 
     @Bean
-    @ConditionalOnBean(LocaleResolver.class)
-    public LocaleResolver localeResolver(LocaleResolver localeResolver) {
-        if (localeResolver instanceof AcceptHeaderLocaleResolver acceptHeaderLocaleResolver) {
-            acceptHeaderLocaleResolver.setSupportedLocales(List.of(Locale.CHINESE, Locale.ENGLISH));
-        }
+    public AcceptHeaderLocaleResolver localeResolver(WebProperties webProperties) {
+        AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver() {
+            @Override
+            public Locale resolveLocale(HttpServletRequest request) {
+                String locale = request.getParameter("lang");
+                return locale != null ? StringUtils.parseLocaleString(locale) : super.resolveLocale(request);
+            }
+        };
+        localeResolver.setDefaultLocale(webProperties.getLocale());
+        localeResolver.setSupportedLocales(List.of(Locale.CHINESE, Locale.ENGLISH));
         return localeResolver;
     }
+
+//    @Bean
+//    @ConditionalOnBean(LocaleResolver.class)
+//    public LocaleResolver localeResolver(LocaleResolver localeResolver) {
+//        if (localeResolver instanceof AcceptHeaderLocaleResolver acceptHeaderLocaleResolver) {
+//            acceptHeaderLocaleResolver.setDefaultLocale(Locale.ENGLISH);
+//            acceptHeaderLocaleResolver.setSupportedLocales(List.of(Locale.CHINESE, Locale.ENGLISH));
+//        }
+//        return localeResolver;
+//    }
 
     @Bean
     @ConditionalOnMissingBean(MessageSourceProperties.class)
