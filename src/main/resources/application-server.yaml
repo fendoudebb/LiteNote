@@ -5,6 +5,8 @@ server:
     enabled: true
     min-response-size: 1KB
   tomcat:
+    mbeanregistry:
+      enabled: true
     accept-count: 100 # queue capacity
     max-connections: 8192 # tcp connection pool size
     keep-alive-timeout: 60s # keep alive
