@@ -32,7 +32,7 @@ public class Portal {
 
     private String github;
 
-    private Map<String, String> js;
+    private Map<String, List<String>> js;
 
     private Promotion promotion;
 
