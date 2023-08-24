@@ -25,8 +25,8 @@ public class VisitorMethodArgumentResolver implements HandlerMethodArgumentResol
         return Visitor.builder()
                 .ip(IpUtils.getIp())
                 .referer(referer)
-                .userAgent(userAgent)
-                .acceptLanguage(acceptLanguage)
+                .ua(userAgent)
+                .lang(acceptLanguage)
                 .crawler(crawler)
                 .locale(LocaleContextHolder.getLocale())
                 .build();
