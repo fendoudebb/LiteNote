@@ -12,6 +12,9 @@ import java.util.Collections;
 @Configuration(proxyBeanMethods = false)
 public class ReplayAttacksConfig {
 
+    /**
+     * after {@link z.note.lite.filter.trace.TraceFilter}
+     */
     @Bean
     public FilterRegistrationBean<ReplayAttacksFilter> replayAttacksFilter(Cache cache) {
         FilterRegistrationBean<ReplayAttacksFilter> filterRegistrationBean = new FilterRegistrationBean<>();
