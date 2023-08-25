@@ -1,0 +1,49 @@
+<style>
+  /*CSS实现内容超过长度后以省略号显示*/
+  .ellipsis, header > a, header > p, footer > a, footer > p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+  }
+
+  .index-post-item {
+    transition: border-color .3s, background-color .3s, color .3s;
+    margin-bottom: 8px;
+    padding: 16px 24px;
+  }
+
+  .index-post-item:hover {
+    background-color: #EFEEEE;
+  }
+
+  .index-post-title-a {
+    display: block;
+    font-size: 16px;
+    word-wrap: break-word;
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+  }
+
+  .index-post-title-a:hover {
+    color: #4CAF50;
+  }
+
+  .index-post-title-a:active {
+    color: #999;
+  }
+
+  .index-post-desc {
+    margin: 0;
+    color: #8a8a8a;
+    word-wrap: break-word;
+  }
+
+  .anchor-link-a {
+    color: #8a8a8a;
+  }
+
+  .anchor-link-a:hover {
+    color: #4CAF50;
+  }
+</style>
