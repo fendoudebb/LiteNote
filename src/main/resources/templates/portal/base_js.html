@@ -1,0 +1,43 @@
+<script>
+    function loadResource(links, fnSuccess, fnError) {
+        let script = document.createElement('script');
+        script.onerror = function () {
+            document.head.removeChild(script);
+            fnError();
+        };
+        script.onload = fnSuccess
+        script.src = links.shift();
+        document.head.appendChild(script);
+    }
+
+    function autoSwitch(resourceList, success) {
+        if (!resourceList.length) return;
+        let resource = resourceList.shift();
+        loadResource([resource], function () {
+            success();
+        }, function () {
+            autoSwitch(resourceList);
+        });
+    }
+
+    let goTop = document.querySelector(".go-top");
+    window.addEventListener("scroll", function () {
+        let offsetY = document.documentElement.scrollTop || document.body.scrollTop
+        if (offsetY > 100)
+            goTop.style.display = "block";
+        else
+            goTop.style.display = "none";
+    });
+
+    goTop.addEventListener("click", e => {
+        e.preventDefault();
+        let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        let timer = setInterval(() => {
+            scrollTop -= 100;
+            window.scrollTo(0, scrollTop)
+            if (scrollTop <= 0) {
+                clearInterval(timer)
+            }
+        }, 17)
+    })
+</script>
