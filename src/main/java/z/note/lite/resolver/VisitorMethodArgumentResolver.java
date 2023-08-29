@@ -7,8 +7,8 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import z.note.lite.util.IpUtils;
 import z.note.lite.context.Visitor;
+import z.note.lite.util.RequestUtils;
 
 public class VisitorMethodArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
@@ -23,7 +23,7 @@ public class VisitorMethodArgumentResolver implements HandlerMethodArgumentResol
         String acceptLanguage = webRequest.getHeader("accept-language");
         boolean crawler = Classifier.isCrawler(userAgent);
         return Visitor.builder()
-                .ip(IpUtils.getIp())
+                .ip(RequestUtils.getIp())
                 .referer(referer)
                 .ua(userAgent)
                 .lang(acceptLanguage)

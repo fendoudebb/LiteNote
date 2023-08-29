@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import z.note.lite.infra.RateLimiter;
-import z.note.lite.util.IpUtils;
+import z.note.lite.util.RequestUtils;
 
 import java.util.Objects;
 
@@ -27,7 +27,7 @@ public class RateLimiterInterceptor implements HandlerInterceptor {
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 String key;
                 if (Objects.isNull(authentication)) {
-                    key = IpUtils.getIp();
+                    key = RequestUtils.getIp();
                 } else {
                     key = (String) authentication.getPrincipal();
                 }

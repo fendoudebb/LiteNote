@@ -14,7 +14,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import z.note.lite.util.IpUtils;
+import z.note.lite.util.RequestUtils;
 
 import java.util.Objects;
 
@@ -48,7 +48,7 @@ public class ResponseAdvice/* extends ResponseEntityExceptionHandler */{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String user;
         if (Objects.isNull(authentication)) {
-            user = IpUtils.getIp();
+            user = RequestUtils.getIp();
         } else {
             user = (String) authentication.getPrincipal();
         }
