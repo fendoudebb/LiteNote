@@ -1,0 +1,256 @@
+<th:block th:with="reqUrl=${#ctx.springRequestContext.getRequestUri()},isPost=${#strings.startsWith(reqUrl, '/p/')}">
+    <meta charset="UTF-8"/>
+    <th:block th:if="${isPost}">
+        <title th:text="${post.title} + ' | ' + ${@portal.name}"></title>
+        <meta name="keywords" th:content="${post.keywords}"/>
+        <meta name="description" th:content="${post.description}"/>
+    </th:block>
+    <th:block th:unless="${isPost}">
+        <title th:text="${@portal.name}"></title>
+        <meta name="keywords" th:content="${@portal.keywords}"/>
+        <meta name="description" th:content="${@portal.description}"/>
+    </th:block>
+    <link rel="shortcut icon" th:href="@{/favicon.ico}">
+    <link rel="canonical" th:href="${reqUrl}">
+    <link rel="bookmark" th:href="@{/favicon.ico}">
+
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge,chrome=1"/>
+    <meta name="referrer" content="always">
+    <meta name="copyright" th:content="${@portal.name}" th:if="${@portal.name}"/>
+    <meta name="apple-mobile-web-app-title" th:content="${@portal.name}" th:if="${@portal.name}"/>
+    <meta name="author" th:content="${@portal.author}" th:if="${@portal.author}"/>
+    <meta name="robots" content="all"/>
+    <th:block th:each="meta : ${@portal.meta}">
+        <meta th:name="${meta.name}" th:content="${meta.content}"/>
+    </th:block>
+    <meta name="google" value="notranslate"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand"/>
+    <meta name="force-rendering" content="webkit"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="screen-orientation" content="landscape/portrait"/>
+    <meta name="full-screen" content="yes"/>
+    <meta name="imagemode" content="force"/>
+    <meta name="browsermode" content="application"/>
+    <meta name="nightmode" content="disable"/>
+    <meta name="layoutmode" content="fitscreen"/>
+    <meta name="wap-font-scale" content="no"/>
+    <meta name="x5-orientation" content="landscape/portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="x5-page-mode" content="app"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="theme-color" content="#E64545"/>
+    <meta name="mobile-web-app-capable" content="yes"/>
+
+    <th:block th:each="css : ${@portal.css}">
+        <link rel="stylesheet" th:href="${css.link}" media="none"
+              onload="if(media!='all')media='all'">
+        <noscript>
+            <link rel="stylesheet" th:href="${css.link}">
+        </noscript>
+    </th:block>
+
+    <style>
+        * {
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 100vh;
+        }
+
+        ::selection {
+            background:#4CAF50;
+            color:white;
+        }
+
+        ::-moz-selection {
+            background:#4CAF50;
+            color:white;
+        }
+
+        ::-webkit-selection {
+            background:#4CAF50;
+            color:white;
+        }
+
+        ::-webkit-scrollbar {
+            width: .5rem;
+            height: .5rem;
+            background: hsla(0, 0%, 100%, 0.6);
+        }
+
+        ::-webkit-scrollbar-track {
+            border-radius: 0;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(95, 95, 95, .4);
+            transition: all .2s;
+            border-radius: .5rem;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(95, 95, 95, .7);
+        }
+
+        html {
+            height: 100%;
+            overflow-y: scroll;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        :root body {
+            position: absolute;
+        }
+
+        body {
+            width: 100vw;
+            background-color: #F8F8F8;
+        }
+
+        hr {
+            height: 1px;
+            border: none;
+            border-top: 1px solid #F0F0F0;
+            margin: 0 0 20px 0;
+        }
+
+        ul, ol, li {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        button {
+            outline: none;
+        }
+
+        a {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+        }
+
+        .main {
+            text-align: center;
+        }
+
+        .content {
+            display: inline-block;
+            text-align: left;
+            width: 65%;
+            max-width: 65%;
+        }
+
+        @media (min-width: 1920px) {
+            .content {
+                width: 35%;
+                max-width: 35%;
+            }
+        }
+
+        @media (max-width: 1920px) {
+            .content {
+                width: 35%;
+                max-width: 35%;
+            }
+        }
+
+        @media (max-width: 1440px) {
+            .content {
+                width: 45%;
+                max-width: 45%;
+            }
+        }
+
+        @media (max-width: 1366px) {
+            .content {
+                width: 40%;
+                max-width: 40%;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .content {
+                width: 50%;
+                max-width: 50%;
+            }
+        }
+
+        @media (max-width: 750px) {
+            .content {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
+        .shadow {
+            border-radius: 2px;
+            -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+            -moz-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+            background-color: white;
+        }
+    </style>
+
+    <script th:if="${@portal.github}" th:inline="javascript">
+        let name = [[${@portal.name}]];
+        let github = [[${@portal.github}]];
+        console.log(`${name}\n\nGitHub: ${github}\n\n`)
+    </script>
+
+    <th:block th:each="analysis : ${@portal.analysis}">
+        <th:block th:if="${analysis.enabled}">
+            <th:block th:if="${analysis.name == 'baidu'}">
+                <script th:inline="javascript">
+                    var _hmt = _hmt || [];
+                    (function () {
+                        var hm = document.createElement("script");
+                        hm.src = "https://hm.baidu.com/hm.js?[(${analysis.value})]";
+                        var s = document.getElementsByTagName("script")[0];
+                        s.parentNode.insertBefore(hm, s);
+                    })();
+                </script>
+                <script>
+                    (function () {
+                        var bp = document.createElement('script');
+                        var curProtocol = window.location.protocol.split(':')[0];
+                        if (curProtocol === 'https') {
+                            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+                        } else {
+                            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                        }
+                        var s = document.getElementsByTagName("script")[0];
+                        s.parentNode.insertBefore(bp, s);
+                    })();
+                </script>
+            </th:block>
+            <th:block th:if="${analysis.name == 'google'}">
+                <script async th:src="'https://www.googletagmanager.com/gtag/js?id=' + ${analysis.value}"></script>
+                <script th:inline="javascript">
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag() {
+                        dataLayer.push(arguments);
+                    }
+                    gtag('js', new Date());
+                    gtag('config', '[(${analysis.value})]');
+                </script>
+            </th:block>
+        </th:block>
+    </th:block>
+</th:block>
