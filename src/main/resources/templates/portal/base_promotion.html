@@ -1,0 +1,29 @@
+<style>
+    .star-link {
+        color: #8a8a8a;
+        display: block;
+        text-align: center;
+        margin-bottom: 30px;
+        text-decoration: none;
+    }
+
+    .star-link:visited {
+        color: #8a8a8a;
+    }
+
+    .promotion-img {
+        display: block;
+        margin: 12px auto;
+        max-width: 100%;
+    }
+</style>
+<th:block th:if="${@portal.github}">
+    <p style="text-align: center;margin-bottom: 20px;color: red;">
+        <strong>Give me a Star, Thanks:)</strong>
+    </p>
+    <a th:text="${@portal.github}" th:href="${@portal.github}" class="star-link" target="_blank"></a>
+</th:block>
+<p th:if="${@portal.promotion.text}" style="text-align: center;margin-bottom: 30px;color: red;">
+    <strong th:text="${@portal.promotion.text}"></strong>
+</p>
+<img th:if="${@portal.promotion.image}" th:src="${@portal.promotion.image}" th:alt="${@portal.promotion.text}" class="promotion-img">
