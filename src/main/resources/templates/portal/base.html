@@ -1,4 +1,4 @@
-<th:block th:with="reqUrl=${#ctx.springRequestContext.getRequestUri()},isPost=${#strings.startsWith(reqUrl, '/p/')}">
+<th:block th:with="reqUrl=${#ctx.getExchange().getRequest().getRequestURI()},isPost=${#strings.startsWith(reqUrl, '/p/')}">
     <meta charset="UTF-8"/>
     <th:block th:if="${isPost}">
         <title th:text="${post.title} + ' | ' + ${@portal.name}"></title>
