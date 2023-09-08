@@ -1,0 +1,56 @@
+<style>
+    .header {
+        height: auto;
+        background-color: white;
+        min-height: 48px;
+        line-height: 48px;
+        text-align: center;
+    }
+
+    .header ul {
+        display: inline-block;
+    }
+
+    .header li {
+        display: inline-block;
+        transition: border-color .3s, background-color .3s, color .3s;
+    }
+
+    .header li:hover {
+        background-color: #fafafa;
+        /*background-color: #e4e6e8;*/
+    }
+
+    .header li:hover a {
+        color: #4CAF50;
+    }
+
+    .header ul li a {
+        display: inline-block;
+        padding: 0 20px;
+        font-size: 14px;
+        text-decoration: none;
+        color: black;
+    }
+
+    .header a:active {
+        color: #4CAF50;
+    }
+</style>
+<div class="header" th:with="reqUrl=${#ctx.getExchange().getRequest().getRequestURI()}">
+    <ul>
+        <li>
+            <a th:text="#{header_home}" th:href="@{/}" th:title="#{header_home}" th:styleappend="(${reqUrl} == '/') ? 'color: #4CAF50' : _">首页</a>
+        </li>
+        <li>
+            <a th:text="#{header_search}" th:href="@{/search.html}" th:title="#{header_search}" th:styleappend="(${reqUrl} == '/search.html') ? 'color: #4CAF50' : _">搜索</a>
+        </li>
+        <li th:if="${@websiteData.getTopicDataList}">
+            <a th:text="#{header_topics}" th:href="@{/topics.html}" th:title="#{header_topics}" th:styleappend="(${reqUrl} == '/topics.html') ? 'color: #4CAF50' : _">标签</a>
+        </li>
+        <li>
+            <a th:text="#{header_data}" th:href="@{/data.html}" th:title="#{header_data}" th:styleappend="(${reqUrl} == '/data.html') ? 'color: #4CAF50' : _">数据</a>
+        </li>
+    </ul>
+</div>
+<hr>
