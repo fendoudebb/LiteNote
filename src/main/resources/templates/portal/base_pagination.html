@@ -37,17 +37,17 @@
     <ul class="pagination">
         <li>
             <a th:if="${page == 1}" th:text="#{pagination_prev}" class="disabled" href="javascript:void(0);">上一页</a>
-            <a th:if="${page != 1}" th:text="#{pagination_first}" th:href="@{/(page=1)}">首页</a>
-            <a th:if="${page != 1}" th:text="#{pagination_prev}" th:href="@{/(page=${page - 1})}">上一页</a>
+            <a th:if="${page != 1}" th:text="#{pagination_first}" th:href="|?page=1|">首页</a>
+            <a th:if="${page != 1}" th:text="#{pagination_prev}" th:href="|?page=${page - 1}|">上一页</a>
         </li>
         <li th:each="index: ${#numbers.sequence((page - 3 < 1 ? 1 : page - 3), (page + 3 > sumPage ? sumPage : page + 3))}">
             <a th:if="${index == page}" th:text="${index}" class="active disabled" href="javascript:void(0);"></a>
-            <a th:unless="${index == page}" th:text="${index}" th:href="@{/(page=${index})}"></a>
+            <a th:unless="${index == page}" th:text="${index}" th:href="|?page=${index}|"></a>
         </li>
         <li>
             <th:block th:if="${page < sumPage}">
-                <a th:text="#{pagination_next}" th:href="@{/(page=${page + 1})}">下一页</a>
-                <a th:text="#{pagination_last}" th:href="@{/(page=${sumPage})}">尾页</a>
+                <a th:text="#{pagination_next}" th:href="|?page=${page + 1}|">下一页</a>
+                <a th:text="#{pagination_last}" th:href="|?page=${sumPage}|">尾页</a>
             </th:block>
             <a th:unless="${page < sumPage}" th:text="#{pagination_next}" class="disabled" href="javascript:void(0);">下一页</a>
         </li>
