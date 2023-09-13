@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale}">
+<head>
+    <th:block th:replace="~{portal/base}"></th:block>
+    <style th:replace="~{portal/base_css}"></style>
+    <style>
+        .content p {
+            margin: 10px 0;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<th:block th:replace="~{portal/header}"></th:block>
+<div class="main">
+    <div class="content">
+        <ul th:each="post : ${posts}">
+            <li class="shadow index-post-item">
+                <a th:text="${post.title}" th:href="|/p/${post.id}.html|" th:title="${post.title}"
+                   class="index-post-title-a ellipsis"></a>
+                <p th:text="${post.description}" class="index-post-desc"></p>
+                <p>
+                    <span style="color: #8a8a8a">
+                        <th:block th:text="|${#temporals.format(post.createTs, 'yyyy-MM-dd')}, |"/>
+                        <th:block th:text="|#{index_views}: ${post.pv}|"/>
+                        <th:block th:if="${!#lists.isEmpty(post.topics)}">
+                            <th:block th:text="|, #{index_topics}: |"></th:block>
+                            <th:block th:each="topic : ${post.topics}">
+                                <a th:text="${topic}" th:href="|/topic/${topic}.html|" th:title="${topic}"
+                                   class="anchor-link-a"></a>
+                            </th:block>
+                        </th:block>
+                    </span>
+                </p>
+            </li>
+        </ul>
+        <th:block th:if="${@websiteData.getOnlinePosts()}" th:replace="~{portal/base_pagination}"></th:block>
+    </div>
+</div>
+<th:block th:replace="~{portal/footer}"></th:block>
+</body>
+</html>
