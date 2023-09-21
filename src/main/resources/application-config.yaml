@@ -18,12 +18,16 @@ preferences:
       Thymeleaf
     description: This is description
     github: https://github.com/fendoudebb/LiteNote
+    search:
+      tsconfig: jiebacfg
+      size: 15
+      maxlength: 50
     promotion:
       enabled: true
       text: 扫描下方二维码关注公众号和小程序↓↓↓
       image: /qrcode.png
     comment:
-      enabled: true
+      enabled: false
       type: giscus
       script: |+
         <script src="https://giscus.app/client.js"
