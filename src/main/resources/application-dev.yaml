@@ -1,7 +1,20 @@
 spring:
+  web:
+    resources:
+      static-locations:
+        - file:${user.dir}/static/
+        - classpath:/static/
+      cache:
+        cachecontrol:
+          max-age: 365d
   messages:
     basename: file:${user.dir}/i18n/messages,classpath:i18n/messages
     cache-duration: 0
   thymeleaf:
     cache: false
     prefix: file:${user.dir}/src/main/resources/templates/
+
+logging:
+  level:
+    org.springframework.jdbc.core.JdbcTemplate: debug
+    org.springframework.jdbc.core.StatementCreatorUtils: debug
