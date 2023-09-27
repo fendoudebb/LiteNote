@@ -136,16 +136,16 @@ public class RunnerListener implements ApplicationRunner, ApplicationContextAwar
             System.out.println(garbageCollectorMXBean.getName() + " " + garbageCollectorMXBean.getCollectionCount() + " " + garbageCollectorMXBean.getObjectName());
         }
 
-        FlightRecorderMXBean flightRecorderMXBean = ManagementFactory.getPlatformMXBean(FlightRecorderMXBean.class);
-        long l = flightRecorderMXBean.newRecording();
-        flightRecorderMXBean.startRecording(l);
-
-        flightRecorderMXBean.stopRecording(l);
-        try {
-            flightRecorderMXBean.closeRecording(l);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        FlightRecorderMXBean flightRecorderMXBean = ManagementFactory.getPlatformMXBean(FlightRecorderMXBean.class);
+//        long l = flightRecorderMXBean.newRecording();
+//        flightRecorderMXBean.startRecording(l);
+//
+//        flightRecorderMXBean.stopRecording(l);
+//        try {
+//            flightRecorderMXBean.closeRecording(l);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
 
         HotSpotDiagnosticMXBean hotSpotDiagnosticMXBean = ManagementFactory.getPlatformMXBean(HotSpotDiagnosticMXBean.class);
 //        hotSpotDiagnosticMXBean.dumpHeap();

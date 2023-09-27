@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import z.note.lite.web.Endpoint;
 import z.note.lite.web.context.WebsiteData;
 import z.note.lite.web.model.common.Post;
-import z.note.lite.service.PostService;
+import z.note.lite.service.portal.PostService;
 
 import java.util.List;
 
@@ -25,9 +25,9 @@ public class IndexController {
 
     @GetMapping(Endpoint.Portal.INDEX) // /
     public String index(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size, Model model) {
+        if (size < 1 || size > 20) size = 20;
         int sumPage = (websiteData.getOnlinePosts() - 1) / size + 1;
         if (page < 1 || page > sumPage) page = 1;
-        if (size < 1 || size > 20) size = 20;
         List<Post> posts = postService.getOnlinePosts(page, size);
         model.addAttribute("page", page);
         model.addAttribute("size", size);

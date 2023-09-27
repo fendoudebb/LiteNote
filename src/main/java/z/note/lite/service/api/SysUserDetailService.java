@@ -1,7 +1,7 @@
 package z.note.lite.service.api;
 
-import z.note.lite.model.admin.SysUser;
-import z.note.lite.model.admin.SysUserDetails;
+import z.note.lite.web.model.admin.SysUser;
+import z.note.lite.web.model.admin.SysUserDetails;
 import z.note.lite.repository.api.SysUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

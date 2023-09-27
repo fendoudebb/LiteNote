@@ -2,11 +2,10 @@ package z.note.lite.service.api;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import z.note.lite.dto.response.SysUserDto;
-import z.note.lite.model.admin.SysUser;
+import z.note.lite.web.http.response.SysUserRes;
 
 public interface SysUserService {
 
-    Page<SysUserDto> getUsers(Pageable pageable);
+    Page<SysUserRes> getUsers(Pageable pageable);
 
 }

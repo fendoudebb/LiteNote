@@ -8,7 +8,7 @@ public interface CaptchaService {
         return String.format("%04d", ThreadLocalRandom.current().nextInt(0, 10000));
     }
 
-    void produce(String username);
+    void produce(String key);
 
 }
 

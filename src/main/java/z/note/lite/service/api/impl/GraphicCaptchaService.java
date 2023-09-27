@@ -21,14 +21,14 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class GraphicCaptchaService implements CaptchaService {
 
-    public static final int WIDTH = 130;
+    public static final int WIDTH = 110;
 
-    public static final int HEIGHT = 48;
+    public static final int HEIGHT = 38;
 
     private final Cache cache;
 
     @Override
-    public void produce(String username) {
+    public void produce(String key) {
         try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
             HttpServletRequest request = attributes.getRequest();
@@ -46,15 +46,15 @@ public class GraphicCaptchaService implements CaptchaService {
             response.setContentType(MediaType.IMAGE_PNG_VALUE);
             Captcha captcha;
             switch (random % 3) {
-                case 1 -> captcha = new SpecCaptcha(width, height);
+                case 1 -> captcha = new SpecCaptcha(width, height, 4);
                 case 2 -> captcha = new ArithmeticCaptcha(width, height);
                 default -> {
                     response.setContentType(MediaType.IMAGE_GIF_VALUE);
-                    captcha = new GifCaptcha(width, height);
+                    captcha = new GifCaptcha(width, height, 4);
                 }
             }
             String code = captcha.text().toLowerCase();
-            cache.put(Cache.Prefix.CAPTCHA + username, code, expireSeconds, TimeUnit.SECONDS);
+            cache.put(Cache.Prefix.CAPTCHA + request.getSession().getId(), code, expireSeconds, TimeUnit.SECONDS);
             captcha.out(response.getOutputStream());
         } catch (IOException e) {
             throw new RuntimeException(e);

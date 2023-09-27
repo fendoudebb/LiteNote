@@ -24,10 +24,10 @@ public class JdkCache implements Cache {
             while (true) {
                 try {
                     ExpireCache ec = queue.take();
-                    log.info("Clean Cache: {}", ec);
+                    log.debug("Clean Cache: {}", ec);
                     cache.remove(ec.key, ec.value);
                 } catch (Exception e) {
-                    log.info("Clean Cache Error: {}", e.getMessage(), e);
+                    log.warn("Clean Cache Error: {}", e.getMessage(), e);
                 }
             }
         }, "Clean-Cache");
