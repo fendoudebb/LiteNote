@@ -2,7 +2,7 @@
     <meta charset="UTF-8"/>
     <th:block th:if="${isPost}">
         <title th:text="${post.title} + ' | ' + ${@portal.name}"></title>
-        <meta name="keywords" th:content="${post.keywords}"/>
+        <meta name="keywords" th:content="${post.title} + ' ' + ${#strings.arrayJoin(post.topics, ',')}"/>
         <meta name="description" th:content="${post.description}"/>
     </th:block>
     <th:block th:unless="${isPost}">
