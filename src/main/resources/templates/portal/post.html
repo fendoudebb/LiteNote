@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale}">
+<head>
+    <th:block th:replace="~{portal/base}"></th:block>
+    <th:block th:replace="~{portal/base_css_post}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{portal/header}"></th:block>
+<div class="main">
+    <div class="content">
+        <div class="shadow">
+            <h1 th:text="${post.title}"></h1>
+            <th:block th:each="topic : ${post.topics}">
+                <a th:text="${topic}" th:href="|/topic/${topic}.html|" class="badge-a" th:title="${topic}"></a>
+            </th:block>
+            <span th:text="${#messages.msg('post_word_count', post.wordCount)}" class="text-secondary">大约 100 字</span>
+            <!--            <hr>-->
+            <div th:utext="${post.contentHtml}"></div>
+
+            <div style="margin-top: 1.25rem">
+                <span th:text="${#messages.msg('post_info', post.pv, #temporals.format(post.createTs, 'yyyy-MM-dd'))}" class="text-secondary">阅读 12345 · 发布于 2018-01-01</span>
+            </div>
+            <p style="text-align: center;color: #8a8a8a;margin: 50px 0 30px 0">
+                ————&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspEND&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp————
+            </p>
+            <th:block th:if="${@portal.promotion.enabled}" th:replace="~{portal/base_promotion}"></th:block>
+        </div>
+
+        <th:block th:if="${post.commentStatus == 0 and @portal.comment.enabled and @portal.comment.type == 'giscus'}">
+            <hr>
+            <th:block th:utext="${@portal.comment.script}"></th:block>
+            <hr>
+        </th:block>
+
+        <div th:if="${@websiteData.randomPosts}">
+            <th:block th:replace="~{portal/base_css_list_widget}"></th:block>
+            <div class="shadow list-widget-section" style="margin-bottom: 0">
+                <span th:text="#{post_random_browsing}" class="list-widget-title">随便看看</span>
+                <span th:text="#{post_random_refresh}" class="list-widget-action">换一批</span>
+            </div>
+            <div id="post-random-hint" class="shadow" th:text="#{post_random_loading}" hidden="hidden" style="font-size: 12px;text-align: center;"></div>
+            <ul id="post-random-ul" class="shadow list-widget">
+                <li th:each="randomPost : ${@websiteData.randomPosts}">
+                    <a th:href="|/p/${randomPost.id}.html|" th:title="${randomPost.title}">
+                        <span th:text="${randomPost.title}">Website</span>
+                        <span th:text="|#{post_random_views}: ${randomPost.pv}|">阅读数：123</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{portal/footer}"></th:block>
+<script th:inline="javascript">
+    let tables = document.querySelectorAll("table");
+    for (const table of tables) {
+        table.outerHTML = `<div class='table-area'>${table.outerHTML}</div>`
+    }
+
+    let htmlElement = document.querySelector("html");
+    let images = document.querySelectorAll("img");
+    for (const image of images) {
+        image.classList.add("zoom-in");
+        // 点击图片放大
+        image.addEventListener("click", ()=> {
+            let src = image.getAttribute("src");
+            let div = document.createElement("div");
+            div.classList.add("bg-img");
+            div.innerHTML = `<img src="${src}" class='zoom-out'>`;
+            // 点击外层区域页面图片隐藏
+            div.addEventListener("click", () => {
+                htmlElement.style.overflowY = "scroll";
+                div.remove()
+            });
+            document.body.appendChild(div);
+            htmlElement.style.overflowY = "hidden";
+        })
+    }
+
+    let pres = document.querySelectorAll("pre");
+    for (let i = 0; i < pres.length; i++) {
+        let pre = pres[i];
+        pre.innerHTML += "<div class='hljs-button' title='Copy to Clipboard'>Copy</div>";
+        let id = "code" + i;
+        let code = pre.firstElementChild;
+        code.id = id;
+        let hljsDivBtn = pre.lastElementChild;
+        hljsDivBtn.setAttribute("data-clipboard-target", "#" + id)
+    }
+
+    let highlightJs = [
+        /*[# th:each="link : ${@portal.js.get('highlight')}"]*/
+        "[(${link})]",
+        /*[/]*/
+    ];
+    let clipboardJs = [
+        /*[# th:each="link : ${@portal.js.get('clipboard')}"]*/
+        "[(${link})]",
+        /*[/]*/
+    ]
+    function highlight() {
+        hljs.highlightAll();
+        autoSwitch(clipboardJs, copy);
+    }
+
+    function copy() {
+        let clipboard = new ClipboardJS('.hljs-button');
+        clipboard.on('success', function (e) {
+            e.clearSelection();
+            let copyBtn = e.trigger;
+            copyBtn.innerHTML = "Copy Success";
+            setTimeout(function () {
+                copyBtn.innerHTML = "Copy";
+            }, 1000);
+
+        });
+        clipboard.on('error', function (e) {
+            let copyBtn = e.trigger;
+            copyBtn.innerHTML = "Copy Fail";
+            setTimeout(function () {
+                copyBtn.innerHTML = "Copy";
+            }, 1000);
+        });
+    }
+
+    autoSwitch(highlightJs, highlight);
+
+    /*[# th:if="${@websiteData.randomPosts}"]*/
+    let data = {
+        'postId': [[${post.id}]]
+    };
+    let changeRandomPostBtn = document.querySelector(".list-widget-action");
+    let postRandomHint = document.querySelector("#post-random-hint");
+    let postRandomUl = document.querySelector("#post-random-ul");
+    let changeRandomPost = function () {
+        postRandomUl.hidden = true;
+        postRandomUl.innerHTML = "";
+        postRandomHint.hidden = false;
+        postRandomHint.innerHTML = /*[[#{post_random_loading}]]*/ "加载中...";
+        fetch("/post/random", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        }).then(res => {
+            return res.json()
+        }).then(json => {
+            if (json.code !== 0) {
+                throw Error(`json code[${json.code}]`);
+            }
+            postRandomHint.hidden = true;
+            postRandomUl.hidden = false;
+            let randomPosts = json.data;
+            for (const post of randomPosts) {
+                let li = document.createElement("li");
+                li.innerHTML = `<a href="/p/${post.id}.html" title="${post.title}"><span>${post.title}</span><span>[(#{post_random_views})]: ${post.pv}</span></a>`
+                postRandomUl.appendChild(li);
+            }
+        }).catch(err => {
+            postRandomHint.innerHTML = /*[[#{post_random_load_fail}]]*/ "加载失败...";
+            console.log('Request Error', err);
+        })
+    };
+    changeRandomPostBtn.addEventListener("click", changeRandomPost);
+    /*[/]*/
+</script>
+</body>
+</html>
