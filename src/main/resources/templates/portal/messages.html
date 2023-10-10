@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale}">
+<head>
+    <th:block th:replace="~{portal/base}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{portal/header}"></th:block>
+<div class="main">
+    <div class="content">
+        <th:block th:if="${@portal.comment.enabled and @portal.comment.type == 'giscus'}">
+            <hr>
+            <th:block th:utext="${@portal.comment.script}"></th:block>
+            <hr>
+        </th:block>
+    </div>
+</div>
+<th:block th:replace="~{portal/footer}"></th:block>
+</body>
+</html>
