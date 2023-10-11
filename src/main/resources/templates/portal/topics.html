@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale}">
+<head>
+    <th:block th:replace="~{portal/base}"></th:block>
+    <style>
+        .shadow {
+            margin-bottom: 8px;
+            padding: 16px 24px;
+            word-wrap: break-word;
+        }
+
+        .topic-a {
+            color: #8a8a8a;
+            font-size: 12px;
+            display: inline-block;
+            text-decoration: none;
+            border-radius: 3px;
+            border: 1px solid #8a8a8a;
+            padding: 2px 5px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .topic-a:active {
+            color: #999;
+        }
+
+        .topic-a:hover span {
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+<th:block th:replace="~{portal/header}"></th:block>
+<div class="main">
+    <div class="content">
+        <div class="shadow">
+            <h1 th:text="#{topic_data_title}">标签列表</h1>
+            <th:block th:each="topicData : ${@websiteData.getTopicDataList}">
+                <a th:href="|/topic/${topicData.name}.html|" th:title="${topicData.name}" class="topic-a">
+                    <span th:text="${#messages.msg('topic_data', topicData.name, topicData.count)}">Java - 10 篇</span>
+                </a>
+            </th:block>
+            <th:block th:if="${@portal.promotion.enabled}" th:replace="~{portal/base_promotion}"></th:block>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{portal/footer}"></th:block>
+</body>
+</html>
