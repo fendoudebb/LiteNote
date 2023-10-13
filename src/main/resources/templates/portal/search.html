@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale}">
+<head>
+    <th:block th:replace="~{portal/base}"></th:block>
+    <style th:replace="~{portal/base_css}"></style>
+    <style>
+        input {
+            /*去除ios input框点击时的灰色背景*/
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            /*iOS input会有阴影*/
+            -webkit-appearance: none;
+        }
+
+        /*移除datalist下拉箭头*/
+        [list]::-webkit-calendar-picker-indicator {
+            display: none !important;
+        }
+
+        /*输入框清空按钮*/
+        input[type=search]::-webkit-search-cancel-button {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            margin-left: 5px;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234CAF50'><path d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/></svg>");
+            cursor: pointer;
+        }
+
+        .search-input {
+            caret-color: #4CAF50; /*光标颜色*/
+            width: 80%;
+            height: 32px;
+            line-height: 16px;
+            display: inline-block;
+            text-align: initial;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 18 18'%3E%3Cpath fill='%23c8c8c8' d='M18 16.5l-5.14-5.18h-.35a7 7 0 1 0-1.19 1.19v.35L16.5 18l1.5-1.5zM12 7A5 5 0 1 1 2 7a5 5 0 0 1 10 0z'%3E%3C/path%3E%3C/svg%3E") no-repeat 10px center/16px;
+            padding-left: 30px;
+            border: 1px solid #c8c8c8;
+            border-radius: 3px 0 0 3px;
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border: 1px solid #4CAF50;
+            border-radius: 3px 0 0 3px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 18 18'%3E%3Cpath fill='%234CAF50' d='M18 16.5l-5.14-5.18h-.35a7 7 0 1 0-1.19 1.19v.35L16.5 18l1.5-1.5zM12 7A5 5 0 1 1 2 7a5 5 0 0 1 10 0z'%3E%3C/path%3E%3C/svg%3E") no-repeat 10px center/16px;
+        }
+
+        .search-button {
+            cursor: pointer;
+            float: right;
+            outline: none;
+            text-align: center;
+            width: 20%;
+            height: 32px;
+            line-height: 16px;
+            background: #4CAF50;
+            color: #fff;
+            border: 1px solid #4CAF50;
+            border-radius: 0 3px 3px 0;
+            white-space: nowrap;
+        }
+
+        .search-hint {
+            color: #c8c8c8;
+            font-size: 12px;
+            margin: 10px;
+        }
+
+        .content p {
+            margin: 10px 0;
+            font-size: 12px;
+        }
+
+        b {
+            color: red;
+        }
+
+        .disabled {
+            cursor: not-allowed;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .pagination a {
+            color: black;
+            padding: 6px 12px;
+            margin: 2px;
+            text-decoration: none;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 3px;
+        }
+
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+<th:block th:replace="~{portal/header}"></th:block>
+<div class="main">
+    <div class="content">
+        <div style="margin-bottom: 20px">
+            <input th:value="${keywords}" th:maxlength="${maxlength}" th:placeholder="#{search_input_placeholder}"
+                   list="custom-datalist" type="search" autocomplete="off" class="search-input">
+            <button th:text="#{search_btn_text}" type="button" class="search-button">搜索</button>
+            <datalist id="custom-datalist">
+                <th:block th:each="search : ${@websiteData.rankSearches}">
+                    <option th:value="${search.keywords}" th:text="|#{data_search_count}: ${search.count}|"></option>
+                </th:block>
+            </datalist>
+        </div>
+        <th:block th:if="${#lists.isEmpty(posts)}">
+            <div th:if="${keywords}" th:text="#{search_empty_data}" class="shadow"
+                 style="padding: 30px;text-align: center">未搜索到内容
+            </div>
+        </th:block>
+        <th:block th:unless="${#lists.isEmpty(posts)}">
+            <ul th:each="post : ${posts}">
+                <li class="shadow index-post-item">
+                    <a th:utext="${post.title}" th:href="|/p/${post.id}.html|" class="index-post-title-a ellipsis">
+                        UnescapeHTML Title
+                    </a>
+                    <p th:utext="${post.description}" class="index-post-desc">UnescapeHTML Description</p>
+                    <p>
+                        <span style="color: #8a8a8a">
+                            <th:block th:text="|${#temporals.format(post.createTs, 'yyyy-MM-dd')}, |"/>
+                            <th:block th:text="|#{index_views}: ${post.pv}|"/>
+                            <th:block th:if="${!#lists.isEmpty(post.topics)}">
+                                <th:block th:text="|, #{index_topics}: |"></th:block>
+                                <th:block th:each="topic : ${post.topics}">
+                                    <a th:utext="${topic}" th:href="|/topic/${topic}.html|" th:title="${topic}"
+                                       class="anchor-link-a"></a>
+                                </th:block>
+                            </th:block>
+                        </span>
+                    </p>
+                </li>
+            </ul>
+            <div class="pagination">
+                <a th:if="${page == 1}" th:text="#{pagination_prev}" class="disabled" href="javascript:void(0);">上一页</a>
+                <a th:unless="${page == 1}" th:text="#{pagination_prev}" th:href="@{/search.html(keywords=${keywords},page=${page - 1})}">上一页</a>
+                <a th:if="${size == #lists.size(posts)}" th:text="#{pagination_next}" th:href="@{/search.html(keywords=${keywords},page=${page + 1})}">下一页</a>
+                <a th:unless="${size == #lists.size(posts)}" th:text="#{pagination_next}" class="disabled" href="javascript:void(0);">下一页</a>
+            </div>
+        </th:block>
+    </div>
+</div>
+<th:block th:replace="~{portal/footer}"></th:block>
+<script>
+    let searchBtn = document.querySelector(".search-button");
+    let searchInput = document.querySelector(".search-input");
+
+    function searchKeywords() {
+        let keywords = searchInput.value.trim();
+        if (keywords.length > 0) {
+            window.location.href = `/search.html?keywords=${keywords}`
+        }
+    }
+
+    searchBtn.addEventListener("click", searchKeywords);
+    searchInput.addEventListener("keyup", event => {
+        if (event.keyCode === 13) {
+            searchKeywords();
+            event.preventDefault();
+        }
+    });
+</script>
+</body>
+</html>
