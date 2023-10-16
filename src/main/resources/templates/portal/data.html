@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale}">
+<head>
+    <th:block th:replace="~{portal/base}"></th:block>
+    <th:block th:replace="~{portal/base_css_list_widget}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{portal/header}"></th:block>
+<div class="main">
+    <div class="content">
+        <div class="shadow list-widget-section" style="margin-bottom: 0">
+            <span th:text="#{data_statistics}" class="list-widget-title">站长统计</span>
+        </div>
+        <ul class="shadow list-widget">
+            <li><a href="/"><span th:text="|#{data_posts_count}: ${@websiteData.onlinePosts}|">文章数：10</span></a></li>
+            <li><a th:href="@{/topics.html}"><span th:text="|#{data_topics_count}: ${@websiteData.getTopicDataList.size()}|">标签数：10</span></a></li>
+            <li><span th:text="|#{data_visitors_count}: ${@websiteData.ipCount}|">访客数：10</span></li>
+            <li><span th:text="|#{data_views}: ${@websiteData.pageView}|">浏览量：10</span></li>
+        </ul>
+        <th:block th:if="${!#lists.isEmpty(@websiteData.links)}">
+            <div class="shadow list-widget-section" style="margin-bottom: 0">
+                <span th:text="#{data_links}" class="list-widget-title">友情链接</span>
+            </div>
+            <ul class="shadow list-widget">
+                <li th:each="link : ${@websiteData.links}">
+                    <a th:href="${link.url}" th:title="${link.website}" target="_blank">
+                        <span th:text="${link.website}">Website</span>
+                        <span th:text="|#{data_link_url}: ${link.url}|">链接：https://github.com/fendoudebb/LiteNote</span>
+                    </a>
+                </li>
+            </ul>
+        </th:block>
+        <th:block th:if="${!#lists.isEmpty(@websiteData.rankPosts)}">
+            <div class="shadow list-widget-section" style="margin-bottom: 0">
+                <span th:text="#{data_leaderboard_views}" class="list-widget-title">阅读排行榜</span>
+            </div>
+            <ul class="shadow list-widget">
+                <li th:each="rankPost : ${@websiteData.rankPosts}">
+                    <a th:href="|/p/${rankPost.id}.html|" th:title="${rankPost.title}">
+                        <span th:text="${rankPost.title}">标题</span>
+                        <span th:text="|#{data_views}: ${rankPost.pv}|">浏览量：10</span>
+                    </a>
+                </li>
+            </ul>
+        </th:block>
+        <th:block th:if="${!#lists.isEmpty(@websiteData.rankSearches)}">
+            <div class="shadow list-widget-section" style="margin-bottom: 0">
+                <span th:text="#{data_leaderboard_search}" class="list-widget-title">搜索排行榜</span>
+            </div>
+            <ul class="shadow list-widget">
+                <li th:each="search : ${@websiteData.rankSearches}">
+                    <a th:href="@{/search.html(keywords=${search.keywords})}" th:title="${search.keywords}">
+                        <span th:text="${search.keywords}">关键字</span>
+                        <span th:text="|#{data_search_count}: ${search.count}|">搜索量：10</span>
+                    </a>
+                </li>
+            </ul>
+        </th:block>
+        <div th:if="${!#lists.isEmpty(@websiteData.recommendedTopics)}" class="shadow">
+            <style>
+                .list-topic {
+                    padding: 12px 24px;
+                }
+
+                .list-topic a {
+                    color: #8a8a8a;
+                    font-size: 12px;
+                    display: inline-block;
+                    text-decoration: none;
+                    border-radius: 3px;
+                    border: 1px solid #8a8a8a;
+                    padding: 2px 5px;
+                    margin-right: 5px;
+                    margin-bottom: 5px;
+                }
+            </style>
+            <div class="list-widget-section" style="margin-bottom: 0">
+                <span th:text="#{data_recommend_topics}" class="list-widget-title">推荐标签</span>
+                <a th:if="${@websiteData.getTopicDataList}" th:href="@{/topics.html}" th:text="#{data_recommend_topics_more}" class="list-widget-action">更多</a>
+            </div>
+            <div class="list-topic">
+                <th:block th:each="recommendTopic: ${@websiteData.recommendedTopics}">
+                    <a th:href="|/topic/${recommendTopic.name}.html|" th:text="${recommendTopic.name}" th:title="${recommendTopic.name}"><span>标题</span></a>
+                </th:block>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{portal/footer}"></th:block>
+</body>
+</html>
