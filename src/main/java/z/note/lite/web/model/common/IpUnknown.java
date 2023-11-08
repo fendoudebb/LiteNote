@@ -8,29 +8,11 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.time.LocalDateTime;
 
 @Data
-@Table("ip_pool")
-public class Ip {
+@Table("ip_unknown")
+public class IpUnknown {
 
     @Id
-    private Integer id;
-
     private String ip;
-
-    private String country;
-
-    private String region;
-
-    private String city;
-
-    private String isp;
-
-    private String countryId;
-
-    private String regionId;
-
-    private String cityId;
-
-    private String ispId;
 
     @ReadOnlyProperty
     private LocalDateTime createTs;

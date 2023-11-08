@@ -14,7 +14,7 @@ public class Post {
     @Id
     private Integer id;
 
-    private int uid;
+    private Long uid;
 
     private String title;
 
@@ -43,5 +43,7 @@ public class Post {
     private LocalDateTime createTs;
 
     private LocalDateTime updateTs;
+
+    private List<String> images;
 
 }

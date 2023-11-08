@@ -39,7 +39,7 @@ public class InvalidRequest {
     @ReadOnlyProperty
     private LocalDateTime createTs;
 
-    private long costTime;
+    private Long costTime;
 
     private int ipId;
 

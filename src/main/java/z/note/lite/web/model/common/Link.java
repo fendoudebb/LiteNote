@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDateTime;
+
 @Data
 @Table(name = "link")
 public class Link {
@@ -20,5 +22,11 @@ public class Link {
     private String webmasterEmail;
 
     private int status;
+
+    private String sort;
+
+    private LocalDateTime createTs;
+
+    private LocalDateTime updateTs;
 
 }
