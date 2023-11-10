@@ -1,0 +1,271 @@
+<template id="link">
+    <table class="layui-hide" id="link-list"></table>
+    <script type="text/html" id="action">
+        <div class="layui-clear-space">
+            {{- d.status === 0 ? '<a class="layui-btn layui-btn-xs layui-bg-red" lay-event="changeStatus">下线</a>' :
+            '<a class="layui-btn layui-btn-xs" lay-event="changeStatus">上线</a>'}}
+            <a class="layui-btn layui-btn-xs layui-bg-blue" lay-event="modify">修改</a>
+            <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="visit">访问</a>
+        </div>
+    </script>
+    <script type="text/html" id="ID-link-table-pagebar">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="refresh">刷新</button>
+            <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
+        </div>
+    </script>
+    <script>
+        layui.use(function () {
+            let table = layui.table;
+            let layer = layui.layer;
+            let form = layui.form;
+            let $ = layui.jquery;
+            let util = layui.util
+            // 创建表格实例
+            table.render({
+                elem: '#link-list',
+                url: '/api/links', // 此处为静态模拟数据，实际使用时需换成真实接口
+                request: {
+                    pageName: 'page', // 页码的参数名称，默认：page
+                    limitName: 'size' // 每页数据条数的参数名，默认：limit
+                },
+                parseData: function (res) { // res 即为原始返回的数据
+                    return {
+                        "code": res.code, // 解析接口状态
+                        "msg": res.msg, // 解析提示文本
+                        "count": res.data.count, // 解析数据长度
+                        "data": res.data.list // 解析数据列表
+                    };
+                },
+                before: function (options) { // 当前实例属性配置项
+                    options.headers = signHeader();
+                },
+                error: function (e, msg) {
+                    console.log(e, "msg: ", msg)
+                    if (e.status === 401) {
+                        window.location.href = "/admin/login";
+                    }
+                },
+                even: true,
+                pagebar: '#ID-link-table-pagebar', // 分页栏模板
+                cols: [
+                    [
+                        {field: 'id', title: 'ID', minWidth: 100, align: 'center', fixed: 'left', sort: true},
+                        {field: 'website', title: '网站名称', minWidth: 200, align: 'center'},
+                        {field: 'url', title: '网站链接', minWidth: 200, align: 'center'},
+                        {field: 'webmaster', title: '站长', minWidth: 200, align: 'center'},
+                        {field: 'createTs', title: '创建时间', minWidth: 200, align: 'center', sort: true},
+                        {
+                            field: 'updateTs', title: '更新时间', minWidth: 180, align: 'center', sort: true,
+                            templet: function (d) {
+                                if (d.createTs !== d.updateTs) {
+                                    return `<span class="layui-font-red">${d.updateTs}</span>`;
+                                } else {
+                                    return d.updateTs;
+                                }
+                            }
+                        },
+                        {
+                            field: 'status', title: '状态', width: 100, align: 'center', templet: function (d) {
+                                if (d.status === 0) {
+                                    return '<span class="layui-badge layui-bg-green">上线</span>';
+                                } else if (d.status === 1) {
+                                    return '<span class="layui-badge">下线</span>';
+                                }
+                            }
+                        },
+                        {field: 'sort', title: '排序', minWidth: 200, align: 'center', sort: true},
+                        {fixed: 'right', title: '操作', align: 'center', width: 200, toolbar: '#action'}
+                    ]
+                ],
+                page: true,
+                // height: 500
+            });
+            // 触发单元格工具事件
+            table.on('tool(link-list)', function (obj) {
+                let curData = obj.data;
+                if (obj.event === 'visit') {
+                    util.openWin({
+                        url: curData.url
+                    });
+                    return;
+                }
+                if (obj.event === 'changeStatus') {
+                    $.ajax({
+                        url: `/api/link/status/${curData.id}`,
+                        type: "PUT",
+                        contentType: "application/json",
+                        dataType: "json",
+                        headers: signHeader(),
+                        success: function () {
+                            table.reload('link-list', {
+                                where: form.val()
+                            });
+                            layer.msg('操作成功');
+                        },
+                        error: function (response) {
+                            if (response.status === 401) {
+                                window.location.href = "/admin/login";
+                            }
+                        },
+                    });
+                    return;
+                }
+                let modifyDialog = layer.open({
+                    type: 1,
+                    title: '修改友链',
+                    resize: false,
+                    area: '500px',
+                    content: `
+          <div class="layui-form layui-form-pane" style="margin: 16px;">
+              <div class="layui-form-item">
+                    <label class="layui-form-label">网站名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="website" value="${curData.website}" lay-verify="required" placeholder="网站名称" lay-reqtext="请填写网站名称" autocomplete="off" class="layui-input" lay-affix="clear">
+                    </div>
+              </div>
+              <div class="layui-form-item">
+                    <label class="layui-form-label">链接</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="url" value="${curData.url}" lay-verify="required" placeholder="链接" lay-reqtext="请填写链接" autocomplete="off" class="layui-input" lay-affix="clear">
+                    </div>
+              </div>
+              <div class="layui-form-item">
+                    <label class="layui-form-label">站长</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="webmaster" value="${curData.webmaster}" lay-verify="required" placeholder="站长" lay-reqtext="请填写站长" autocomplete="off" class="layui-input" lay-affix="clear">
+                    </div>
+              </div>
+              <div class="layui-form-item">
+                    <label class="layui-form-label">排序</label>
+                    <div class="layui-input-block">
+                        <input type="number" step="1" name="sort" value="${curData.sort}" lay-verify="required" placeholder="排序" lay-reqtext="请填写排序" autocomplete="off" class="layui-input" lay-affix="number">
+                    </div>
+              </div>
+              <div class="layui-form-item">
+                <button class="layui-btn layui-bg-blue layui-btn-fluid" lay-submit lay-filter="modify">修改</button>
+              </div>
+          </div>
+        `,
+                    success: function () {
+                        // 对弹层中的表单进行初始化渲染
+                        form.render();
+                        // 表单提交事件
+                        form.on('submit(modify)', function (data) {
+                            data.field.id = curData.id;
+                            $.ajax({
+                                url: "/api/link",
+                                type: "PUT",
+                                dataType: "json",
+                                headers: signHeader(),
+                                data: JSON.stringify(data.field),
+                                success: function () {
+                                    layer.msg('修改成功');
+                                    layer.close(modifyDialog);
+                                    table.reload('link-list', {
+                                        page: {
+                                            curr: 1 // 重新从第 1 页开始
+                                        },
+                                        where: null
+                                    });
+                                },
+                                error: function (response) {
+                                    if (response.status === 409) {
+                                        layer.msg(`修改失败：网站链接已存在`);
+                                    } else {
+                                        layer.msg(`修改失败：${response?.responseJSON?.msg ?? '未知异常'}`);
+                                    }
+                                    layer.close(modifyDialog);
+                                },
+                            })
+                            return false; // 阻止默认 form 跳转
+                        });
+                    }
+                });
+            });
+            // 底部分页栏事件
+            table.on('pagebar(link-list)', function (obj) {
+                let event = obj.event;
+                if (event === 'refresh') {
+                    table.reload('link-list', {
+                        page: {
+                            curr: 1 // 重新从第 1 页开始
+                        },
+                        where: null
+                    });
+                } else if (event === 'add') {
+                    let addDialog = layer.open({
+                        type: 1,
+                        title: '新增友链',
+                        resize: false,
+                        area: '500px',
+                        content: `
+          <div class="layui-form layui-form-pane" style="margin: 16px;">
+              <div class="layui-form-item">
+                    <label class="layui-form-label">网站名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="website" value="" lay-verify="required" placeholder="网站名称" lay-reqtext="请填写网站名称" autocomplete="off" class="layui-input" lay-affix="clear">
+                    </div>
+              </div>
+              <div class="layui-form-item">
+                    <label class="layui-form-label">链接</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="url" value="" lay-verify="required" placeholder="链接" lay-reqtext="请填写链接" autocomplete="off" class="layui-input" lay-affix="clear">
+                    </div>
+              </div>
+              <div class="layui-form-item">
+                    <label class="layui-form-label">站长</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="webmaster" value="" lay-verify="required" placeholder="站长" lay-reqtext="请填写站长" autocomplete="off" class="layui-input" lay-affix="clear">
+                    </div>
+              </div>
+              <div class="layui-form-item">
+                <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="add">新增</button>
+              </div>
+          </div>
+        `,
+                        success: function () {
+                            // 对弹层中的表单进行初始化渲染
+                            form.render();
+                            // 表单提交事件
+                            form.on('submit(add)', function (data) {
+                                $.ajax({
+                                    url: "/api/link",
+                                    type: "POST",
+                                    dataType: "json",
+                                    headers: signHeader(),
+                                    data: JSON.stringify(data.field),
+                                    success: function () {
+                                        layer.msg('新增成功');
+                                        layer.close(addDialog);
+                                        table.reload('link-list', {
+                                            page: {
+                                                curr: 1 // 重新从第 1 页开始
+                                            },
+                                            where: null
+                                        });
+                                    },
+                                    error: function (response) {
+                                        if (response.status === 409) {
+                                            layer.msg(`新增失败：网站链接已存在`);
+                                        } else {
+                                            layer.msg(`新增失败：${response?.responseJSON?.msg ?? '未知异常'}`);
+                                        }
+                                        layer.close(addDialog);
+                                    },
+                                })
+                                return false; // 阻止默认 form 跳转
+                            });
+                        }
+                    });
+                }
+            });
+
+            $(document).on('keyup', function(e){
+                if(e.keyCode === 27){
+                    layer.closeAll('page');
+                }
+            });
+        });
+    </script>
+</template>
