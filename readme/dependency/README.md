@@ -12,6 +12,12 @@
 
 [https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html](https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html)
 
+### PostgreSQL
+
+- License: [PostgreSQL License](https://www.postgresql.org/about/licence) (a liberal Open Source license, similar to BSD or MIT)
+- HomePage: [https://www.postgresql.org](https://www.postgresql.org)
+- Git: [https://git.postgresql.org](https://git.postgresql.org)
+
 ### Spring Security
 
 - License: Apache-2.0
@@ -35,21 +41,11 @@
 - Document: [https://www.thymeleaf.org/documentation.html](https://www.thymeleaf.org/documentation.html)
 - GitHub: [https://github.com/thymeleaf/thymeleaf](https://github.com/thymeleaf/thymeleaf)
 
-## Database
+### Layui
 
-### H2
-
-- License: MPL-2.0/EPL 1.0
-- HomePage: [https://www.h2database.com](https://www.h2database.com)
-- GitHub: [https://github.com/h2database/h2database](https://github.com/h2database/h2database)
-
-### PostgreSQL
-
-- License: [PostgreSQL License](https://www.postgresql.org/about/licence) (a liberal Open Source license, similar to BSD or MIT)
-- HomePage: [https://www.postgresql.org](https://www.postgresql.org)
-- Git: [https://git.postgresql.org](https://git.postgresql.org)
-
-## Component
+- License: MIT
+- Document: [https://layui.dev](https://layui.dev)
+- GitHub: [https://github.com/layui/layui](https://github.com/layui/layui)
 
 ### EasyCaptcha
 
@@ -66,3 +62,9 @@
 - License: Apache-2.0
 - HomePage: [https://woothee.github.io](https://woothee.github.io)
 - GitHub: [woothee-java](https://github.com/woothee/woothee-java)/[woothee-js](https://github.com/woothee/woothee-js)
+
+### Nimbus-JOSE-JWT
+
+- License: Apache-2.0
+- HomePage: [https://connect2id.com/products/nimbus-jose-jwt](https://connect2id.com/products/nimbus-jose-jwt)
+- Git: [https://bitbucket.org/connect2id/nimbus-jose-jwt](https://bitbucket.org/connect2id/nimbus-jose-jwt)
