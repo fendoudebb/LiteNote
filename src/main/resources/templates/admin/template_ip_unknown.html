@@ -1,0 +1,59 @@
+<template id="ip_unknown">
+    <table class="layui-hide" id="ip-unknown"></table>
+    <script type="text/html" id="ID-ip-unknown-table-pagebar">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="refresh">刷新</button>
+        </div>
+    </script>
+    <script>
+        layui.use(function () {
+            let table = layui.table;
+            // 创建表格实例
+            table.render({
+                elem: '#ip-unknown',
+                url: '/api/ips/unknown', // 此处为静态模拟数据，实际使用时需换成真实接口
+                request: {
+                    pageName: 'page', // 页码的参数名称，默认：page
+                    limitName: 'size' // 每页数据条数的参数名，默认：limit
+                },
+                parseData: function (res) { // res 即为原始返回的数据
+                    return {
+                        "code": res.code, // 解析接口状态
+                        "msg": res.msg, // 解析提示文本
+                        "count": res.data.count, // 解析数据长度
+                        "data": res.data.list // 解析数据列表
+                    };
+                },
+                before: function (options) { // 当前实例属性配置项
+                    options.headers = signHeader();
+                },
+                error: function (e, msg) {
+                    console.log(e, "msg: ", msg)
+                    if (e.status === 401) {
+                        window.location.href = "/admin/login";
+                    }
+                },
+                even: true,
+                pagebar: '#ID-ip-unknown-table-pagebar', // 分页栏模板
+                cols: [
+                    [
+                        {field: 'ip', title: 'IP', minWidth: 200, align: 'center', fixed: 'left'},
+                        {field: 'createTs', title: '访问时间', minWidth: 200, align: 'center', sort: true},
+                        {field: 'updateTs', title: '最后查询时间', minWidth: 200, align: 'center', sort: true},
+                    ]
+                ],
+                page: true,
+                // height: 500
+            });
+            // 底部分页栏事件
+            table.on('pagebar(ip-unknown)', function(){
+                table.reload('ip-unknown', {
+                    page: {
+                        curr: 1 // 重新从第 1 页开始
+                    },
+                    where: null
+                });
+            });
+        });
+    </script>
+</template>
