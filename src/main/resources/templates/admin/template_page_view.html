@@ -1,0 +1,170 @@
+<template id="page_view">
+    <form class="layui-form layui-col-space10">
+        <div class="layui-col-md2">
+            <select name="status">
+                <option value="0">常规</option>
+                <option value="1">不合法</option>
+            </select>
+        </div>
+        <div id="date-range" class="layui-col-md8 layui-col-space10">
+            <div class="layui-col-md6">
+                <div class="layui-input-wrap">
+                    <div class="layui-input-prefix"><i class="layui-icon layui-icon-date"></i></div>
+                    <input id="startDate" name="startTs" type="text" readonly placeholder="开始时间"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-input-wrap">
+                    <div class="layui-input-prefix"><i class="layui-icon layui-icon-date"></i></div>
+                    <input id="endDate" name="endTs" type="text" readonly placeholder="结束时间" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md1">
+            <button type="reset" class="layui-btn layui-btn-primary layui-btn-fluid" lay-submit lay-filter="clear">
+                重置
+            </button>
+        </div>
+        <div class="layui-col-md1">
+            <button type="button" class="layui-btn layui-btn-fluid" lay-submit lay-filter="search">搜索</button>
+        </div>
+    </form>
+    <table class="layui-hide" id="page-view"></table>
+    <script type="text/html" id="action">
+        <div class="layui-clear-space">
+            {{- d.postId ? '<a class="layui-btn layui-btn-xs" lay-event="viewPost">查看文章</a>' :
+            '<a class="layui-btn layui-btn-xs layui-bg-blue" lay-event="viewPage">查看页面</a>'}}
+        </div>
+    </script>
+    <script>
+        layui.use(function () {
+            let table = layui.table;
+            let form = layui.form;
+            let laydate = layui.laydate;
+            let util = layui.util
+
+            form.render();
+            laydate.render({
+                elem: '#date-range',
+                type: 'datetime',
+                range: ['#startDate', '#endDate'],
+            });
+
+            // 创建表格实例
+            table.render({
+                elem: '#page-view',
+                url: '/api/pv', // 此处为静态模拟数据，实际使用时需换成真实接口
+                request: {
+                    pageName: 'page', // 页码的参数名称，默认：page
+                    limitName: 'size' // 每页数据条数的参数名，默认：limit
+                },
+                parseData: function (res) { // res 即为原始返回的数据
+                    return {
+                        "code": res.code, // 解析接口状态
+                        "msg": res.msg, // 解析提示文本
+                        "count": res.data.count, // 解析数据长度
+                        "data": res.data.list // 解析数据列表
+                    };
+                },
+                before: function (options) { // 当前实例属性配置项
+                    options.headers = signHeader();
+                },
+                error: function (e, msg) {
+                    console.log(e, "msg: ", msg)
+                    if (e.status === 401) {
+                        window.location.href = "/admin/login";
+                    }
+                },
+                even: true,
+                cols: [
+                    [
+                        {field: 'id', title: 'ID', width: 100, align: 'center', fixed: 'left'},
+                        {field: 'url', title: 'URL', minWidth: 200, align: 'center',},
+                        {
+                            field: 'reqMethod', title: '请求方法', width: 100, align: 'center',
+                            templet: function (d) {
+                                let method;
+                                switch (d.reqMethod) {
+                                    case 0:
+                                        method = "GET";
+                                        break
+                                    case 1:
+                                        method = "POST";
+                                        break
+                                    case 2:
+                                        method = "PUT";
+                                        break
+                                    case 3:
+                                        method = "DELETE";
+                                        break
+                                    case 4:
+                                        method = "OPTION";
+                                        break
+                                    default:
+                                        method = "OTHER";
+                                }
+                                if (d.reqParam) {
+                                    return `<span class="layui-font-red">${method}</span>`;
+                                } else {
+                                    return method;
+                                }
+                            }
+                        },
+                        {field: 'source', title: '来源', width: 100, align: 'center', templet: function (d) {
+                                if (d.source) {
+                                    return `微信小程序`;
+                                } else {
+                                    return `网站`;
+                                }
+                            }
+                        },
+                        {field: 'createTs', title: '访问时间', width: 180, align: 'center', sort: true},
+                        {field: 'costTime', title: '耗时', width: 100, align: 'center', sort: true},
+                        {field: 'uaName', title: '浏览器', width: 150, align: 'center'},
+                        {field: 'uaVersion', title: '浏览器版本', width: 150, align: 'center',},
+                        {field: 'uaOs', title: '操作系统', width: 150, align: 'center',},
+                        {field: 'uaOsVersion', title: '操作系统版本', width: 150, align: 'center',},
+                        {field: 'uaCategory', title: '设备', width: 150, align: 'center',},
+                        {field: 'ip', title: 'IP', width: 200, align: 'center'},
+                        {field: 'ipAddress', title: '地址', width: 250, align: 'center'},
+                        {fixed: 'right', title: '操作', align: 'center', width: 150, toolbar: '#action'}
+                    ]
+                ],
+                page: true,
+                // height: 500
+            });
+
+            // 触发单元格工具事件
+            table.on('tool(page-view)', function (obj) { // 双击 toolDouble
+                let data = obj.data; // 获得当前行数据
+                util.openWin({
+                    url: data.url
+                })
+            });
+
+            // 搜索提交
+            form.on('submit(search)', function (data) {
+                let field = data.field; // 获得表单字段
+                // 执行搜索重载
+                table.reload('page-view', {
+                    page: {
+                        curr: 1 // 重新从第 1 页开始
+                    },
+                    where: field // 搜索的字段
+                });
+                return false; // 阻止默认 form 跳转
+            });
+            // 搜索提交
+            form.on('submit(clear)', function () {
+                table.reload('page-view', {
+                    page: {
+                        curr: 1 // 重新从第 1 页开始
+                    },
+                    where: null
+                });
+                return true;
+            });
+        });
+    </script>
+</template>
