@@ -1,0 +1,237 @@
+<template id="post_mgmt">
+    <form class="layui-form layui-col-space10">
+        <div class="layui-col-md2">
+            <div class="layui-input-wrap">
+                <div class="layui-input-prefix"><i class="layui-icon layui-icon-read"></i></div>
+                <input id="post-mgmt-search-id" name="id" type="number" lay-affix="clear" placeholder="文章ID"
+                       step="1" min="1" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md2">
+            <select name="status">
+                <option value="">请选择文章状态</option>
+                <option value="0">上线</option>
+                <option value="1">下线</option>
+                <option value="2">私人</option>
+            </select>
+        </div>
+        <div id="date-range" class="layui-col-md6 layui-col-space10">
+            <div class="layui-col-md6">
+                <div class="layui-input-wrap">
+                    <div class="layui-input-prefix"><i class="layui-icon layui-icon-date"></i></div>
+                    <input id="startDate" name="startTs" type="text" readonly placeholder="开始时间"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-input-wrap">
+                    <div class="layui-input-prefix"><i class="layui-icon layui-icon-date"></i></div>
+                    <input id="endDate" name="endTs" type="text" readonly placeholder="结束时间" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md1">
+            <button type="reset" class="layui-btn layui-btn-primary layui-btn-fluid"
+                    lay-submit lay-filter="clear">重置
+            </button>
+        </div>
+        <div class="layui-col-md1">
+            <button id="post-mgmt-search-btn" type="button" class="layui-btn layui-btn-fluid" lay-submit
+                    lay-filter="search">搜索
+            </button>
+        </div>
+    </form>
+    <table class="layui-hide" id="post-mgmt"></table>
+    <script type="text/html" id="action">
+        <div class="layui-clear-space">
+            <a class="layui-btn layui-btn-xs" lay-event="view">查看</a>
+            <a class="layui-btn layui-btn-xs layui-bg-blue" lay-event="edit">编辑</a>
+            {{- d.status === 0 ? '<a class="layui-btn layui-btn-xs layui-bg-red" lay-event="changeStatus">下线</a>' :
+            '<a class="layui-btn layui-btn-xs" lay-event="changeStatus">上线</a>'}}
+            {{- d.commentStatus === 0 ? '<a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="changeCommentStatus">关闭评论</a>' :
+            '<a class="layui-btn layui-btn-xs" lay-event="changeCommentStatus">开启评论</a>'}}
+        </div>
+    </script>
+    <script>
+        layui.use(function () {
+            let table = layui.table;
+            let form = layui.form;
+            let laydate = layui.laydate;
+            let $ = layui.jquery;
+            let util = layui.util
+
+            form.render();
+
+            laydate.render({
+                elem: '#date-range',
+                type: 'datetime',
+                range: ['#startDate', '#endDate'],
+            });
+
+            // 创建表格实例
+            table.render({
+                elem: '#post-mgmt',
+                url: '/api/posts', // 此处为静态模拟数据，实际使用时需换成真实接口
+                request: {
+                    pageName: 'page', // 页码的参数名称，默认：page
+                    limitName: 'size' // 每页数据条数的参数名，默认：limit
+                },
+                parseData: function (res) { // res 即为原始返回的数据
+                    return {
+                        "code": res.code, // 解析接口状态
+                        "msg": res.msg, // 解析提示文本
+                        "count": res.data.count, // 解析数据长度
+                        "data": res.data.list // 解析数据列表
+                    };
+                },
+                before: function (options) { // 当前实例属性配置项
+                    options.headers = signHeader();
+                },
+                error: function (e, msg) {
+                    console.log(e, "msg: ", msg)
+                    if (e.status === 401) {
+                        window.location.href = "/admin/login";
+                    }
+                },
+                even: true,
+                cols: [
+                    [
+                        {field: 'id', title: 'ID', width: 80, align: 'center', fixed: 'left'},
+                        {field: 'title', title: '标题', width: 400, align: 'center',},
+                        {
+                            field: 'topics', title: '标签', width: 200, align: 'center', templet: function (d) {
+                                return d.topics.join();
+                            }
+                        },
+                        {field: 'pv', title: '阅读数', width: 100, align: 'center', sort: true},
+                        {field: 'wordCount', title: '字数', width: 100, align: 'center', sort: true},
+                        {field: 'createTs', title: '发布时间', width: 180, align: 'center', sort: true},
+                        {
+                            field: 'updateTs', title: '修改时间', width: 180, align: 'center', sort: true,
+                            templet: function (d) {
+                                if (d.createTs !== d.updateTs) {
+                                    return `<span class="layui-font-red">${d.updateTs}</span>`;
+                                } else {
+                                    return d.updateTs;
+                                }
+                            }
+                        },
+                        {
+                            field: 'status', title: '状态', width: 100, align: 'center', templet: function (d) {
+                                if (d.status === 0) {
+                                    return '<span class="layui-badge layui-bg-green">上线</span>';
+                                } else if (d.status === 1) {
+                                    return '<span class="layui-badge">下线</span>';
+                                } else {
+                                    return '<span class="layui-badge layui-bg-blue">私人</span>';
+                                }
+                            }
+                        },
+                        {
+                            field: 'prop', title: '属性', width: 100, align: 'center', templet: function (d) {
+                                if (d.prop === 0) {
+                                    return '<span class="layui-badge layui-bg-green">原创</span>';
+                                } else {
+                                    return '<span class="layui-badge layui-bg-blue">转载</span>';
+                                }
+                            }
+                        },
+                        {
+                            field: 'commentStatus', title: '评论', width: 100, align: 'center', templet: function (d) {
+                                if (d.commentStatus === 0) {
+                                    return '<span class="layui-badge layui-bg-green">开启</span>';
+                                } else {
+                                    return '<span class="layui-badge">关闭</span>';
+                                }
+                            }
+                        },
+                        {fixed: 'right', title: '操作', align: 'center', minWidth: 250, toolbar: '#action'}
+                    ]
+                ],
+                page: true,
+                // height: 500
+            });
+
+            // 触发单元格工具事件
+            table.on('tool(post-mgmt)', function (obj) { // 双击 toolDouble
+                let data = obj.data; // 获得当前行数据
+                if (obj.event === 'view') {
+                    util.openWin({
+                        url: `/p/${data.id}.html`
+                    })
+                } else if (obj.event === 'edit') {
+                    window.location.hash = `#post_edit?postId=${data.id}`;
+                } else if (obj.event === 'changeStatus') {
+                    $.ajax({
+                        url: `/api/post/status`,
+                        type: "PUT",
+                        contentType: "application/json",
+                        data: JSON.stringify({ postId: data.id, status: (data.status === 2 ? 0 : 1 - data.status) }),
+                        dataType: "json",
+                        headers: signHeader(),
+                        success: function () {
+                            table.reload('post-mgmt', {
+                                where: form.val()
+                            });
+                            layer.msg('操作成功');
+                        },
+                        error: function (response) {
+                            if (response.status === 401) {
+                                window.location.href = "/admin/login";
+                            }
+                        },
+                    });
+                } else if (obj.event === 'changeCommentStatus') {
+                    $.ajax({
+                        url: `/api/post/comment/status/${data.id}`,
+                        type: "PUT",
+                        contentType: "application/json",
+                        dataType: "json",
+                        headers: signHeader(),
+                        success: function () {
+                            table.reload('post-mgmt', {
+                                where: form.val()
+                            });
+                            layer.msg('操作成功');
+                        },
+                        error: function (response) {
+                            if (response.status === 401) {
+                                window.location.href = "/admin/login";
+                            }
+                        },
+                    });
+                }
+            });
+
+            // 搜索提交
+            form.on('submit(search)', function (data) {
+                let field = data.field; // 获得表单字段
+                // 执行搜索重载
+                table.reload('post-mgmt', {
+                    page: {
+                        curr: 1 // 重新从第 1 页开始
+                    },
+                    where: field // 搜索的字段
+                });
+                return false; // 阻止默认 form 跳转
+            });
+            // 搜索提交
+            form.on('submit(clear)', function () {
+                table.reload('post-mgmt', {
+                    page: {
+                        curr: 1 // 重新从第 1 页开始
+                    },
+                    where: null
+                });
+                return true;
+            });
+
+            $("#post-mgmt-search-id").on("keydown", function (event) {
+                if (event.keyCode === 13) {
+                    $("#post-mgmt-search-btn").trigger("click");
+                    return false
+                }
+            });
+        });
+    </script>
+</template>
