@@ -1,0 +1,283 @@
+<template id="post_edit">
+    <th:block th:replace="~{portal/base_css_post}"></th:block>
+
+    <form id="post-form" class="layui-form layui-form-pane">
+        <div class="layui-row layui-col-space10">
+            <div class="layui-col-md9">
+                <input id="post-title" name="title" type="text" placeholder="请输入标题" lay-verify="required"
+                       lay-reqtext="请输入标题" lay-affix="clear" lay-filter="clear" class="layui-input">
+            </div>
+            <div class="layui-col-md1">
+                <button type="reset" class="layui-btn layui-btn-primary layui-btn-fluid">重置</button>
+            </div>
+            <div class="layui-col-md1">
+                <button id="upload-img" type="button" class="layui-btn layui-bg-blue layui-btn-fluid">
+                    <i class="layui-icon layui-icon-upload"></i>
+                    图片上传
+                </button>
+            </div>
+            <div class="layui-col-md1">
+                <button type="button" class="layui-btn layui-btn-fluid" lay-submit lay-filter="save">保存</button>
+            </div>
+        </div>
+        <div class="layui-row layui-col-space10">
+            <div class="layui-col-md6 layui-row layui-col-space10">
+                <div class="layui-col-md4">
+                    <input id="topic1" type="text" name="topic1" placeholder="标签一" class="layui-input"
+                           lay-verify="required" lay-reqtext="请输入标签"
+                           autocomplete="off" lay-affix="clear" lay-filter="clear-topic1">
+                </div>
+                <div class="layui-col-md4">
+                    <input id="topic2" type="text" name="topic2" placeholder="标签二" class="layui-input"
+                           autocomplete="off" lay-affix="clear" lay-filter="clear-topic2">
+                </div>
+                <div class="layui-col-md4">
+                    <input id="topic3" type="text" name="topic3" placeholder="标签三" class="layui-input"
+                           autocomplete="off" lay-affix="clear" lay-filter="clear-topic3">
+                </div>
+            </div>
+            <div class="layui-col-md6 layui-row layui-col-space10">
+                <div class="layui-col-md4">
+                    <select id="prop" name="prop" lay-verify="required" lay-reqtext="请选择文章类型">
+                        <option value="0" selected>原创</option>
+                        <option value="1">转载</option>
+                    </select>
+                </div>
+                <div class="layui-col-md4">
+                    <select id="status" name="status">
+                        <option value="0" selected>上线</option>
+                        <option value="1">下线</option>
+                        <option value="2">私有</option>
+                    </select>
+                </div>
+                <div class="layui-col-md4">
+                    <select id="comment-status" name="commentStatus">
+                        <option value="0" selected>开启评论</option>
+                        <option value="1">关闭评论</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <hr class="layui-border-green">
+        <div class="layui-row layui-col-space10">
+            <div class="layui-col-md6">
+                <textarea name="content" lay-verify="required" lay-reqtext="请输入文章内容" class="layui-textarea"
+                          placeholder="请输入文章内容" style="height: 80vh"></textarea>
+            </div>
+            <div class="layui-col-md6">
+                <div class="content shadow" style="height: calc(80vh - 32px);overflow-y: auto">
+                    <h1 id="post-title-preview">请输入标题</h1>
+                    <div id="topics" style="display: inline"></div>
+                    <span class="text-secondary">大约 <span id="word-count">0</span> 字</span>
+                    <div id="previewer"></div>
+                    <div style="margin-top: 1.25rem">
+                        <span class="text-secondary">浏览量 <span id="pv">0</span> · 发布于 <span id="create-ts">1970-01-01</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        layui.use(function () {
+            let editPostId = null;
+            let form = layui.form;
+            let upload = layui.upload;
+            let $ = layui.jquery;
+            form.render();
+            $("#create-ts").text(new Date().toISOString().split('T')[0]);
+            let title = document.querySelector("#post-title");
+            let titlePreview = document.querySelector("#post-title-preview");
+            let editor = document.querySelector("textarea");
+            let previewer = document.querySelector("#previewer");
+            let wordCount = document.querySelector("#word-count");
+
+            let $topic1 = $("#topic1");
+            let $topic2 = $("#topic2");
+            let $topic3 = $("#topic3");
+
+            function updateTopics() {
+                let topics = [$topic1.val(), $topic2.val(), $topic3.val()];
+                let topicTags = "";
+                topics.forEach(topic => {
+                    if (topic) topicTags += `<a class="badge-a">${topic}</a>`
+                })
+                $("#topics").html(topicTags);
+            }
+
+            $topic1.on("input", updateTopics);
+            $topic2.on("input", updateTopics);
+            $topic3.on("input", updateTopics);
+
+            document.querySelector("#post-form").addEventListener("reset", () => {
+                titlePreview.innerHTML = "请输入标题";
+                wordCount.innerHTML = "0"
+                previewer.innerHTML = "";
+                $("#topics").html("");
+            })
+            title.addEventListener("input", () => {
+                titlePreview.innerHTML = title.value ? title.value : "请输入标题";
+            })
+            editor.addEventListener("input", () => {
+                renderContent(editor, previewer);
+                wordCount.innerHTML = `${previewer.textContent.trim().length}`
+            })
+
+            form.on('submit(save)', function (data) {
+                let field = data.field; // 获取表单字段值
+                // 显示填写结果，仅作演示用
+                let images = document.querySelectorAll("#previewer img");
+                let imagesArr = [];
+                images.forEach(image => {
+                    console.log(image, image.src, image.getAttribute("src"))
+                    imagesArr.push(image.getAttribute("src"));
+                })
+                if (imagesArr.length) field.images = imagesArr.join();
+                let topicsArr = [];
+                if (field.topic1) topicsArr.push(field.topic1);
+                if (field.topic2) topicsArr.push(field.topic2);
+                if (field.topic3) topicsArr.push(field.topic3);
+                field.topics = topicsArr.join();
+                delete field.topic1;
+                delete field.topic2;
+                delete field.topic3;
+                delete field.file;
+
+                field.status = Number(field.status);
+                field.commentStatus = Number(field.commentStatus);
+                field.prop = Number(field.prop);
+                field.contentHtml = marked.parse(editor.value, {
+                    breaks: true
+                })
+                field.description = previewer.textContent.trim().replaceAll("\n", " ");
+                field.wordCount = previewer.textContent.trim().length;
+                if (editPostId) {
+                    field.id = editPostId;
+                    $.ajax({
+                        url: `/api/post`,
+                        type: "PUT",
+                        dataType: "json",
+                        headers: signHeader(),
+                        data: JSON.stringify(field),
+                        success: function (res) {
+                            layer.msg(`更新成功`);
+                            window.location.hash = "#post_mgmt";
+                        },
+                        error: function (response) {
+                            if (response.status === 401) {
+                                window.location.href = "/admin/login";
+                            } else {
+                                layer.msg(`更新失败`);
+                            }
+                        },
+                    });
+                } else {
+                    $.ajax({
+                        url: `/api/post`,
+                        type: "POST",
+                        dataType: "json",
+                        headers: signHeader(),
+                        data: JSON.stringify(field),
+                        success: function (res) {
+                            layer.msg(`新增：${res}`);
+                            window.location.hash = "#post_mgmt";
+                        },
+                        error: function (response) {
+                            if (response.status === 401) {
+                                window.location.href = "/admin/login";
+                            }
+                        },
+                    });
+                }
+                // 此处可执行 Ajax 等操作
+                // …
+                return false;
+            });
+            form.on('input-affix(clear)', function () {
+                titlePreview.innerHTML = "请输入标题";
+            });
+            form.on('input-affix(clear-topic1)', function () {
+                updateTopics();
+            });
+            form.on('input-affix(clear-topic2)', function () {
+                updateTopics();
+            });
+            form.on('input-affix(clear-topic3)', function () {
+                updateTopics();
+            });
+
+            let render = upload.render({
+                elem: '#upload-img', // 绑定多个元素
+                url: '/api/upload', // 此处配置你自己的上传接口即可
+                accept: 'images', // 图片类型
+                acceptMime: 'image/*',
+                size: 1024, // 限制文件大小，单位 KB
+                before: function () { // 当前实例属性配置项
+                    render.config.headers = signHeader();
+                    delete render.config.headers["Content-Type"];
+                },
+                done: function (res) {
+                    res = JSON.parse(res)
+                    layer.msg('上传成功');
+                    let image = `\n\n![图片](${res.data})\n\n`;
+                    try {
+                        let cursor = editor.selectionStart;
+                        editor.value = editor.value.slice(0, cursor) + image + editor.value.slice(cursor);
+                    } catch (e) {
+                        editor.value += image;
+                    }
+                    renderContent(editor, previewer);
+                }
+            });
+
+            let hash = window.location.hash;
+            if (hash.indexOf("?") !== -1) {
+                let queryString = hash.substring(hash.indexOf("?"));
+                const params = new URLSearchParams(queryString);
+                if (params) {
+                    const postId = parseInt(params.get("postId"));
+                    $.ajax({
+                        url: `/api/post/${postId}`,
+                        type: "GET",
+                        dataType: "json",
+                        headers: signHeader(),
+                        success: function (res) {
+                            editPostId = postId;
+                            title.value = res.data.title;
+                            editor.value = res.data.content;
+                            titlePreview.innerHTML = res.data.title;
+                            wordCount.innerHTML = res.data.wordCount;
+                            $("#pv").text(res.data.pv);
+                            $("#create-ts").text(res.data.createTs.split(" ")[0]);
+                            let topics = res.data.topics;
+                            if (topics) {
+                                topic1.value = topics[0] ?? "";
+                                topic2.value = topics[1] ?? "";
+                                topic3.value = topics[2] ?? "";
+                            }
+                            $("#prop").val(res.data.prop);
+                            $("#status").val(res.data.status);
+                            $("#comment-status").val(res.data.commentStatus);
+                            form.render();
+                            updateTopics();
+                            renderContent(editor, previewer);
+                        },
+                        error: function (response) {
+                            if (response.status === 401) {
+                                window.location.href = "/admin/login";
+                            }
+                        },
+                    });
+                }
+            }
+        });
+
+        function renderContent(editor, previewer) {
+            let markdown = editor.value;
+            previewer.innerHTML = marked.parse(markdown, {
+                breaks: true
+            });
+            hljs.highlightAll();
+        }
+    </script>
+</template>
