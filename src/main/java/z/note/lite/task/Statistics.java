@@ -11,11 +11,11 @@ import z.note.lite.web.model.common.Post;
 import z.note.lite.web.model.common.SearchRank;
 import z.note.lite.web.model.common.Topic;
 import z.note.lite.web.model.common.TopicData;
-import z.note.lite.service.IpService;
+import z.note.lite.service.portal.IpService;
 import z.note.lite.service.LinkService;
-import z.note.lite.service.PageViewService;
+import z.note.lite.service.portal.PageViewService;
 import z.note.lite.service.portal.PostService;
-import z.note.lite.service.SearchService;
+import z.note.lite.service.portal.SearchService;
 import z.note.lite.service.TopicService;
 
 import java.util.List;
