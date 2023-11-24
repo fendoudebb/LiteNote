@@ -18,14 +18,12 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@Service
-public class SysUserServiceImpl implements SysUserService {
+public class SysUserServiceImpl {
 
     private final SysUserRepository sysUserRepository;
 
     private final JdbcAggregateTemplate jdbcAggregateTemplate;
 
-    @Override
     public Page<SysUserRes> getUsers(Pageable pageable) {
         SysUser probe = new SysUser();
         probe.setUsername("admin");
