@@ -18,7 +18,7 @@ public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         log.info("ApiAuthenticationEntryPoint commence");
-        if (Objects.equals(request.getRequestURI(), Endpoint.Admin.INDEX)) {
+        if (Objects.equals(request.getRequestURI(), Endpoint.Admin.CONTEXT)) {
             response.sendRedirect(Endpoint.Admin.LOGIN);
             return;
         }

@@ -28,6 +28,14 @@ public class ResponseAdvice/* extends ResponseEntityExceptionHandler */{
     @Resource
     private MessageSource messageSource;
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Response onIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
+        log.error("IllegalArgument User: {} Method: {} URI: {} Error: {}", getUser(), request.getMethod(), request.getRequestURI(), e.getMessage());
+        String message = messageSource.getMessage("illegal_argument", null, LocaleContextHolder.getLocale());
+        return Response.builder().code(-1).msg(message).build();
+    }
+
     @ExceptionHandler(CaptchaMismatchException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Response onCaptchaMismatchException(Exception e, HttpServletRequest request) {

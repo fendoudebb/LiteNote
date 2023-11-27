@@ -20,7 +20,9 @@ public interface Endpoint {
 
         String POSTS = CONTEXT + "/posts";
 
-        String POST = CONTEXT + "/post/{postId}";
+        String POST = CONTEXT + "/post";
+
+        String POST_ID = CONTEXT + "/post/{postId}";
 
         String POST_STATUS = CONTEXT + "/post/status";
 
@@ -28,9 +30,29 @@ public interface Endpoint {
 
         String UPLOAD = CONTEXT + "/upload";
 
+        String PAGE_VIEW = CONTEXT + "/pv";
+
+        String SEARCHES = CONTEXT + "/searches";
+
+        String IPS = CONTEXT + "/ips";
+
+        String IPS_UNKNOWN = CONTEXT + "/ips/unknown";
+
+        String TOPICS = CONTEXT + "/topics";
+
+        String TOPIC = CONTEXT + "/topic";
+
+        String LINKS = CONTEXT + "/links";
+
+        String LINK = CONTEXT + "/link";
+
+        String LINK_STATUS = CONTEXT + "/link/status/{id}";
+
         String USERS = CONTEXT + "/users";
 
         String USER = CONTEXT + "/user";
+
+        String SSE = CONTEXT + "/sse";
 
         String CLEAN_CACHE = CONTEXT + "/cache/i18n";
 
@@ -43,8 +65,6 @@ public interface Endpoint {
         String PATTERN = CONTEXT + "/**";
 
         String LOGIN = CONTEXT + "/login";
-
-        String INDEX = CONTEXT + "/index";
 
     }
 

@@ -1,4 +1,4 @@
-package z.note.lite.web.sse;
+package z.note.lite.web.controller.sse;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -20,6 +20,16 @@ public class Emitter {
     public static void emit(String username, Object data) throws IOException {
         SseEmitter emitter = container.get(username);
         emitter.send(SseEmitter.event().data(data).build());
+    }
+
+    public static void emitAll(Object data) {
+        container.forEach((username, sseEmitter) -> {
+            try {
+                sseEmitter.send(SseEmitter.event().data(data).build());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
 

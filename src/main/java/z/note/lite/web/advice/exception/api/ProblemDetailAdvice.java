@@ -16,15 +16,6 @@ import java.net.URI;
 public class ProblemDetailAdvice/* extends ResponseEntityExceptionHandler */{
 
     @ExceptionHandler
-    public ProblemDetail onIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
-        log.error("Illegal Argument: {} {}", request.getMethod(), request.getRequestURL(), e);
-        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-        problemDetail.setTitle("Illegal Argument");
-        problemDetail.setType(URI.create(request.getRequestURI()));
-        return problemDetail;
-    }
-
-    @ExceptionHandler
     public ProblemDetail onException(Exception e, HttpServletRequest request) {
         log.error("Not Catch Exception: {} {}", request.getMethod(), request.getRequestURL(), e);
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);

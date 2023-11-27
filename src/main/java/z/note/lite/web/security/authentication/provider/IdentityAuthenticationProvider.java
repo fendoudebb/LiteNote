@@ -32,6 +32,7 @@ public class IdentityAuthenticationProvider extends DaoAuthenticationProvider {
             if (!Objects.equals(requestCaptcha, issueCaptcha)) {
                 throw new CaptchaMismatchException(String.format("Mismatched Captcha, Issued: %s, Requested: %s", issueCaptcha, requestCaptcha));
             }
+            authentication.setDetails(userDetails);
         }
         super.additionalAuthenticationChecks(userDetails, authentication);
     }

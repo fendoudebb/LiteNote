@@ -20,6 +20,10 @@ public class SysUserDetails implements UserDetails {
         return AuthorityUtils.createAuthorityList(permissions);
     }
 
+    public SysUser getSysUser() {
+        return sysUser;
+    }
+
     @Override
     public String getPassword() {
         return sysUser.getPassword();
