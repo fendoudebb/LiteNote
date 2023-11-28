@@ -32,8 +32,21 @@
             <hr>
         </th:block>
 
+        <th:block th:replace="~{portal/base_css_list_widget}"></th:block>
+        <div th:if="${@websiteData.todayOnHistoryPosts}">
+            <div class="shadow list-widget-section" style="margin-bottom: 0">
+                <span th:text="#{post_today_on_history}" class="list-widget-title">历史上的今天</span>
+            </div>
+            <ul class="shadow list-widget">
+                <li th:each="post : ${@websiteData.todayOnHistoryPosts}">
+                    <a th:href="|/p/${post.id}.html|" th:title="${post.title}">
+                        <span th:text="${post.title}">Website</span>
+                        <span th:text="${#messages.msg('post_info', post.pv, #temporals.format(post.createTs, 'yyyy-MM-dd'))}">阅读 12345 · 发布于 2018-01-01</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
         <div th:if="${@websiteData.randomPosts}">
-            <th:block th:replace="~{portal/base_css_list_widget}"></th:block>
             <div class="shadow list-widget-section" style="margin-bottom: 0">
                 <span th:text="#{post_random_browsing}" class="list-widget-title">随便看看</span>
                 <span th:text="#{post_random_refresh}" class="list-widget-action">换一批</span>
@@ -43,7 +56,7 @@
                 <li th:each="randomPost : ${@websiteData.randomPosts}">
                     <a th:href="|/p/${randomPost.id}.html|" th:title="${randomPost.title}">
                         <span th:text="${randomPost.title}">Website</span>
-                        <span th:text="|#{post_random_views}: ${randomPost.pv}|">阅读数：123</span>
+                        <span th:text="|#{post_views}: ${randomPost.pv}|">阅读数：123</span>
                     </a>
                 </li>
             </ul>
@@ -154,7 +167,7 @@
             let randomPosts = json.data;
             for (const post of randomPosts) {
                 let li = document.createElement("li");
-                li.innerHTML = `<a href="/p/${post.id}.html" title="${post.title}"><span>${post.title}</span><span>[(#{post_random_views})]: ${post.pv}</span></a>`
+                li.innerHTML = `<a href="/p/${post.id}.html" title="${post.title}"><span>${post.title}</span><span>[(#{post_views})]: ${post.pv}</span></a>`
                 postRandomUl.appendChild(li);
             }
         }).catch(err => {

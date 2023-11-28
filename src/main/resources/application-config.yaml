@@ -4,6 +4,8 @@ preferences:
     captcha: graphic
   admin:
     supervisor: admin
+    assets-path: ${user.dir}/assets
+    uploads-path: /uploads/img/
   portal:
     name: LiteNote
     author: fendoudebb

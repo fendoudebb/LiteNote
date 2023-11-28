@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8090
   shutdown: graceful
   compression:
     enabled: true
@@ -14,16 +14,30 @@ server:
     threads:
       min-spare: 10 # core size
       max: 200 # max size
-  error:
-    whitelabel:
-      enabled: false
+#  error:
+#    whitelabel:
+#      enabled: false
 
 spring:
+  application:
+    name: LiteNote
+  datasource:
+    name: lite_note
+  mvc:
+    servlet:
+      load-on-startup: 1
+    problemdetails:
+      enabled: true
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
   messages:
     basename: file:${user.dir}/i18n/messages,classpath:i18n/messages
     cache-duration: 1h
+    fallback-to-system-locale: true
   web:
-    locale: zh
+    locale: en
     locale-resolver: accept_header
     resources:
       static-locations:
@@ -31,6 +45,7 @@ spring:
         - classpath:/resources/
         - classpath:/static/
         - classpath:/public/
+        - file:${preferences.admin.assets-path}
   task:
     execution:
       thread-name-prefix: z-execution-
@@ -50,9 +65,6 @@ logging:
   #  config: classpath:logback-spring.xml
   level:
     root: info
-    org.springframework.jdbc.core.JdbcTemplate: debug
-    org.springframework.jdbc.core.StatementCreatorUtils: trace
-    org.springframework.web.filter.CommonsRequestLoggingFilter: debug
   file:
     name: ${spring.application.name}.log
     path: ${user.dir}

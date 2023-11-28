@@ -1,9 +1,6 @@
 spring:
   web:
     resources:
-      static-locations:
-        - file:${user.dir}/static/
-        - classpath:/static/
       cache:
         cachecontrol:
           max-age: 365d
