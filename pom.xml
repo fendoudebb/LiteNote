@@ -19,6 +19,7 @@
 		<easy-captcha.version>1.6.2</easy-captcha.version>
 		<thumbnailator.version>0.4.19</thumbnailator.version>
 		<woothee.version>1.11.0</woothee.version>
+		<springdoc.version>2.3.0</springdoc.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -84,6 +85,11 @@
 			<groupId>is.tagomor.woothee</groupId>
 			<artifactId>woothee-java</artifactId>
 			<version>${woothee.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>${springdoc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
