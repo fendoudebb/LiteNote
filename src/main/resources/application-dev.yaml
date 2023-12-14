@@ -15,3 +15,8 @@ logging:
   level:
     org.springframework.jdbc.core.JdbcTemplate: debug
     org.springframework.jdbc.core.StatementCreatorUtils: debug
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  show-actuator: true
