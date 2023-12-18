@@ -1,12 +1,7 @@
 spring:
   datasource: # https://jdbc.postgresql.org/documentation
+    name: lite_note
     url: jdbc:postgresql://localhost:5432/${spring.datasource.name}
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: 123456
-  sql:
-    init:
-      mode: always
-      platform: postgresql
-      schema-locations: optional:classpath:sql/schema-postgresql.sql
-      data-locations: optional:classpath:sql/data-postgresql.sql
