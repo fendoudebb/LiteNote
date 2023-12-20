@@ -3,7 +3,7 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
     <springProfile name="!prod">
-        <logger name="z.lite.note" level="DEBUG"/>
+        <logger name="z.note.lite" level="DEBUG"/>
 
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
@@ -17,7 +17,7 @@
     </springProfile>
 
     <springProfile name="prod">
-        <logger name="z.lite.note" level="INFO"/>
+        <logger name="z.note.lite" level="INFO"/>
 
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <encoder>
