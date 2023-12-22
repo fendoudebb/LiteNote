@@ -1,5 +1,5 @@
 server:
-  port: 8090
+  port: 8080
   shutdown: graceful
   compression:
     enabled: true
@@ -21,8 +21,9 @@ server:
 spring:
   application:
     name: LiteNote
-  datasource:
-    name: lite_note
+  threads:
+    virtual:
+      enabled: true
   mvc:
     servlet:
       load-on-startup: 1
