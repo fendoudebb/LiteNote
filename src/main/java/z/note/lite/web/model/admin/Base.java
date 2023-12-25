@@ -21,12 +21,12 @@ public abstract class Base {
     private String createBy;
 
     @CreatedDate
-    private LocalDateTime createDate;
+    private LocalDateTime createTs;
 
     @LastModifiedBy
     private String updateBy;
 
     @LastModifiedDate
-    private LocalDateTime updateDate;
+    private LocalDateTime updateTs;
 
 }

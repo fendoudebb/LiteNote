@@ -1,21 +1,34 @@
 package z.note.lite.web.security.authentication.token;
 
 import lombok.ToString;
-import z.note.lite.web.http.request.Identity;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
+import java.util.Collection;
 
 @Setter
 @Getter
 @ToString
-public class IdentityAuthenticationToken extends UsernamePasswordAuthenticationToken {
+public class IdentityAuthenticationToken extends AbstractAuthenticationToken {
 
-    private final String captcha;
+    private final String username;
 
-    public IdentityAuthenticationToken(Identity identity) {
-        super(identity.getUsername(), identity.getPassword());
-        this.captcha = identity.getCaptcha();
+    public IdentityAuthenticationToken(String username, Collection<? extends GrantedAuthority> authorities) {
+        super(authorities);
+        this.username = username;
+        setAuthenticated(true);
+    }
+
+    @Override
+    public Object getCredentials() {
+        return username;
+    }
+
+    @Override
+    public Object getPrincipal() {
+        return username;
     }
 
 }

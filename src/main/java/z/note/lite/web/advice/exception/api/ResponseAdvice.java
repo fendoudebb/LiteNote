@@ -3,6 +3,7 @@ package z.note.lite.web.advice.exception.api;
 import jakarta.annotation.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import z.note.lite.web.advice.response.Response;
@@ -17,6 +18,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import z.note.lite.infra.RequestUtils;
+import z.note.lite.web.security.authentication.exception.CredentialsErrorException;
 
 import java.util.Objects;
 
@@ -36,11 +38,16 @@ public class ResponseAdvice/* extends ResponseEntityExceptionHandler */{
         return Response.builder().code(-1).msg(message).build();
     }
 
-    @ExceptionHandler(CaptchaMismatchException.class)
+    @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public Response onCaptchaMismatchException(Exception e, HttpServletRequest request) {
-        log.error("CaptchaMismatch User: {} Method: {} URI: {} Error: {}", getUser(), request.getMethod(), request.getRequestURI(), e.getMessage());
-        String message = messageSource.getMessage("captcha_mismatch", null, LocaleContextHolder.getLocale());
+    public Response onAuthenticationException(Exception e, HttpServletRequest request) {
+        String message = null;
+        if (e instanceof CaptchaMismatchException) {
+            message = messageSource.getMessage("captcha_mismatch", null, LocaleContextHolder.getLocale());
+        } else if (e instanceof CredentialsErrorException) {
+            message = messageSource.getMessage("credentials_error", null, LocaleContextHolder.getLocale());
+        }
+        log.error("Authentication Error User: {} Method: {} URI: {} Error: {}", getUser(), request.getMethod(), request.getRequestURI(), e.getMessage());
         return Response.builder().code(-1).msg(message).build();
     }
 
