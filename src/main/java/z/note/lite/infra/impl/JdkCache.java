@@ -20,19 +20,17 @@ public class JdkCache implements Cache {
         cache = new ConcurrentHashMap<>(64);
         queue = new DelayQueue<>();
 
-        Thread thread = new Thread(() -> {
+        Thread.ofVirtual().name("Clean-Cache").start(() -> {
             while (true) {
                 try {
                     ExpireCache ec = queue.take();
                     log.debug("Clean Cache: {}", ec);
                     cache.remove(ec.key, ec.value);
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     log.warn("Clean Cache Error: {}", e.getMessage(), e);
                 }
             }
-        }, "Clean-Cache");
-        thread.setDaemon(true);
-        thread.start();
+        });
     }
 
     @Override
