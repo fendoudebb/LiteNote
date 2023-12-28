@@ -1,6 +1,6 @@
 package z.note.lite.infra.impl;
 
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.TaskScheduler;
 import z.note.lite.infra.RateLimiter;
 import z.note.lite.infra.exception.RateLimitationException;
 
@@ -16,8 +16,8 @@ public class JdkRateLimiter implements RateLimiter {
 
     private final Integer limiterCount;
 
-    public JdkRateLimiter(ThreadPoolTaskScheduler scheduler, Duration period, int limiterCount) {
-        scheduler.scheduleAtFixedRate(() -> limiterMap.forEach((k, v) -> limiterMap.replace(k, 0)), period);
+    public JdkRateLimiter(TaskScheduler taskScheduler, Duration period, int limiterCount) {
+        taskScheduler.scheduleAtFixedRate(() -> limiterMap.forEach((k, v) -> limiterMap.replace(k, 0)), period);
         this.period = period;
         this.limiterCount = limiterCount;
     }

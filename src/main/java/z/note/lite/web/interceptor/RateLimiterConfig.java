@@ -3,7 +3,7 @@ package z.note.lite.web.interceptor;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.TaskScheduler;
 import z.note.lite.infra.RateLimiter;
 import z.note.lite.infra.impl.JdkRateLimiter;
 
@@ -14,9 +14,9 @@ public class RateLimiterConfig {
     private RateLimiterProperties rateLimiterProperties;
 
     @Bean
-    public RateLimiter rateLimiter(ThreadPoolTaskScheduler scheduler) {
+    public RateLimiter rateLimiter(TaskScheduler taskScheduler) {
 //        if (Objects.equals(rateLimiterProperties.type(), "jdk")) {}
-        return new JdkRateLimiter(scheduler, rateLimiterProperties.getDuration(), rateLimiterProperties.getCount());
+        return new JdkRateLimiter(taskScheduler, rateLimiterProperties.getDuration(), rateLimiterProperties.getCount());
     }
 
 }
