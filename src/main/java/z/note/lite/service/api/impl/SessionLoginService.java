@@ -15,7 +15,7 @@ import z.note.lite.service.api.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import z.note.lite.web.security.authentication.exception.CredentialsErrorException;
-import z.note.lite.web.security.authentication.token.IdentityAuthenticationToken;
+import z.note.lite.web.security.authentication.token.SysUserAuthenticationToken;
 
 import java.util.Objects;
 
@@ -41,7 +41,7 @@ public class SessionLoginService implements LoginService {
         if (Objects.isNull(sysUser) || !Objects.equals(identity.getPassword(), sysUser.getPassword())) {
             throw new CredentialsErrorException(String.format("Error Username or Password, Username: %s, Password: %s", identity.getUsername(), identity.getPassword()));
         }
-        IdentityAuthenticationToken token = new IdentityAuthenticationToken(sysUser.getUsername(), AuthorityUtils.NO_AUTHORITIES);
+        SysUserAuthenticationToken token = new SysUserAuthenticationToken(sysUser, AuthorityUtils.NO_AUTHORITIES);
         session.setAttribute("token", token);
         return new Credentials("session");
     }

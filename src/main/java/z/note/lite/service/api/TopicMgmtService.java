@@ -7,21 +7,17 @@ import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.core.query.Query;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import z.note.lite.infra.PageUtils;
-import z.note.lite.web.http.request.PostReq;
 import z.note.lite.web.http.request.TopicCreateReq;
 import z.note.lite.web.http.request.TopicModifyReq;
 import z.note.lite.web.http.response.PageableRes;
-import z.note.lite.web.model.admin.SysUserDetails;
 import z.note.lite.web.model.common.Topic;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class TopicMgmtService {

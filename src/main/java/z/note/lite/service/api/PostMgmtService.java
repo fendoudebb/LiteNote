@@ -14,7 +14,7 @@ import z.note.lite.repository.api.PostMgmtRepository;
 import z.note.lite.web.http.request.PostReq;
 import z.note.lite.web.http.response.PageableRes;
 import z.note.lite.web.http.response.PostMgmtRes;
-import z.note.lite.web.model.admin.SysUserDetails;
+import z.note.lite.web.model.admin.SysUser;
 import z.note.lite.web.model.common.Post;
 
 import java.time.LocalDateTime;
@@ -40,8 +40,7 @@ public class PostMgmtService {
     }
 
     public int createPost(PostReq req, Authentication authentication) {
-        SysUserDetails userDetails = (SysUserDetails) authentication.getDetails();
-        req.setUid(userDetails.getSysUser().getId());
+        req.setUid(((SysUser) authentication.getPrincipal()).getId());
         String sql = """
                 insert into post(
                     id, uid, title, description, topics, content, content_html, word_count, status, prop, comment_status, images

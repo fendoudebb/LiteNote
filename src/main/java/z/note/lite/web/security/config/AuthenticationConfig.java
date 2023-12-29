@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class IdentityConfig {
+public class AuthenticationConfig {
 
     @Bean
     @ConditionalOnProperty(prefix = "preferences.api", name = "login", havingValue = "session")

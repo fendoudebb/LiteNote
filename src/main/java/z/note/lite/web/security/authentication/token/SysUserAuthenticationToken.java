@@ -5,30 +5,31 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import lombok.Getter;
 import lombok.Setter;
+import z.note.lite.web.model.admin.SysUser;
 
 import java.util.Collection;
 
 @Setter
 @Getter
 @ToString
-public class IdentityAuthenticationToken extends AbstractAuthenticationToken {
+public class SysUserAuthenticationToken extends AbstractAuthenticationToken {
 
-    private final String username;
+    private final SysUser sysUser;
 
-    public IdentityAuthenticationToken(String username, Collection<? extends GrantedAuthority> authorities) {
+    public SysUserAuthenticationToken(SysUser sysUser, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
-        this.username = username;
+        this.sysUser = sysUser;
         setAuthenticated(true);
     }
 
     @Override
     public Object getCredentials() {
-        return username;
+        return null;
     }
 
     @Override
     public Object getPrincipal() {
-        return username;
+        return sysUser;
     }
 
 }
