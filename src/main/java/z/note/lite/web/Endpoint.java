@@ -52,6 +52,8 @@ public interface Endpoint {
 
         String USER = CONTEXT + "/user";
 
+        String USER_STATUS = CONTEXT + "/user/status/{id}";
+
         String SSE = CONTEXT + "/sse";
 
         String CLEAN_CACHE = CONTEXT + "/cache/i18n";

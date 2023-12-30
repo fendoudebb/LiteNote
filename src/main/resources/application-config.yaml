@@ -1,4 +1,5 @@
 preferences:
+  version: @project.version@
   api:
     login: session
     captcha: graphic

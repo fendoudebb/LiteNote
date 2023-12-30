@@ -3,6 +3,7 @@ package z.note.lite.web.model.admin;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
@@ -15,25 +16,35 @@ public class StartupLog {
     @Id
     private Long id;
 
-    private int pid;
+    private String pid;
 
-    private int port;
+    private String port;
 
     private int cpuCount;
 
     private long memory;
 
-    private double systemLoad;
+    private String systemLoad;
 
     private String userDir;
 
-    private String command;
+    private String userRegion;
+
+    private String userLanguage;
+
+    private String commandLine;
 
     private String appVersion;
 
-    private String jdkVersion;
+    private String runtimeName;
+
+    private String runtimeVersion;
+
+    private String frameworkName;
 
     private String frameworkVersion;
+
+    private String activeProfiles;
 
     private String osName;
 
@@ -41,12 +52,15 @@ public class StartupLog {
 
     private String osVersion;
 
-    private String timeZone;
+    private String timezone;
 
     private String startupBy;
 
-    private LocalDateTime startupDate;
+    private LocalDateTime startupTs;
 
-    private int costTime;
+    private long costTime;
+
+    @ReadOnlyProperty
+    private LocalDateTime createTs;
 
 }
