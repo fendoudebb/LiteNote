@@ -1,0 +1,277 @@
+<template id="administrator">
+    <table class="layui-hide" id="user-list"></table>
+    <script type="text/html" id="action">
+        <div class="layui-clear-space">
+            {{- d.disabled ? '<a class="layui-btn layui-btn-xs" lay-event="triggerUserStatus">启用</a>' :
+            '<a class="layui-btn layui-btn-xs layui-bg-red" lay-event="triggerUserStatus">禁用</a>'}}
+            <a class="layui-btn layui-btn-xs layui-bg-blue" lay-event="modify">修改密码</a>
+        </div>
+    </script>
+    <script type="text/html" id="ID-user-table-pagebar">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="refresh">刷新</button>
+            <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
+        </div>
+    </script>
+    <script>
+        layui.use(function () {
+            let table = layui.table;
+            let layer = layui.layer;
+            let form = layui.form;
+            let $ = layui.jquery;
+            let util = layui.util;
+            form.verify({
+                // 确认密码
+                confirmPassword: function(value, item){
+                    var passwordValue = $('#reg-password').val();
+                    if(value !== passwordValue){
+                        return '两次密码输入不一致';
+                    }
+                }
+            });
+            // 创建表格实例
+            table.render({
+                elem: '#user-list',
+                url: '/api/users', // 此处为静态模拟数据，实际使用时需换成真实接口
+                request: {
+                    pageName: 'page', // 页码的参数名称，默认：page
+                    limitName: 'size' // 每页数据条数的参数名，默认：limit
+                },
+                parseData: function (res) { // res 即为原始返回的数据
+                    return {
+                        "code": res.code, // 解析接口状态
+                        "msg": res.msg, // 解析提示文本
+                        "count": res.data.count, // 解析数据长度
+                        "data": res.data.list // 解析数据列表
+                    };
+                },
+                before: function (options) { // 当前实例属性配置项
+                    options.headers = signHeader();
+                },
+                error: function (e, msg) {
+                    console.log(e, "msg: ", msg)
+                    if (e.status === 401) {
+                        window.location.href = "/admin/login";
+                    }
+                },
+                even: true,
+                pagebar: '#ID-user-table-pagebar', // 分页栏模板
+                cols: [
+                    [
+                        {field: 'id', title: 'ID', minWidth: 200, align: 'center', fixed: 'left', sort: true},
+                        {field: 'username', title: '用户名', minWidth: 200, align: 'center'},
+                        {field: 'createBy', title: '创建者', minWidth: 200, align: 'center', sort: true},
+                        {field: 'createTs', title: '创建时间', minWidth: 200, align: 'center', sort: true},
+                        {field: 'updateBy', title: '更新者', minWidth: 200, align: 'center', sort: true},
+                        {
+                            field: 'updateTs', title: '更新时间', minWidth: 180, align: 'center', sort: true,
+                            templet: function (d) {
+                                if (d.createTs !== d.updateTs) {
+                                    return `<span class="layui-font-red">${d.updateTs}</span>`;
+                                } else {
+                                    return d.updateTs;
+                                }
+                            }
+                        },
+                        {
+                            field: 'disabled', title: '状态', width: 100, align: 'center', templet: function (d) {
+                                if (d.disabled) {
+                                    return '<span class="layui-badge">禁用</span>';
+                                } else {
+                                    return '<span class="layui-badge layui-bg-green">启用</span>';
+                                }
+                            }
+                        },
+                        {
+                            field: 'credentialsExpired', title: '密码过期', width: 100, align: 'center', templet: function (d) {
+                                if (d.credentialsExpired) {
+                                    return '<span class="layui-badge">是</span>';
+                                } else {
+                                    return '<span class="layui-badge layui-bg-green">否</span>';
+                                }
+                            }
+                        },
+
+                        {fixed: 'right', title: '操作', align: 'center', width: 200, toolbar: '#action'}
+                    ]
+                ],
+                page: true,
+                // height: 500
+            });
+            // 触发单元格工具事件
+            table.on('tool(user-list)', function (obj) {
+                let curData = obj.data;
+                if (obj.event === 'visit') {
+                    util.openWin({
+                        url: curData.url
+                    });
+                    return;
+                }
+                if (obj.event === 'triggerUserStatus') {
+                    $.ajax({
+                        url: `/api/user/status/${curData.id}`,
+                        type: "PUT",
+                        contentType: "application/json",
+                        dataType: "json",
+                        headers: signHeader(),
+                        success: function () {
+                            table.reload('user-list', {
+                                where: form.val()
+                            });
+                            layer.msg('操作成功');
+                        },
+                        error: function (response) {
+                            if (response.status === 401) {
+                                window.location.href = "/admin/login";
+                            }
+                        },
+                    });
+                    return;
+                }
+                let modifyDialog = layer.open({
+                    type: 1,
+                    title: '修改密码',
+                    resize: false,
+                    area: '500px',
+                    content: `
+          <div class="layui-form layui-form-pane" style="margin: 16px;">
+              <div class="layui-form-item">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-block">
+                        <input id="reg-password" type="password" name="password" value="" lay-verify="required" placeholder="密码" lay-reqtext="请填写密码" autocomplete="off" class="layui-input" lay-affix="eye">
+                    </div>
+              </div>
+              <div class="layui-form-item">
+                    <label class="layui-form-label">确认密码</label>
+                    <div class="layui-input-block">
+                        <input type="password" name="confirmPassword" value="" lay-verify="required|confirmPassword" placeholder="确认密码" lay-reqtext="请确认密码" autocomplete="off" class="layui-input" lay-affix="eye">
+                    </div>
+              </div>
+              <div class="layui-form-item">
+                <button class="layui-btn layui-bg-blue layui-btn-fluid" lay-submit lay-filter="modify">修改</button>
+              </div>
+          </div>
+        `,
+                    success: function () {
+                        // 对弹层中的表单进行初始化渲染
+                        form.render();
+                        // 表单提交事件
+                        form.on('submit(modify)', function (data) {
+                            data.field.id = curData.id;
+                            $.ajax({
+                                url: "/api/user",
+                                type: "PUT",
+                                dataType: "json",
+                                headers: signHeader(),
+                                data: JSON.stringify(data.field),
+                                success: function () {
+                                    layer.msg('修改成功');
+                                    layer.close(modifyDialog);
+                                    table.reload('user-list', {
+                                        page: {
+                                            curr: 1 // 重新从第 1 页开始
+                                        },
+                                        where: null
+                                    });
+                                },
+                                error: function (response) {
+                                    if (response.status === 409) {
+                                        layer.msg(`修改失败：用户名已存在`);
+                                    } else {
+                                        layer.msg(`修改失败：${response?.responseJSON?.msg ?? '未知异常'}`);
+                                    }
+                                    layer.close(modifyDialog);
+                                },
+                            })
+                            return false; // 阻止默认 form 跳转
+                        });
+                    }
+                });
+            });
+            // 底部分页栏事件
+            table.on('pagebar(user-list)', function (obj) {
+                let event = obj.event;
+                if (event === 'refresh') {
+                    table.reload('user-list', {
+                        page: {
+                            curr: 1 // 重新从第 1 页开始
+                        },
+                        where: null
+                    });
+                } else if (event === 'add') {
+
+                    let addDialog = layer.open({
+                        type: 1,
+                        title: '新增管理员',
+                        resize: false,
+                        area: '500px',
+                        content: `
+          <div class="layui-form layui-form-pane" style="margin: 16px;">
+              <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="username" value="" lay-verify="required" placeholder="用户名" lay-reqtext="请填写用户名" autocomplete="off" class="layui-input" lay-affix="clear">
+                    </div>
+              </div>
+              <div class="layui-form-item">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-block">
+                        <input id="reg-password" type="password" name="password" value="" lay-verify="required" placeholder="密码" lay-reqtext="请填写密码" autocomplete="off" class="layui-input" lay-affix="eye">
+                    </div>
+              </div>
+              <div class="layui-form-item">
+                    <label class="layui-form-label">确认密码</label>
+                    <div class="layui-input-block">
+                        <input type="password" name="confirmPassword" value="" lay-verify="required|confirmPassword" placeholder="确认密码" lay-reqtext="请确认密码" autocomplete="off" class="layui-input" lay-affix="eye">
+                    </div>
+              </div>
+              <div class="layui-form-item">
+                <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="add">新增</button>
+              </div>
+          </div>
+        `,
+                        success: function () {
+                            // 对弹层中的表单进行初始化渲染
+                            form.render();
+                            // 表单提交事件
+                            form.on('submit(add)', function (data) {
+                                $.ajax({
+                                    url: "/api/user",
+                                    type: "POST",
+                                    dataType: "json",
+                                    headers: signHeader(),
+                                    data: JSON.stringify(data.field),
+                                    success: function () {
+                                        layer.msg('新增成功');
+                                        layer.close(addDialog);
+                                        table.reload('user-list', {
+                                            page: {
+                                                curr: 1 // 重新从第 1 页开始
+                                            },
+                                            where: null
+                                        });
+                                    },
+                                    error: function (response) {
+                                        if (response.status === 409) {
+                                            layer.msg(`新增失败：用户名已存在`);
+                                        } else {
+                                            layer.msg(`新增失败：${response?.responseJSON?.msg ?? '未知异常'}`);
+                                        }
+                                        layer.close(addDialog);
+                                    },
+                                })
+                                return false; // 阻止默认 form 跳转
+                            });
+                        }
+                    });
+                }
+            });
+
+            $(document).on('keyup', function(e){
+                if(e.keyCode === 27){
+                    layer.closeAll('page');
+                }
+            });
+        });
+    </script>
+</template>
