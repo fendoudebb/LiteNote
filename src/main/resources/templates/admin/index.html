@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${@portal.name}"></title>
+    <meta name="robots" content="NONE">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet">
+    <link th:href="${@portal.css[0].link}" rel="stylesheet">
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div th:text="${@portal.name}" class="layui-logo layui-hide-xs layui-bg-black"></div>
+        <!-- 头部区域（可配合layui 已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <!-- 移动端显示 -->
+            <li class="layui-nav-item layui-show-xs-inline-block" lay-header-event="menuLeft">
+                <i class="layui-icon layui-icon-spread-left"></i>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item layui-hide layui-show-sm-inline-block">
+                <a th:text="${#authentication.name}" href="javascript:;"></a>
+                <dl class="layui-nav-child">
+                    <dd><a href="javascript:;">Your Profile</a></dd>
+                    <dd><a href="javascript:;">Settings</a></dd>
+                    <dd><a href="javascript:;">Sign out</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+                <a href="javascript:;">
+                    <i class="layui-icon layui-icon-more-vertical"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="filter-nav">
+                <li class="layui-nav-item"><a href="#post_edit">文章编辑</a></li>
+                <li class="layui-nav-item"><a href="#post_mgmt">文章管理</a></li>
+                <li class="layui-nav-item">
+                    <a class="" href="javascript:;">统计信息</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="#page_view">访问统计</a></dd>
+                        <dd><a href="#search_stats">搜索统计</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">IP管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="#ip_pool">IP列表</a></dd>
+                        <dd><a href="#ip_unknown">未识别IP列表</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a href="#topic">标签管理</a></li>
+                <li class="layui-nav-item"><a href="#link">友链管理</a></li>
+                <li class="layui-nav-item"><a href="#administrator">管理员列表</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div id="container" style="padding: 15px;"></div>
+    </div>
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        底部固定区域
+    </div>
+</div>
+<th:block th:replace="~{admin/template_console}"></th:block>
+<th:block th:replace="~{admin/template_post_edit}"></th:block>
+<th:block th:replace="~{admin/template_post_mgmt}"></th:block>
+<th:block th:replace="~{admin/template_page_view}"></th:block>
+<th:block th:replace="~{admin/template_search_stats}"></th:block>
+<th:block th:replace="~{admin/template_ip_pool}"></th:block>
+<th:block th:replace="~{admin/template_ip_unknown}"></th:block>
+<th:block th:replace="~{admin/template_topic}"></th:block>
+<th:block th:replace="~{admin/template_link}"></th:block>
+<th:block th:replace="~{admin/template_administrator}"></th:block>
+<script th:src="@{/layui/layui.js}"></script>
+<script th:src="${@portal.js['highlight'][0]}"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/marked/4.3.0/marked.min.js"></script>
+<script>
+    layui.use(function () {
+        let layer = layui.layer;
+        let util = layui.util;
+
+        //头部事件
+        util.event('lay-header-event', {
+            menuLeft: function (othis) { // 左侧菜单事件
+                layer.msg('展开左侧菜单的操作', {icon: 0});
+            },
+            menuRight: function () {  // 右侧菜单事件
+                layer.open({
+                    type: 1,
+                    title: '更多',
+                    content: '<div style="padding: 15px;">处理右侧面板的操作</div>',
+                    area: ['260px', '100%'],
+                    offset: 'rt', // 右上角
+                    anim: 'slideLeft', // 从右侧抽屉滑出
+                    shadeClose: true,
+                    scrollbar: false
+                });
+            }
+        });
+    });
+
+    let container = document.querySelector("#container");
+    let aList = document.querySelectorAll(".layui-nav-tree a");
+    let map = new Map();
+    aList.forEach(a => {
+        if (a.hash) {
+            map.set(a.hash, a.parentElement)
+            let hash = window.location.hash;
+            if (hash.indexOf("?") !== -1) {
+                hash = hash.substring(hash.indexOf("#"), hash.indexOf("?"));
+            }
+            if (hash === a.hash) {
+                a.parentElement.classList.add("layui-this");
+                showTemplate(a.hash)
+            }
+        }
+    })
+
+    window.addEventListener("hashchange", function () {
+        let selectMenu = document.querySelector(".layui-this");
+        selectMenu?.classList.remove("layui-this");
+        let hash = window.location.hash;
+        if (hash.indexOf("?") !== -1) {
+            hash = hash.substring(hash.indexOf("#"), hash.indexOf("?"));
+        }
+        let element = map.get(hash);
+        element?.classList.add("layui-this");
+        showTemplate(hash);
+    })
+
+    function showTemplate(hash) {
+        let templateId = hash.substring(hash.indexOf("#")+1);
+        let template = document.getElementById(templateId);
+        if (template) {
+            let cloneNode = template.content.cloneNode(true);
+            container.replaceChildren(cloneNode);
+        }
+    }
+
+    function signHeader(options) {
+        let timestamp = Date.parse(new Date());
+        let nonce = Math.floor(Math.random() * (999 - 100 + 1) + 100); // 100-999 random
+        let signature = window.btoa(`${timestamp}${nonce}`);
+        return {
+            "Content-Type": "application/json;charset=utf8",
+            "X-Ca-Timestamp": timestamp,
+            "X-Ca-Nonce": nonce,
+            "X-Ca-Signature": signature,
+            "X-Ca-Signature-Method": "BASE64",
+            ...options
+        };
+    }
+
+    let sse;
+    const eventSource = new EventSource("/api/sse");
+    eventSource.onopen = (event) => {
+        console.log("onopen", event.readyState, event.target);
+        sse = event.target;
+    };
+    eventSource.onmessage = (event) => {
+        console.log("onmessage", event.data, event)
+    };
+    eventSource.onerror = (event) => {
+        console.log("onerror", event);
+        if (event.readyState === EventSource.CLOSED) {
+            console.log('connection is closed');
+        }
+        event.target.close();
+    };
+    eventSource.addEventListener("customEventName", (event) => {
+        console.log("Message id is " + event.lastEventId);
+    });
+</script>
+</body>
+</html>
