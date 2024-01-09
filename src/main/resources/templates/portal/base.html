@@ -1,6 +1,6 @@
 <th:block th:with="reqUrl=${#ctx.getExchange().getRequest().getRequestURI()},isPost=${#strings.startsWith(reqUrl, '/p/')}">
     <meta charset="UTF-8"/>
-    <th:block th:if="${isPost}">
+    <th:block th:if="${isPost and #ctx.getExchange().getNativeResponseObject().getStatus() == 200}">
         <title th:text="${post.title} + ' | ' + ${@portal.name}"></title>
         <meta name="keywords" th:content="${post.title} + ' ' + ${#strings.arrayJoin(post.topics, ',')}"/>
         <meta name="description" th:content="${post.description}"/>

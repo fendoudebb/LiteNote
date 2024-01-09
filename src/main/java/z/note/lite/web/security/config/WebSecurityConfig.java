@@ -15,7 +15,7 @@ import z.note.lite.web.security.filter.IdentityFilter;
 import z.note.lite.web.security.handler.ApiAccessDeniedHandler;
 import z.note.lite.web.security.handler.ApiAuthenticationEntryPoint;
 
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = false)
 @Configuration(proxyBeanMethods = false)
 public class WebSecurityConfig {
 
