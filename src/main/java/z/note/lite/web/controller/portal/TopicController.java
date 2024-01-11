@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import z.note.lite.web.Endpoint;
 import z.note.lite.web.model.common.Post;
-import z.note.lite.service.TopicService;
+import z.note.lite.service.portal.TopicService;
 
 import java.util.List;
 

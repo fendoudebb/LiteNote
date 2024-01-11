@@ -1,4 +1,4 @@
-package z.note.lite.service;
+package z.note.lite.service.portal;
 
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
