@@ -112,7 +112,7 @@
 <div class="main">
     <div class="content">
         <div style="margin-bottom: 20px">
-            <input th:value="${keywords}" th:maxlength="${maxlength}" th:placeholder="#{search_input_placeholder}"
+            <input th:value="${keywords}" th:maxlength="${@portal.search.maxlength}" th:placeholder="#{search_input_placeholder}"
                    list="custom-datalist" type="search" autocomplete="off" class="search-input">
             <button th:text="#{search_btn_text}" type="button" class="search-button">搜索</button>
             <datalist id="custom-datalist">
@@ -151,8 +151,8 @@
             <div class="pagination">
                 <a th:if="${page == 1}" th:text="#{pagination_prev}" class="disabled" href="javascript:void(0);">上一页</a>
                 <a th:unless="${page == 1}" th:text="#{pagination_prev}" th:href="@{/search.html(keywords=${keywords},page=${page - 1})}">上一页</a>
-                <a th:if="${size == #lists.size(posts)}" th:text="#{pagination_next}" th:href="@{/search.html(keywords=${keywords},page=${page + 1})}">下一页</a>
-                <a th:unless="${size == #lists.size(posts)}" th:text="#{pagination_next}" class="disabled" href="javascript:void(0);">下一页</a>
+                <a th:if="${@portal.search.size == #lists.size(posts)}" th:text="#{pagination_next}" th:href="@{/search.html(keywords=${keywords},page=${page + 1})}">下一页</a>
+                <a th:unless="${@portal.search.size == #lists.size(posts)}" th:text="#{pagination_next}" class="disabled" href="javascript:void(0);">下一页</a>
             </div>
         </th:block>
     </div>

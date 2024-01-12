@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 import z.note.lite.web.http.response.MobilePostDetailRes;
 import z.note.lite.web.http.response.MobilePostRes;
 import z.note.lite.web.http.response.MobilePostListRes;
+import z.note.lite.web.http.response.MobileSearchListRes;
 
 import java.sql.Array;
 import java.sql.ResultSet;
@@ -79,4 +80,7 @@ public class MobilePostService {
         return MobilePostDetailRes.builder().post(post).build();
     }
 
+    public MobileSearchListRes search(String keywords, int page, int size) {
+        return null;
+    }
 }
