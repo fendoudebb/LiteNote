@@ -1,18 +1,23 @@
 package z.note.lite.service.mobile;
 
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import z.note.lite.service.common.FullTextSearchService;
 import z.note.lite.web.http.response.MobilePostDetailRes;
 import z.note.lite.web.http.response.MobilePostRes;
 import z.note.lite.web.http.response.MobilePostListRes;
 import z.note.lite.web.http.response.MobileSearchListRes;
+import z.note.lite.web.model.common.Post;
 
 import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +28,12 @@ public class MobilePostService {
 
     @Resource
     JdbcClient jdbcClient;
+
+    @Resource
+    FullTextSearchService fullTextSearchService;
+
+    @Value("${preferences.portal.search.size}")
+    int searchSize;
 
     private final BeanPropertyRowMapper<MobilePostRes> rowMapper = new BeanPropertyRowMapper<>(MobilePostRes.class) {
         @Override
@@ -80,7 +91,18 @@ public class MobilePostService {
         return MobilePostDetailRes.builder().post(post).build();
     }
 
-    public MobileSearchListRes search(String keywords, int page, int size) {
-        return null;
+    public MobileSearchListRes search(String keywords, int page) {
+        List<Post> posts = fullTextSearchService.fulltextSearch(keywords, page);
+        List<MobilePostRes> list = new ArrayList<>();
+        posts.forEach(post -> {
+            MobilePostRes res = new MobilePostRes();
+            res.setPostId(post.getId());
+            res.setTitle(post.getTitle());
+            res.setDescription(post.getDescription());
+            res.setTopics(post.getTopics());
+            res.setPostTime(post.getCreateTs().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+            list.add(res);
+        });
+        return MobileSearchListRes.builder().next(posts.size() == searchSize).posts(list).build();
     }
 }

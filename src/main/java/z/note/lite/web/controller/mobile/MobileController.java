@@ -27,4 +27,9 @@ public class MobileController {
         return new Res(mobilePostService.getPost(postId));
     }
 
+    @GetMapping(Endpoint.Mobile.SEARCH) // /m/search/{keywords}
+    public Res search(@PathVariable String keywords, @RequestParam(defaultValue = "1") int page) {
+        return new Res(mobilePostService.search(keywords, page));
+    }
+
 }
