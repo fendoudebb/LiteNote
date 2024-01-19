@@ -29,6 +29,8 @@ import z.note.lite.web.model.common.InvalidRequest;
 import z.note.lite.web.model.common.PageView;
 import z.note.lite.web.model.common.Search;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 
@@ -109,9 +111,9 @@ public class RequestHandledEvents {
         String uaOs = parse.get(DataSet.DATASET_KEY_OS);
         String usOsVersion = parse.get(DataSet.DATASET_KEY_OS_VERSION);
 
-        int source = 0;
+        int channel = 0;
         if (requestUrl.startsWith(Endpoint.Mobile.CONTEXT)) {
-            source = 1;
+            channel = 1;
         }
         PageView pv = PageView.builder()
                 .url(requestUrl)
@@ -127,7 +129,7 @@ public class RequestHandledEvents {
                 .referer(referer)
                 .costTime(event.getProcessingTimeMillis())
                 .ipId(ipId)
-                .source(source)
+                .channel(channel)
                 .build();
         if (event.getStatusCode() == HttpStatus.OK.value()) {
             if (pathMatcher.match(Endpoint.Portal.POST, requestUrl)) {
@@ -136,20 +138,25 @@ public class RequestHandledEvents {
                 pv.setPostId(postId);
                 postService.increasePv(postId);
             }
+            String keywords = null;
             if (pathMatcher.match(Endpoint.Portal.SEARCH, requestUrl)) {
-                String keywords = request.getParameter("keywords");
-                if (StringUtils.hasText(keywords)) {
-                    Search search = Search.builder()
-                            .keywords(keywords)
-                            .took(event.getProcessingTimeMillis())
-                            .referer(referer)
-                            .ua(ua)
-                            .uaName(uaName)
-                            .uaOs(uaOs)
-                            .ipId(ipId)
-                            .build();
-                    searchService.insert(search);
-                }
+                keywords = request.getParameter("keywords");
+            } else if (pathMatcher.match(Endpoint.Mobile.SEARCH, requestUrl)) {
+                Map<String, String> pathVariables = pathMatcher.extractUriTemplateVariables(Endpoint.Mobile.SEARCH, requestUrl);
+                keywords = URLDecoder.decode(pathVariables.get("keywords"), StandardCharsets.UTF_8);
+            }
+            if (StringUtils.hasText(keywords)) {
+                Search search = Search.builder()
+                        .keywords(keywords)
+                        .took(event.getProcessingTimeMillis())
+                        .referer(referer)
+                        .ua(ua)
+                        .uaName(uaName)
+                        .uaOs(uaOs)
+                        .ipId(ipId)
+                        .channel(channel)
+                        .build();
+                searchService.insert(search);
             }
             pageViewService.save(pv);
         } else {

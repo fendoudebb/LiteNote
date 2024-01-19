@@ -50,7 +50,7 @@ public class PageView {
 
     private int ipId;
 
-    private int source; // 0: 网站，1: 微信小程序
+    private int channel; // 0: 网站，1: 微信小程序
 
     private Integer postId;
 

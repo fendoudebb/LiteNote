@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.time.Period;
 
 @Data
 @Builder
@@ -34,6 +35,8 @@ public class Search {
     private String uaOs;
 
     private long ipId;
+
+    private int channel; // 0: 网站，1: 微信小程序
 
     @ReadOnlyProperty
     private LocalDateTime createTs;

@@ -111,11 +111,14 @@
                                 }
                             }
                         },
-                        {field: 'source', title: '来源', width: 100, align: 'center', templet: function (d) {
-                                if (d.source) {
-                                    return `微信小程序`;
+                        {
+                            field: 'channel', title: '访问渠道', width: 150, align: 'center', templet: function (d) {
+                                if (d.channel === 0) {
+                                    return '<span class="layui-badge layui-bg-green">网页</span>';
+                                } else if (d.channel === 1){
+                                    return '<span class="layui-badge layui-bg-blue">微信小程序</span>';
                                 } else {
-                                    return `网站`;
+                                    return '<span class="layui-badge layui-bg-red">未知</span>';
                                 }
                             }
                         },
