@@ -23,7 +23,7 @@
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item layui-hide layui-show-sm-inline-block">
-                <a th:text="${#authentication.name}" href="javascript:;"></a>
+                <a th:text="${#authentication.principal.username}" href="javascript:;"></a>
                 <dl class="layui-nav-child">
                     <dd><a href="javascript:;">Your Profile</a></dd>
                     <dd><a href="javascript:;">Settings</a></dd>
