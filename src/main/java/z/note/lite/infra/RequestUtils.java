@@ -58,4 +58,10 @@ public interface RequestUtils {
         return host;
     }
 
+    static String getHeader(String header) {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        return request.getHeader(header);
+    }
+
 }
