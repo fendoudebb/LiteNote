@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class TraceFilter extends OncePerRequestFilter {
 
-    private static final String TRACE_ID = "traceId";
+    public static final String TRACE_ID = "traceId";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

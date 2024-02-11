@@ -9,6 +9,8 @@ import lombok.Setter;
 @Builder
 public class Response {
 
+    private String requestId;
+
     private int code;
 
     private String msg;

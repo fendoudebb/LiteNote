@@ -3,6 +3,7 @@ package z.note.lite.web.advice.response;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
+import org.slf4j.MDC;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.Ordered;
@@ -15,6 +16,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import z.note.lite.web.Endpoint;
+import z.note.lite.web.filter.trace.TraceFilter;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -37,7 +39,7 @@ public class ApiResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         if (!contextPath.startsWith(Endpoint.Api.CONTEXT) && !contextPath.startsWith(webEndpointProperties.getBasePath())) {
             return body;
         }
-        Response res = Response.builder().data(body).build();
+        Response res = Response.builder().requestId(MDC.get(TraceFilter.TRACE_ID)).data(body).build();
         // StringHttpMessageConverter
         if (body instanceof String) {
             try {
