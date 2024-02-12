@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import z.note.lite.web.advice.response.Response;
 import z.note.lite.infra.exception.RateLimitationException;
@@ -21,6 +22,7 @@ import z.note.lite.infra.RequestUtils;
 import z.note.lite.web.security.authentication.exception.CredentialsErrorException;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -31,9 +33,16 @@ public class ResponseAdvice/* extends ResponseEntityExceptionHandler */{
     private MessageSource messageSource;
 
     @ExceptionHandler
+    public Response onMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
+        String msg = e.getFieldErrors().stream().map(fieldError -> fieldError.getField() + fieldError.getDefaultMessage()).collect(Collectors.joining(","));
+        log.error("[advice][MethodArgumentNotValidException] {}: {}, {}: {}", request.getMethod(), request.getRequestURI(), e.getObjectName(), msg);
+        return Response.builder().code(-1).msg("系统异常").build();
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public Response onIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
-        log.error("IllegalArgument User: {} Method: {} URI: {} Error: {}", getUser(), request.getMethod(), request.getRequestURI(), e.getMessage());
+        log.error("[advice][IllegalArgumentException] {}, {}: {}, Error: {}", getUser(), request.getMethod(), request.getRequestURI(), e.getMessage());
         String message = messageSource.getMessage("illegal_argument", null, LocaleContextHolder.getLocale());
         return Response.builder().code(-1).msg(message).build();
     }
@@ -47,14 +56,14 @@ public class ResponseAdvice/* extends ResponseEntityExceptionHandler */{
         } else if (e instanceof CredentialsErrorException) {
             message = messageSource.getMessage("credentials_error", null, LocaleContextHolder.getLocale());
         }
-        log.error("Authentication Error User: {} Method: {} URI: {} Error: {}", getUser(), request.getMethod(), request.getRequestURI(), e.getMessage());
+        log.error("[advice][AuthenticationException] {}, {}: {}, Error: {}", getUser(), request.getMethod(), request.getRequestURI(), e.getMessage());
         return Response.builder().code(-1).msg(message).build();
     }
 
     @ExceptionHandler(RateLimitationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Response onRateLimitationException(Exception e, HttpServletRequest request) {
-        log.error("RateLimit User: {} Method: {} URI: {} Error: {}", getUser(), request.getMethod(), request.getRequestURI(), e.getMessage());
+        log.error("[advice][RateLimitationException] {}, {}: {}, Error: {}", getUser(), request.getMethod(), request.getRequestURI(), e.getMessage());
         String message = messageSource.getMessage("rate_limitation", null, LocaleContextHolder.getLocale());
         return Response.builder().code(-1).msg(message).build();
     }
