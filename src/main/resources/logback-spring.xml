@@ -6,7 +6,7 @@
 
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
-                <pattern>%X{traceId:-}${CONSOLE_LOG_PATTERN}</pattern>
+                <pattern>[%X{traceId:-}]${CONSOLE_LOG_PATTERN}</pattern>
                 <charset>${CONSOLE_LOG_CHARSET}</charset>
             </encoder>
         </appender>
@@ -20,7 +20,7 @@
 
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <encoder>
-                <pattern>%X{traceId:-}${FILE_LOG_PATTERN}</pattern>
+                <pattern>[%X{traceId:-}]${FILE_LOG_PATTERN}</pattern>
                 <charset>${FILE_LOG_CHARSET}</charset>
             </encoder>
             <file>${LOG_FILE}</file>
