@@ -16,7 +16,7 @@ public class TraceFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            MDC.put(TRACE_ID, String.format("[%-13s] ", System.currentTimeMillis()));
+            MDC.put(TRACE_ID, String.valueOf(System.currentTimeMillis()));
             filterChain.doFilter(request, response);
         } finally {
             MDC.remove(TRACE_ID);
