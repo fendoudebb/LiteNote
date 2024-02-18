@@ -11,10 +11,10 @@ import java.io.IOException;
 
 public class JwtIdentityFilter extends OncePerRequestFilter implements IdentityFilter {
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // TODO jwt identity filter
         filterChain.doFilter(request, response);
     }
+
 }
