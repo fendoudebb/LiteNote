@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="z.note.lite.mapper.api.IpMgmtMapper">
+    <sql id="pageableWhereClause">
+        <where>
+            <if test="ip != null">
+                and ip=#{ip}::inet
+            </if>
+        </where>
+    </sql>
+
+    <select id="findAll" resultType="z.note.lite.entity.Ip">
+        select id, ip::text, country, region, city, isp, country_id, region_id, city_id, isp_id, create_ts
+        from ip_pool
+        <include refid="pageableWhereClause" />
+        order by id desc limit #{size} offset #{offset}
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        SELECT count(*) FROM ip_pool
+        <include refid="pageableWhereClause" />
+    </select>
+</mapper>

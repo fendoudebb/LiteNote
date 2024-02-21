@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="z.note.lite.mapper.portal.RecordPageViewMapper">
+    <insert id="insert">
+        insert into record_page_view(
+            post_id,
+            url,
+            req_method,
+            req_param,
+            ua,
+            ua_name,
+            ua_category,
+            ua_version,
+            ua_vendor,
+            ua_os,
+            ua_os_version,
+            referer,
+            cost_time,
+            ip_id,
+            channel
+        ) values(
+            #{postId},
+            #{url},
+            #{reqMethod},
+            #{reqParam},
+            #{ua},
+            #{uaName},
+            #{uaCategory},
+            #{uaVersion},
+            #{uaVendor},
+            #{uaOs},
+            #{uaOsVersion},
+            #{referer},
+            #{costTime},
+            #{ipId},
+            #{channel}
+        )
+    </insert>
+</mapper>

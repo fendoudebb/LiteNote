@@ -6,10 +6,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import z.note.lite.infra.PageUtils;
-import z.note.lite.web.http.request.SysUserCreateReq;
-import z.note.lite.web.http.request.SysUserModifyReq;
-import z.note.lite.web.http.response.PageableRes;
-import z.note.lite.web.model.admin.SysUser;
+import z.note.lite.request.SysUserCreateReq;
+import z.note.lite.request.SysUserModifyReq;
+import z.note.lite.response.PageableRes;
+import z.note.lite.entity.SysUser;
 
 import java.util.List;
 import java.util.Map;

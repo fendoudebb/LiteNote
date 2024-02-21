@@ -6,9 +6,9 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
-import z.note.lite.preferences.Portal;
-import z.note.lite.preferences.portal.Search;
-import z.note.lite.web.model.common.Post;
+import z.note.lite.config.preferences.Portal;
+import z.note.lite.config.preferences.portal.Search;
+import z.note.lite.entity.Post;
 
 import java.sql.Array;
 import java.sql.ResultSet;

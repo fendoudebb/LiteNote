@@ -11,7 +11,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import z.note.lite.infra.Cache;
-import z.note.lite.lib.captcha.ArithmeticCaptcha;
+import z.note.lite.infra.lib.captcha.ArithmeticCaptcha;
 import z.note.lite.service.api.CaptchaService;
 
 import java.io.IOException;

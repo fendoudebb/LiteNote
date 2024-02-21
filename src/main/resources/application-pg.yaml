@@ -1,7 +1,0 @@
-spring:
-  datasource: # https://jdbc.postgresql.org/documentation
-    name: lite_note
-    url: jdbc:postgresql://localhost:5432/${spring.datasource.name}
-    driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: 123456

@@ -100,7 +100,7 @@
                         {field: 'title', title: '标题', width: 400, align: 'center',},
                         {
                             field: 'topics', title: '标签', width: 200, align: 'center', templet: function (d) {
-                                return d.topics.join();
+                                return d.topics?.join();
                             }
                         },
                         {field: 'pv', title: '阅读数', width: 100, align: 'center', sort: true},

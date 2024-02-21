@@ -2,8 +2,8 @@ package z.note.lite.service.portal;
 
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
-import z.note.lite.repository.portal.PostRepository;
-import z.note.lite.web.model.common.Post;
+import z.note.lite.entity.Post;
+import z.note.lite.mapper.portal.PostMapper;
 
 import java.util.List;
 
@@ -11,43 +11,43 @@ import java.util.List;
 public class PostService {
 
     @Resource
-    private PostRepository postRepository;
+    PostMapper postMapper;
 
     public List<Post> getOnlinePosts(int page, int size) {
         int offset = (page - 1) * size;
-        return postRepository.getOnlinePosts(offset, size);
+        return postMapper.getOnlinePosts(offset, size);
     }
 
     public Post getPost(Integer postId) {
-        return postRepository.getPost(postId);
+        return postMapper.getPost(postId);
     }
 
     public List<Post> getRandomPosts() {
-        return postRepository.getRandomPosts();
+        return postMapper.getRandomPosts();
     }
 
     public int countOnlinePost() {
-        return postRepository.countPostByStatusEquals(0);
+        return postMapper.countByStatus(0);
     }
 
-    public long count() {
-        return postRepository.count();
-    }
+//    public long count() {
+//        return postMapper.count();
+//    }
 
     public List<Post> getRankPosts() {
-        return postRepository.getRankPosts();
+        return postMapper.getRankPosts();
     }
 
     public List<Post> getTodayOnHistoryPosts() {
-        return postRepository.getTodayOnHistoryPosts();
+        return postMapper.getTodayOnHistoryPosts();
     }
 
     public String sitemap(String uri) {
-        return postRepository.sitemap(uri);
+        return postMapper.sitemap(uri);
     }
 
-    public int increasePv(Integer postId) {
-        return postRepository.increasePv(postId);
+    public void increasePv(Integer postId) {
+        postMapper.increasePv(postId);
     }
 
 }

@@ -1,7 +1,7 @@
 package z.note.lite.service.api;
 
-import z.note.lite.web.http.request.Identity;
-import z.note.lite.web.http.response.Credentials;
+import z.note.lite.request.Identity;
+import z.note.lite.response.Credentials;
 
 public interface LoginService {
 

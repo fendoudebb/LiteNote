@@ -7,11 +7,11 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import z.note.lite.service.common.FullTextSearchService;
-import z.note.lite.web.http.response.MobilePostDetailRes;
-import z.note.lite.web.http.response.MobilePostRes;
-import z.note.lite.web.http.response.MobilePostListRes;
-import z.note.lite.web.http.response.MobileSearchListRes;
-import z.note.lite.web.model.common.Post;
+import z.note.lite.response.MobilePostDetailRes;
+import z.note.lite.response.MobilePostRes;
+import z.note.lite.response.MobilePostListRes;
+import z.note.lite.response.MobileSearchListRes;
+import z.note.lite.entity.Post;
 
 import java.sql.Array;
 import java.sql.ResultSet;
@@ -100,7 +100,7 @@ public class MobilePostService {
             res.setTitle(post.getTitle());
             res.setDescription(post.getDescription());
             res.setTopics(post.getTopics());
-            res.setPostTime(post.getCreateTs().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+            res.setPostTime(post.getCreateTs().toInstant().toEpochMilli());
             list.add(res);
         });
         return MobileSearchListRes.builder().next(posts.size() == searchSize).posts(list).build();

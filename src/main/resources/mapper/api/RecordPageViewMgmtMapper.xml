@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="z.note.lite.mapper.api.RecordPageViewMgmtMapper">
+    <sql id="pageableWhereClause">
+        <where>
+            <if test="startTs != null and endTs != null">
+                and pv.create_ts between #{startTs} and #{endTs}
+            </if>
+        </where>
+    </sql>
+
+    <select id="findAll" resultType="z.note.lite.entity.RecordPageView">
+        select pv.*, ip.ip, ip.country || COALESCE(ip.region,'') || COALESCE(ip.city,'') || COALESCE(ip.isp,'') as ipAddress
+        from
+        <if test="status == 0">
+            record_page_view pv
+        </if>
+        <if test="status != 0">
+            record_invalid_request pv
+        </if>
+        left join ip_pool ip on pv.ip_id = ip.id
+        <include refid="pageableWhereClause" />
+        order by id desc
+        limit #{size} offset #{offset}
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        SELECT count(*) FROM
+        <if test="status == 0">
+            record_page_view pv
+        </if>
+        <if test="status != 0">
+            record_invalid_request pv
+        </if>
+        <include refid="pageableWhereClause" />
+    </select>
+</mapper>

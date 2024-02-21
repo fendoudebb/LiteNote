@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import z.note.lite.web.context.WebsiteData;
-import z.note.lite.web.model.common.Link;
-import z.note.lite.web.model.common.Post;
-import z.note.lite.web.model.common.SearchRank;
-import z.note.lite.web.model.common.Topic;
-import z.note.lite.web.model.common.TopicData;
+import z.note.lite.config.context.WebsiteData;
+import z.note.lite.entity.Link;
+import z.note.lite.entity.Post;
+import z.note.lite.entity.RecordSearchRank;
+import z.note.lite.entity.Topic;
+import z.note.lite.entity.TopicData;
 import z.note.lite.service.portal.IpService;
 import z.note.lite.service.portal.LinkService;
 import z.note.lite.service.portal.PageViewService;
@@ -68,7 +68,7 @@ public class Statistics {
 
     @Scheduled(fixedRate = 30, timeUnit = TimeUnit.MINUTES)
     public void countPageView() {
-        long pageView = pageViewService.countPageView();
+        long pageView = pageViewService.count();
         if (pageView == 0) {
             log.warn("page view is 0");
             return;
@@ -78,7 +78,7 @@ public class Statistics {
 
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
     public void countIp() {
-        int ipCount = ipService.countIp();
+        int ipCount = ipService.count();
         if (ipCount == 0) {
             log.warn("ip count is 0");
             return;
@@ -88,7 +88,7 @@ public class Statistics {
 
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.DAYS)
     public void links() {
-        List<Link> links = linkService.getLinks();
+        List<Link> links = linkService.list();
         if (CollectionUtils.isEmpty(links)) {
             log.warn("links is empty");
             return;
@@ -108,7 +108,7 @@ public class Statistics {
 
     @Scheduled(fixedRate = 3, timeUnit = TimeUnit.HOURS)
     public void rankSearches() {
-        List<SearchRank> rankSearches = searchService.getRankSearches();
+        List<RecordSearchRank> rankSearches = searchService.getRankSearches();
         if (CollectionUtils.isEmpty(rankSearches)) {
             log.warn("rank searches is empty");
             return;

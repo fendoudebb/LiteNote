@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="z.note.lite.mapper.api.StartupLogMapper">
+    <insert id="insert">
+        insert into startup_log(
+            pid,
+            port,
+            cpu_count,
+            memory,
+            system_load,
+            user_dir,
+            user_region,
+            user_language,
+            command_line,
+            app_version,
+            runtime_name,
+            runtime_version,
+            framework_name,
+            framework_version,
+            active_profiles,
+            os_name,
+            os_arch,
+            os_version,
+            timezone,
+            startup_by,
+            startup_ts,
+            cost_time
+        ) values(
+            #{pid},
+            #{port},
+            #{cpuCount},
+            #{memory},
+            #{systemLoad},
+            #{userDir},
+            #{userRegion},
+            #{userLanguage},
+            #{commandLine},
+            #{appVersion},
+            #{runtimeName},
+            #{runtimeVersion},
+            #{frameworkName},
+            #{frameworkVersion},
+            #{activeProfiles},
+            #{osName},
+            #{osArch},
+            #{osVersion},
+            #{timezone},
+            #{startupBy},
+            #{startupTs},
+            #{costTime}
+        )
+    </insert>
+</mapper>

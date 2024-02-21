@@ -2,17 +2,17 @@ package z.note.lite.service.portal;
 
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
-import z.note.lite.repository.portal.InvalidRequestRepository;
-import z.note.lite.web.model.common.InvalidRequest;
+import z.note.lite.entity.RecordInvalidRequest;
+import z.note.lite.mapper.portal.InvalidRequestMapper;
 
 @Service
 public class InvalidRequestService {
 
     @Resource
-    private InvalidRequestRepository invalidRequestRepository;
+    InvalidRequestMapper invalidRequestMapper;
 
-    public InvalidRequest save(InvalidRequest invalidRequest) {
-        return invalidRequestRepository.save(invalidRequest);
+    public int insert(RecordInvalidRequest invalidRequest) {
+        return invalidRequestMapper.insert(invalidRequest);
     }
 
 }

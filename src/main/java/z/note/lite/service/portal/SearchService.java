@@ -2,9 +2,9 @@ package z.note.lite.service.portal;
 
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
-import z.note.lite.web.model.common.Search;
-import z.note.lite.web.model.common.SearchRank;
-import z.note.lite.repository.portal.SearchRepository;
+import z.note.lite.entity.RecordSearch;
+import z.note.lite.entity.RecordSearchRank;
+import z.note.lite.mapper.portal.RecordSearchMapper;
 
 import java.util.List;
 
@@ -12,14 +12,14 @@ import java.util.List;
 public class SearchService {
 
     @Resource
-    private SearchRepository searchRepository;
+    RecordSearchMapper searchMapper;
 
-    public List<SearchRank> getRankSearches() {
-        return searchRepository.getRankSearches();
+    public List<RecordSearchRank> getRankSearches() {
+        return searchMapper.getRankSearches();
     }
 
-    public Search insert(Search search) {
-        return searchRepository.save(search);
+    public int insert(RecordSearch search) {
+        return searchMapper.insert(search);
     }
 
 }

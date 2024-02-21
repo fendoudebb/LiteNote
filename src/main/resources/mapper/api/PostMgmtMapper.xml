@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="z.note.lite.mapper.api.PostMgmtMapper">
+    <resultMap id="base" type="z.note.lite.entity.Post">
+        <result column="topics" property="topics" typeHandler="z.note.lite.config.mybatis.ListTypeHandler" />
+        <result column="images" property="images" typeHandler="z.note.lite.config.mybatis.ListTypeHandler" />
+    </resultMap>
+    <sql id="pageableWhereClause">
+        <where>
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="startTs != null">
+                and create_ts <![CDATA[>=]]> #{startTs}
+            </if>
+            <if test="endTs != null">
+                and create_ts <![CDATA[<=]]> #{endTs}
+            </if>
+        </where>
+    </sql>
+
+    <select id="findAll" resultMap="base">
+        select * from post
+        <include refid="pageableWhereClause" />
+        order by id desc limit #{size} offset #{offset}
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        SELECT count(*) FROM post
+        <include refid="pageableWhereClause" />
+    </select>
+
+    <update id="update">
+        update post set
+            title=#{title},
+            description=#{description},
+            topics=string_to_array(#{topics}, ','),
+            content=#{content},
+            content_html=#{contentHtml},
+            word_count=#{wordCount},
+            status=#{status},
+            prop=#{prop},
+            comment_status=#{commentStatus},
+            images=string_to_array(#{images}, ','),
+            update_ts=current_timestamp
+        where id=#{id}
+    </update>
+
+    <update id="updateStatus">
+        update post set status=#{status}, update_ts=current_timestamp where id=#{postId}
+    </update>
+    <update id="toggleCommentStatus">
+        update post set comment_status=1-comment_status, update_ts=current_timestamp where id=#{postId}
+    </update>
+
+    <insert id="create">
+        insert into post(
+            id, uid, title, description, topics, content, content_html, word_count, status, prop, comment_status, images
+        ) values(
+            (select max(id) from post) + 1, #{uid}, #{title}, #{description}, string_to_array(#{topics}, ','), #{content}, #{contentHtml}, #{wordCount}, #{status}, #{prop}, #{commentStatus}, string_to_array(#{images}, ',')
+        )
+    </insert>
+</mapper>

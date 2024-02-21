@@ -2,21 +2,21 @@ package z.note.lite.service.portal;
 
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
-import z.note.lite.repository.portal.PageViewRepository;
-import z.note.lite.web.model.common.PageView;
+import z.note.lite.entity.RecordPageView;
+import z.note.lite.mapper.portal.RecordPageViewMapper;
 
 @Service
 public class PageViewService {
 
     @Resource
-    private PageViewRepository pageViewRepository;
+    RecordPageViewMapper pageViewMapper;
 
-    public long countPageView() {
-        return pageViewRepository.countPageView();
+    public long count() {
+        return pageViewMapper.count();
     }
 
-    public PageView save(PageView pageView) {
-        return pageViewRepository.save(pageView);
+    public int insert(RecordPageView pageView) {
+        return pageViewMapper.insert(pageView);
     }
 
 }
