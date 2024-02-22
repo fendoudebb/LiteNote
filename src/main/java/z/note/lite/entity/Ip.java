@@ -9,7 +9,6 @@ import java.time.OffsetDateTime;
 @Setter
 @Getter
 @ToString
-//@Table("ip_pool")
 public class Ip {
 
     private Integer id;

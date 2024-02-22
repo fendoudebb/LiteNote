@@ -2,11 +2,13 @@ package z.note.lite.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Set;
 
 @Setter
 @Getter
+@ToString
 public class SysUser extends Base {
 
     private String username;

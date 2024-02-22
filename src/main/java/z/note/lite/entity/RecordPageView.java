@@ -2,16 +2,19 @@ package z.note.lite.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.OffsetDateTime;
 
-@Data
+@Setter
+@Getter
+@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-//@Table("record_page_view")
 public class RecordPageView {
 
     private Long id;

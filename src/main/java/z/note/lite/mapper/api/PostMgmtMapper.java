@@ -2,7 +2,7 @@ package z.note.lite.mapper.api;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.ResultType;
+import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import z.note.lite.config.mybatis.ListTypeHandler;
 import z.note.lite.entity.Post;
@@ -15,7 +15,10 @@ import java.util.List;
 public interface PostMgmtMapper {
 
     @Select("select * from post where id = #{id}")
-    @Result(column = "topics", property = "topics", typeHandler = ListTypeHandler.class)
+    @Results({
+            @Result(column = "topics", property = "topics", typeHandler = ListTypeHandler.class),
+            @Result(column = "images", property = "images", typeHandler = ListTypeHandler.class)
+    })
     Post findById(Integer id);
 
     List<Post> findAll(int size, int offset, Integer id, Integer status, OffsetDateTime startTs, OffsetDateTime endTs);

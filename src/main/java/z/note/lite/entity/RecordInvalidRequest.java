@@ -5,7 +5,6 @@ import lombok.Data;
 import java.time.OffsetDateTime;
 
 @Data
-//@Table("record_invalid_request")
 public class RecordInvalidRequest {
 
     private Long id;

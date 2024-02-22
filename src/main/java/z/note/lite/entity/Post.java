@@ -1,15 +1,15 @@
 package z.note.lite.entity;
 
-import lombok.Data;
-import org.apache.ibatis.annotations.ResultType;
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.MappedJdbcTypes;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 
-@Data
-//@Table(name = "post")
+@Setter
+@Getter
+@ToString
 public class Post {
 
     private Integer id;

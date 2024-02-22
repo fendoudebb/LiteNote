@@ -1,11 +1,14 @@
 package z.note.lite.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.OffsetDateTime;
 
-@Data
-//@Table("ip_unknown")
+@Setter
+@Getter
+@ToString
 public class IpUnknown {
 
     private String ip;

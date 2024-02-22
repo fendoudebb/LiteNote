@@ -3,7 +3,6 @@ package z.note.lite.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Setter
