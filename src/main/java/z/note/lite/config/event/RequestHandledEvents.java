@@ -20,6 +20,9 @@ import org.springframework.web.context.support.ServletRequestHandledEvent;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.resource.ResourceUrlProvider;
+import z.note.lite.entity.Ip;
+import z.note.lite.infra.RequestUtils;
+import z.note.lite.service.api.IpMgmtService;
 import z.note.lite.service.portal.InvalidRequestService;
 import z.note.lite.service.portal.PageViewService;
 import z.note.lite.service.portal.PostService;
@@ -61,6 +64,9 @@ public class RequestHandledEvents {
     @Resource
     private InvalidRequestService invalidRequestService;
 
+    @Resource
+    IpMgmtService ipMgmtService;
+
     @EventListener
     public void servletRequestHandledEvent(ServletRequestHandledEvent event) {
         String requestUrl = event.getRequestUrl();
@@ -101,8 +107,8 @@ public class RequestHandledEvents {
             case "OPTIONS" -> reqMethod = 4;
             default -> reqMethod = 5;
         }
-        // TODO ip id
-        int ipId = 1;
+
+        Ip ip = ipMgmtService.findByIp(RequestUtils.getIp());
         Map<String, String> parse = Classifier.parse(ua);
         String uaName = parse.get(DataSet.DATASET_KEY_NAME);
         String uaCategory = parse.get(DataSet.DATASET_KEY_CATEGORY);
@@ -128,7 +134,7 @@ public class RequestHandledEvents {
                 .uaOsVersion(Objects.equals(DataSet.VALUE_UNKNOWN, usOsVersion) ? null : usOsVersion)
                 .referer(referer)
                 .costTime(event.getProcessingTimeMillis())
-                .ipId(ipId)
+                .ipId(ip.getId())
                 .channel(channel)
                 .build();
         if (event.getStatusCode() == HttpStatus.OK.value()) {
@@ -153,7 +159,7 @@ public class RequestHandledEvents {
                         .ua(ua)
                         .uaName(uaName)
                         .uaOs(uaOs)
-                        .ipId(ipId)
+                        .ipId(ip.getId())
                         .channel(channel)
                         .build();
                 searchService.insert(search);
