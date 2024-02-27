@@ -35,4 +35,6 @@ public class Ip {
 
     private OffsetDateTime updateTs;
 
+    private String address;
+
 }
