@@ -16,4 +16,12 @@ public interface IpMgmtMapper {
 
     long count(String ip);
 
+    Ip findByIp(String ip);
+
+    int insertWithIp(String ip);
+
+    Ip update(Ip ip);
+
+    Ip insert(Ip ip);
+
 }
