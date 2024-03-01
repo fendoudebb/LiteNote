@@ -12,4 +12,8 @@ public interface IpUnknownMgmtMapper {
 
     long count();
 
+    int insert(String ip);
+
+    int deleteByIp(String ip);
+
 }
