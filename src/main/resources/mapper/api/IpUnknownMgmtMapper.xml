@@ -12,4 +12,12 @@
     <select id="count" resultType="java.lang.Long">
         SELECT count(*) FROM ip_unknown
     </select>
+
+    <insert id="insert">
+        insert into ip_unknown(ip) values(#{ip}) on conflict(ip) do update set update_ts = current_timestamp
+    </insert>
+
+    <delete id="deleteByIp">
+        delete from ip_unknown where ip = #{ip}
+    </delete>
 </mapper>
