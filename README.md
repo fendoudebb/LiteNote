@@ -4,4 +4,10 @@ LiteNote
 
 Build By Spring Boot 3 and GraalVM Native.
 
-Under Development.
+## Framework
+
+[README](./readme/dependency/README.md)
+
+## Link
+
+[程序员技术之旅：https://www.zhangbj.com](https://www.zhangbj.com)
