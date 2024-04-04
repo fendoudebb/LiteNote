@@ -152,8 +152,10 @@
                             <th:block th:if="${!#lists.isEmpty(post.topics)}">
                                 <th:block th:text="|, #{index_topics}: |"></th:block>
                                 <th:block th:each="topic : ${post.topics}">
-                                    <a th:utext="${topic}" th:href="|/topic/${topic}.html|" th:title="${topic}"
-                                       class="anchor-link-a"></a>
+                                    <th:block th:with="rawTopic=${#strings.replace(#strings.replace(topic, '<b>', ''), '</b>', '')}">
+                                        <a th:utext="${topic}" th:href="|/topic/${rawTopic}.html|" th:title="${rawTopic}"
+                                           class="anchor-link-a"></a>
+                                    </th:block>
                                 </th:block>
                             </th:block>
                         </span>
