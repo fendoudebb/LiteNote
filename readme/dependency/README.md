@@ -24,17 +24,18 @@
 - Document: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
 - GitHub: [https://github.com/spring-projects/spring-security](https://github.com/spring-projects/spring-security)
 
-### Spring Data
+### MyBatis
 
 - License: Apache-2.0
-- Document: [https://spring.io/projects/spring-data](https://spring.io/projects/spring-data)
+- Document: [https://mybatis.org/mybatis-3/](https://mybatis.org/mybatis-3/)
+- GitHub: [https://github.com/mybatis/mybatis-3](https://github.com/mybatis/mybatis-3)
 
 ### Spring Actuator
 
 - License: Apache-2.0
 - Document: [https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html](https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html)
 - GitHub: [https://github.com/spring-projects/spring-boot/tree/main/spring-boot-project/spring-boot-actuator](https://github.com/spring-projects/spring-boot/tree/main/spring-boot-project/spring-boot-actuator)
-- 
+-
 ### Thymeleaf
 
 - License: Apache-2.0
