@@ -57,14 +57,14 @@ spring:
         - file:${preferences.admin.assets-path}
   task:
     execution:
-      thread-name-prefix: z-execution-
+      thread-name-prefix: exec-
       pool:
         core-size: 8
         max-size: 16
         keep-alive: 60s
         queue-capacity: 100
     scheduling:
-      thread-name-prefix: z-scheduling-
+      thread-name-prefix: cron-
       pool:
         size: 8
   lifecycle:
