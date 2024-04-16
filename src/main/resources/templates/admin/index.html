@@ -86,6 +86,9 @@
 <script th:src="${@portal.js['highlight'][0]}"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/marked/4.3.0/marked.min.js"></script>
 <script>
+    if (!window.location.hash) {
+        window.location.hash = "#post_mgmt";
+    }
     layui.use(function () {
         let layer = layui.layer;
         let util = layui.util;
