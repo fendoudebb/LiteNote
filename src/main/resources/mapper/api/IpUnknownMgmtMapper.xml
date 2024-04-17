@@ -6,7 +6,7 @@
     <select id="findAll" resultType="z.note.lite.entity.IpUnknown">
         select *
         from ip_unknown
-        order by id desc limit #{size} offset #{offset}
+        order by ip desc limit #{size} offset #{offset}
     </select>
 
     <select id="count" resultType="java.lang.Long">
