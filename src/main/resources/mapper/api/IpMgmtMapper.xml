@@ -28,7 +28,7 @@
     </select>
 
     <select id="insertWithIp" resultType="integer">
-        insert into ip_pool(ip) values(#{ip}) returning id
+        insert into ip_pool(ip) values(#{ip}::inet) returning id
     </select>
 
     <select id="update" resultType="z.note.lite.entity.Ip">
