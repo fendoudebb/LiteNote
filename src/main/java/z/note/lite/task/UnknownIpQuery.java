@@ -30,7 +30,7 @@ public class UnknownIpQuery {
         list.forEach(ipUnknown -> {
             Ip ip = ipMgmtService.findByIp(ipUnknown.getIp());
             if (ip.getAddress() != null) {
-                ipMgmtService.deleteByIp(ip.getAddress());
+                ipMgmtService.deleteByIp(ipUnknown.getIp());
             }
         });
     }
