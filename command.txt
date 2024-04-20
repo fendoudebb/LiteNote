@@ -2,7 +2,7 @@ nohup java -jar /app/lite-note-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod 
 
 crontab -e
 
-* * * * * /bin/bash /app/check_java.sh
+* * * * * /bin/bash /app/check_process.sh
 
 chown nginx:nginx /app/assets
 chmod 655 -R /app/assets
