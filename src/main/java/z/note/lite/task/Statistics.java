@@ -2,6 +2,7 @@ package z.note.lite.task;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -23,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class Statistics {
+public class Statistics implements InitializingBean {
 
     @Resource
     private WebsiteData websiteStatistics;
@@ -136,8 +137,7 @@ public class Statistics {
         websiteStatistics.setRecommendedTopics(recommendTopics);
     }
 
-//    @Scheduled(cron = "0 0 0 * * ?")
-    @Scheduled(fixedRate = 12, timeUnit = TimeUnit.HOURS)
+    @Scheduled(cron = "0 0 0 * * ?")
     public void todayOnHistory() {
         List<Post> posts = postService.getTodayOnHistoryPosts();
         if (CollectionUtils.isEmpty(posts)) {
@@ -145,6 +145,11 @@ public class Statistics {
             return;
         }
         websiteStatistics.setTodayOnHistoryPosts(posts);
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        todayOnHistory();
     }
 
 }
