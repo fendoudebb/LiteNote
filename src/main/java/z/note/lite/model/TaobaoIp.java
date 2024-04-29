@@ -122,3 +122,45 @@ public class TaobaoIp {
  *     }
  * }
  */
+
+// curl -vv -X GET --location "https://ip.taobao.com/getIpInfo.php?ip=103.116.121.43"
+//* About to connect() to ip.taobao.com port 443 (#0)
+//*   Trying 59.82.122.172...
+//* Connected to ip.taobao.com (59.82.122.172) port 443 (#0)
+//* Initializing NSS with certpath: sql:/etc/pki/nssdb
+//*   CAfile: /etc/pki/tls/certs/ca-bundle.crt
+//  CApath: none
+//* SSL connection using TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+//* Server certificate:
+//*       subject: CN=*.taobao.com,O="Alibaba (China) Technology Co., Ltd.",L=HangZhou,ST=ZheJiang,C=CN
+//*       start date: Mar 06 09:22:04 2024 GMT
+//*       expire date: Jun 08 02:06:47 2024 GMT
+//*       common name: *.taobao.com
+//*       issuer: CN=GlobalSign Organization Validation CA - SHA256 - G3,O=GlobalSign nv-sa,C=BE
+//> GET /getIpInfo.php?ip=103.116.121.43 HTTP/1.1
+//> User-Agent: curl/7.29.0
+//> Host: ip.taobao.com
+//> Accept: */*
+//>
+//< HTTP/1.1 404 Not Found
+//< Date: Mon, 01 Apr 2024 13:25:56 GMT
+//< Content-Type: text/html
+//< Transfer-Encoding: chunked
+//< Connection: keep-alive
+//< Vary: Accept-Encoding
+//< Vary: Accept-Encoding
+//< Ups-Target-Key: ip.taobao.com
+//< X-protocol: HTTP/1.1
+//< EagleEye-TraceId: 2150b4b817119779565901578e1274
+//<
+//<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+//<html>
+//<head><title>404 Not Found</title></head>
+//<body bgcolor="white"><script>
+//with(document)with(body)with(insertBefore(createElement("script"),firstChild))setAttribute("exparams","category=&userid=&aplus&yunid=&&trid=2150b4b817119779565901578e1274&asid=AQAAAADktQpmBigIPwAAAAAie8QATi3Qqw==",id="tb-beacon-aplus",src=(location>"https"?"//g":"//g")+".alicdn.com/alilog/mlog/aplus_v2.js")
+//</script>
+//
+//<h1>404 Not Found</h1>
+//<p>The requested URL was not found on this server.</body>
+//</html>
+//* Connection #0 to host ip.taobao.com left intact
