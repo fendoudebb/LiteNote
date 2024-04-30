@@ -36,7 +36,7 @@ public interface PostMapper {
     @Select("select id, title, pv from post where status=0 order by pv desc, id desc limit 5")
     List<Post> getRankPosts();
 
-    @Select("select id, title, create_ts, pv from post where to_char(create_ts, 'MM-dd') = to_char(current_date, 'MM-dd') and status=0 order by pv desc, id desc")
+    @Select("select id, title, create_ts, pv from post where to_char(create_ts, 'MM-dd') = to_char(current_date, 'MM-dd') and status=0 order by id desc")
     List<Post> getTodayOnHistoryPosts();
 
     @Select("select count(1) as count, unnest(topics) as name from post group by name order by count desc")
