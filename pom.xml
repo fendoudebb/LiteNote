@@ -5,17 +5,17 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.3</version>
+		<version>3.2.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>z.note</groupId>
 	<artifactId>lite-note</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>LiteNote</name>
-	<description>LiteNote build by Spring Boot 3 and Spring Native</description>
+	<description>LiteNote build by Spring Boot 3 and GraalVM</description>
 	<properties>
 		<java.version>21</java.version>
-		<spring-cloud.version>2023.0.0</spring-cloud.version>
+		<spring-cloud.version>2023.0.1</spring-cloud.version>
 		<easy-captcha.version>1.6.2</easy-captcha.version>
 		<thumbnailator.version>0.4.19</thumbnailator.version>
 		<woothee.version>1.11.0</woothee.version>
