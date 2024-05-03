@@ -92,6 +92,8 @@ public interface Endpoint {
 
         String SITEMAP = "/sitemap.xml";
 
+        String SITEMAP_GOOGLE = "/sitemap_google.xml";
+
     }
 
     interface Mobile {
