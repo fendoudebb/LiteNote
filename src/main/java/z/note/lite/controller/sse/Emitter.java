@@ -1,11 +1,13 @@
 package z.note.lite.controller.sse;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public class Emitter {
 
     private static final Map<String, SseEmitter> container = new ConcurrentHashMap<>();
@@ -26,8 +28,8 @@ public class Emitter {
         container.forEach((username, sseEmitter) -> {
             try {
                 sseEmitter.send(SseEmitter.event().data(data).build());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            } catch (Throwable e) {
+                log.error("emit error, username: {}, data: {}, exception: {}", username, data, e.getMessage());
             }
         });
     }
