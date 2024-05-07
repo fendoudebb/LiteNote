@@ -22,7 +22,7 @@ public class SSEController {
     }
 
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
-    public void countOnlinePost() {
+    public void mockEmit() {
         Emitter.emitAll(LocalDateTime.now());
     }
 
