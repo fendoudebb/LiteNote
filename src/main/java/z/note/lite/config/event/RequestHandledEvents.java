@@ -111,11 +111,17 @@ public class RequestHandledEvents {
         Ip ip = ipMgmtService.findByIp(RequestUtils.getIp());
         Map<String, String> parse = Classifier.parse(ua);
         String uaName = parse.get(DataSet.DATASET_KEY_NAME);
+        uaName = DataSet.VALUE_UNKNOWN.equals(uaName) ? null : uaName;
         String uaCategory = parse.get(DataSet.DATASET_KEY_CATEGORY);
+        uaCategory = DataSet.VALUE_UNKNOWN.equals(uaCategory) ? null : uaCategory;
         String uaVersion = parse.get(DataSet.DATASET_KEY_VERSION);
+        uaVersion = DataSet.VALUE_UNKNOWN.equals(uaVersion) ? null : uaVersion;
         String uaVendor = parse.get(DataSet.DATASET_KEY_VENDOR);
+        uaVendor = DataSet.VALUE_UNKNOWN.equals(uaVendor) ? null : uaVendor;
         String uaOs = parse.get(DataSet.DATASET_KEY_OS);
+        uaOs = DataSet.VALUE_UNKNOWN.equals(uaOs) ? null : uaOs;
         String usOsVersion = parse.get(DataSet.DATASET_KEY_OS_VERSION);
+        usOsVersion = DataSet.VALUE_UNKNOWN.equals(usOsVersion) ? null : usOsVersion;
 
         int channel = 0;
         if (requestUrl.startsWith(Endpoint.Mobile.CONTEXT)) {
@@ -126,12 +132,12 @@ public class RequestHandledEvents {
                 .reqMethod(reqMethod)
                 .reqParam(reqParam)
                 .ua(ua)
-                .uaName(Objects.equals(DataSet.VALUE_UNKNOWN, uaName) ? null : uaName)
-                .uaCategory(Objects.equals(DataSet.VALUE_UNKNOWN, uaCategory) ? null : uaCategory)
-                .uaVersion(Objects.equals(DataSet.VALUE_UNKNOWN, uaVersion) ? null : uaVersion)
-                .uaVendor(Objects.equals(DataSet.VALUE_UNKNOWN, uaVendor) ? null : uaVendor)
-                .uaOs(Objects.equals(DataSet.VALUE_UNKNOWN, uaOs) ? null : uaOs)
-                .uaOsVersion(Objects.equals(DataSet.VALUE_UNKNOWN, usOsVersion) ? null : usOsVersion)
+                .uaName(uaName)
+                .uaCategory(uaCategory)
+                .uaVersion(uaVersion)
+                .uaVendor(uaVendor)
+                .uaOs(uaOs)
+                .uaOsVersion(usOsVersion)
                 .referer(referer)
                 .costTime(event.getProcessingTimeMillis())
                 .ipId(ip.getId())
