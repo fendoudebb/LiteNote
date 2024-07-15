@@ -83,7 +83,7 @@
 <th:block th:replace="~{admin/template_administrator}"></th:block>
 <script th:src="@{/layui/layui.js}"></script>
 <script th:src="${@portal.js['highlight'][0]}"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/marked/4.3.0/marked.min.js"></script>
+<script th:src="@{/marked/marked.min.js}"></script>
 <script>
     if (!window.location.hash) {
         window.location.hash = "#post_mgmt";
