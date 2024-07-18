@@ -92,13 +92,11 @@
 
     let pres = document.querySelectorAll("pre");
     for (let i = 0; i < pres.length; i++) {
-        let pre = pres[i];
-        pre.innerHTML += "<div class='hljs-button' title='Copy to Clipboard'>Copy</div>";
         let id = "code" + i;
+        let pre = pres[i];
         let code = pre.firstElementChild;
         code.id = id;
-        let hljsDivBtn = pre.lastElementChild;
-        hljsDivBtn.setAttribute("data-clipboard-target", "#" + id)
+        pre.innerHTML += `<div class='hljs-button' title='Copy to Clipboard' onclick="doCopy(this, '${id}')">Copy</div>`;
     }
 
     let highlightJs = [
@@ -106,37 +104,29 @@
         "[(${link})]",
         /*[/]*/
     ];
-    let clipboardJs = [
-        /*[# th:each="link : ${@portal.js.get('clipboard')}"]*/
-        "[(${link})]",
-        /*[/]*/
-    ]
     function highlight() {
         hljs.highlightAll();
-        autoSwitch(clipboardJs, copy);
-    }
-
-    function copy() {
-        let clipboard = new ClipboardJS('.hljs-button');
-        clipboard.on('success', function (e) {
-            e.clearSelection();
-            let copyBtn = e.trigger;
-            copyBtn.innerHTML = "Copy Success";
-            setTimeout(function () {
-                copyBtn.innerHTML = "Copy";
-            }, 1000);
-
-        });
-        clipboard.on('error', function (e) {
-            let copyBtn = e.trigger;
-            copyBtn.innerHTML = "Copy Fail";
-            setTimeout(function () {
-                copyBtn.innerHTML = "Copy";
-            }, 1000);
-        });
     }
 
     autoSwitch(highlightJs, highlight);
+
+    function doCopy(element, id) {
+        let code = document.getElementById(id);
+        navigator.clipboard.writeText(code.textContent)
+            .then(() => {
+                element.innerHTML = "Copy Success";
+                setTimeout(function () {
+                    element.innerHTML = "Copy";
+                }, 1000);
+            })
+            .catch(reason => {
+                console.log("copy fail", reason);
+                element.innerHTML = "Copy Fail";
+                setTimeout(function () {
+                    element.innerHTML = "Copy";
+                }, 1000);
+            })
+    }
 
     /*[# th:if="${@websiteData.randomPosts}"]*/
     let data = {
