@@ -23,7 +23,7 @@
                 <pattern>[%X{traceId:-}]${FILE_LOG_PATTERN}</pattern>
                 <charset>${FILE_LOG_CHARSET}</charset>
             </encoder>
-            <file>${LOG_FILE}</file>
+            <file>${LOG_PATH}/${LOG_FILE}</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
                 <fileNamePattern>
                     ${LOGBACK_ROLLINGPOLICY_FILE_NAME_PATTERN:-${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz}
