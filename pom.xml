@@ -15,7 +15,8 @@
 	<description>LiteNote build by Spring Boot 3 and GraalVM</description>
 	<properties>
 		<java.version>25</java.version>
-		<spring-cloud.version>2023.0.1</spring-cloud.version>
+        <maven.compiler.proc>full</maven.compiler.proc>
+		<spring-cloud.version>2025.0.0</spring-cloud.version>
 		<easy-captcha.version>1.6.2</easy-captcha.version>
 		<thumbnailator.version>0.4.21</thumbnailator.version>
 		<woothee.version>1.11.0</woothee.version>
