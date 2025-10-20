@@ -21,24 +21,18 @@
                 <span th:text="${#messages.msg('post_info', post.pv, #temporals.format(post.createTs, 'yyyy-MM-dd'))}" class="text-secondary">阅读 12345 · 发布于 2018-01-01</span>
             </div>
             <p style="text-align: center;color: #8a8a8a;margin: 50px 0 30px 0">
-                ————&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspEND&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp————
+                ———&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <span th:text="${#messages.msg('post_end')}"></span> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp———
             </p>
             <th:block th:if="${@portal.promotion.enabled}" th:replace="~{portal/base_promotion}"></th:block>
         </div>
 
-        <th:block th:if="${post.commentStatus == 0 and @portal.comment.enabled and @portal.comment.type == 'giscus'}">
-            <hr>
-            <th:block th:utext="${@portal.comment.script}"></th:block>
-            <hr>
-        </th:block>
-
         <th:block th:replace="~{portal/base_css_list_widget}"></th:block>
-        <div th:if="${@websiteData.todayOnHistoryPosts}">
+        <div th:if="${@websiteData.todayInHistoryPosts}">
             <div class="shadow list-widget-section" style="margin-bottom: 0">
-                <span th:text="#{post_today_on_history}" class="list-widget-title">历史上的今天</span>
+                <span th:text="#{post_today_in_history}" class="list-widget-title">历史上的今天</span>
             </div>
             <ul class="shadow list-widget">
-                <li th:each="post : ${@websiteData.todayOnHistoryPosts}">
+                <li th:each="post : ${@websiteData.todayInHistoryPosts}">
                     <a th:href="|/p/${post.id}.html|" th:title="${post.title}">
                         <span th:text="${post.title}">Website</span>
                         <span th:text="${#messages.msg('post_info', post.pv, #temporals.format(post.createTs, 'yyyy-MM-dd'))}">阅读 12345 · 发布于 2018-01-01</span>
@@ -61,6 +55,12 @@
                 </li>
             </ul>
         </div>
+
+        <th:block th:if="${post.commentStatus == 0 and @portal.comment.enabled and @portal.comment.type == 'giscus'}">
+            <hr>
+            <th:block th:utext="${@portal.comment.script}"></th:block>
+            <hr>
+        </th:block>
     </div>
 </div>
 <th:block th:replace="~{portal/footer}"></th:block>
