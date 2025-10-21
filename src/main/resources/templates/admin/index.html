@@ -15,25 +15,9 @@
     <div class="layui-header">
         <div th:text="${@portal.name}" class="layui-logo layui-hide-xs layui-bg-black"></div>
         <!-- 头部区域（可配合layui 已有的水平导航） -->
-        <ul class="layui-nav layui-layout-left">
-            <!-- 移动端显示 -->
-            <li class="layui-nav-item layui-show-xs-inline-block" lay-header-event="menuLeft">
-                <i class="layui-icon layui-icon-spread-left"></i>
-            </li>
-        </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item layui-hide layui-show-sm-inline-block">
                 <a th:text="${#authentication.principal}" href="javascript:;"></a>
-                <dl class="layui-nav-child">
-                    <dd><a href="javascript:;">Your Profile</a></dd>
-                    <dd><a href="javascript:;">Settings</a></dd>
-                    <dd><a href="javascript:;">Sign out</a></dd>
-                </dl>
-            </li>
-            <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
-                <a href="javascript:;">
-                    <i class="layui-icon layui-icon-more-vertical"></i>
-                </a>
             </li>
         </ul>
     </div>
@@ -66,10 +50,6 @@
     <div class="layui-body">
         <!-- 内容主体区域 -->
         <div id="container" style="padding: 15px;"></div>
-    </div>
-    <div class="layui-footer">
-        <!-- 底部固定区域 -->
-        底部固定区域
     </div>
 </div>
 <th:block th:replace="~{admin/template_post_edit}"></th:block>
