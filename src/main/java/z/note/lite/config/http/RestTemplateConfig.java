@@ -17,11 +17,6 @@ public class RestTemplateConfig {
             public boolean hasError(ClientHttpResponse response) {
                 return false;
             }
-
-            @Override
-            public void handleError(ClientHttpResponse response) {
-
-            }
         });
         return restTemplate;
     }
