@@ -138,18 +138,18 @@ public class Statistics implements InitializingBean {
     }
 
     @Scheduled(cron = "0 0 0 * * ?")
-    public void todayOnHistory() {
-        List<Post> posts = postService.getTodayOnHistoryPosts();
+    public void todayInHistory() {
+        List<Post> posts = postService.getTodayInHistoryPosts();
         if (CollectionUtils.isEmpty(posts)) {
             log.warn("today on history is empty");
             return;
         }
-        websiteStatistics.setTodayOnHistoryPosts(posts);
+        websiteStatistics.setTodayInHistoryPosts(posts);
     }
 
     @Override
     public void afterPropertiesSet() {
-        todayOnHistory();
+        todayInHistory();
     }
 
 }

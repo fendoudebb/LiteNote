@@ -38,8 +38,8 @@ public class PostService {
         return postMapper.getRankPosts();
     }
 
-    public List<Post> getTodayOnHistoryPosts() {
-        return postMapper.getTodayOnHistoryPosts();
+    public List<Post> getTodayInHistoryPosts() {
+        return postMapper.getTodayInHistoryPosts();
     }
 
     public String sitemap(String uri) {

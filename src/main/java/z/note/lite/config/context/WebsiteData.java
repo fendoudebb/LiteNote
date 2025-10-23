@@ -32,6 +32,6 @@ public class WebsiteData {
 
     private List<Topic> recommendedTopics;
 
-    private List<Post> todayOnHistoryPosts;
+    private List<Post> todayInHistoryPosts;
 
 }

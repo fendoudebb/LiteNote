@@ -7,10 +7,9 @@ import z.note.lite.entity.RecordPageView;
 @Mapper
 public interface RecordPageViewMapper {
 
-
     int insert(RecordPageView pageView);
 
-    @Select("select count(*) from record_page_view")
+    @Select("select reltuples from pg_class where relname = 'record_page_view'")
     long count();
 
 }
