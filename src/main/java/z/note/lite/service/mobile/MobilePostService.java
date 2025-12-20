@@ -6,17 +6,16 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import z.note.lite.service.common.FullTextSearchService;
-import z.note.lite.response.MobilePostDetailRes;
-import z.note.lite.response.MobilePostRes;
-import z.note.lite.response.MobilePostListRes;
-import z.note.lite.response.MobileSearchListRes;
 import z.note.lite.entity.Post;
+import z.note.lite.response.MobilePostDetailRes;
+import z.note.lite.response.MobilePostListRes;
+import z.note.lite.response.MobilePostRes;
+import z.note.lite.response.MobileSearchListRes;
+import z.note.lite.service.common.FullTextSearchService;
 
 import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +50,7 @@ public class MobilePostService {
     };
 
     public MobilePostListRes getOnlinePosts(String topic, int page, int size) {
-        String whereClause = StringUtils.hasText(topic) ? "and :topic=ANY(topics)" : "";
+        String whereClause = StringUtils.hasText(topic) ? "and topics @> ARRAY[:topic::text]" : "";
         String countSql = """
                 select count(*) as count from post where status=0 %s;
                 """.formatted(whereClause);

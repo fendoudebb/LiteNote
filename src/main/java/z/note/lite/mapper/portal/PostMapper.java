@@ -42,11 +42,11 @@ public interface PostMapper {
     @Select("select count(1) as count, unnest(topics) as name from post group by name order by count desc")
     List<TopicData> getTopicDataList();
 
-    @Select("select id, title, topics, substring(description, 0, 100) as description, pv, create_ts from post where status=0 and #{topic}=ANY(topics) order by id desc offset #{offset} rows fetch first #{size} rows only")
+    @Select("select id, title, topics, substring(description, 0, 100) as description, pv, create_ts from post where status=0 and topics @> ARRAY[#{topic}::text] order by id desc offset #{offset} rows fetch first #{size} rows only")
     @Result(column = "topics", property = "topics", typeHandler = ListTypeHandler.class)
     List<Post> getPostsByTopic(String topic, int offset, int size);
 
-    @Select("select count(*) as count from post where status=0 and #{topic}=ANY(topics)")
+    @Select("select count(*) as count from post where status=0 and topics @> ARRAY[#{topic}::text]")
     int countPostByTopic(String topic);
 
     @Select("""
