@@ -35,7 +35,7 @@
                 <li th:each="post : ${@websiteData.todayInHistoryPosts}">
                     <a th:href="|/p/${post.id}.html|" th:title="${post.title}">
                         <span th:text="${post.title}">Website</span>
-                        <span th:text="${#messages.msg('post_info', post.pv, #temporals.format(post.createTs, 'yyyy-MM-dd'))}">阅读 12345 · 发布于 2018-01-01</span>
+                        <span th:text="${#messages.msg('post_info', post.pv, #temporals.format(post.createTs, 'yyyy-MM-dd', T(java.time.ZoneId).systemDefault()))}">阅读 12345 · 发布于 2018-01-01</span>
                     </a>
                 </li>
             </ul>
