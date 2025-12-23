@@ -18,7 +18,7 @@
             <div th:utext="${post.contentHtml}"></div>
 
             <div style="margin-top: 1.25rem">
-                <span th:text="${#messages.msg('post_info', post.pv, #temporals.format(post.createTs, 'yyyy-MM-dd'))}" class="text-secondary">阅读 12345 · 发布于 2018-01-01</span>
+                <span th:text="${#messages.msg('post_info', post.pv, #temporals.format(post.createTs, 'yyyy-MM-dd', T(java.time.ZoneId).systemDefault()))}" class="text-secondary">阅读 12345 · 发布于 2018-01-01</span>
             </div>
             <p style="text-align: center;color: #8a8a8a;margin: 50px 0 30px 0">
                 ———&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <span th:text="${#messages.msg('post_end')}"></span> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp———

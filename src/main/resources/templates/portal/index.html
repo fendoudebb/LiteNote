@@ -21,7 +21,7 @@
                 <p th:text="${post.description}" class="index-post-desc"></p>
                 <p>
                     <span style="color: #8a8a8a">
-                        <th:block th:text="|${#temporals.format(post.createTs, 'yyyy-MM-dd')}, |"/>
+                        <th:block th:text="|${#temporals.format(post.createTs, 'yyyy-MM-dd', T(java.time.ZoneId).systemDefault())}, |"/>
                         <th:block th:text="|#{index_views}: ${post.pv}|"/>
                         <th:block th:if="${!#lists.isEmpty(post.topics)}">
                             <th:block th:text="|, #{index_topics}: |"></th:block>
