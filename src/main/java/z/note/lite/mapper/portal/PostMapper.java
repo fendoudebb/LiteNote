@@ -39,7 +39,7 @@ public interface PostMapper {
     @Select("select id, title, create_ts, pv from post where to_char(create_ts, 'MM-dd') = to_char(current_date, 'MM-dd') and status=0 order by id desc")
     List<Post> getTodayInHistoryPosts();
 
-    @Select("select count(1) as count, unnest(topics) as name from post group by name order by count desc")
+    @Select("select count(1) as count, unnest(topics) as name from post where status=0 group by name order by count desc")
     List<TopicData> getTopicDataList();
 
     @Select("select id, title, topics, substring(description, 0, 100) as description, pv, create_ts from post where status=0 and topics @> ARRAY[#{topic}::text] order by id desc offset #{offset} rows fetch first #{size} rows only")
