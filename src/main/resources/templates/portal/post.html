@@ -27,6 +27,34 @@
         </div>
 
         <th:block th:replace="~{portal/base_css_list_widget}"></th:block>
+
+        <div th:if="${post.prevId != null or post.nextId != null}">
+            <div th:if="${post.prevId != null}">
+                <div class="shadow list-widget-section" style="margin-bottom: 0">
+                    <span th:text="#{post_prev}" class="list-widget-title">上一篇</span>
+                </div>
+                <ul class="shadow list-widget">
+                    <li>
+                        <a th:href="|/p/${post.prevId}.html|" th:title="${post.prevTitle}">
+                            <span th:text="${post.prevTitle}">Title</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div th:if="${post.nextId != null}">
+                <div class="shadow list-widget-section" style="margin-bottom: 0">
+                    <span th:text="#{post_next}" class="list-widget-title">下一篇</span>
+                </div>
+                <ul class="shadow list-widget">
+                    <li>
+                        <a th:href="|/p/${post.nextId}.html|" th:title="${post.nextTitle}">
+                            <span th:text="${post.nextTitle}">Title</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
         <div th:if="${@websiteData.todayInHistoryPosts}">
             <div class="shadow list-widget-section" style="margin-bottom: 0">
                 <span th:text="#{post_today_in_history}" class="list-widget-title">历史上的今天</span>

@@ -25,7 +25,7 @@ public class PostController {
     @GetMapping(Endpoint.Portal.POST) // /p/{postId}.html
     public String post(@PathVariable Integer postId, Model model, HttpServletResponse response) {
         Post post = postService.getPost(postId);
-        if (Objects.isNull(post) || post.getStatus() != 0) {
+        if (Objects.isNull(post)) {
             response.setStatus(HttpStatus.NOT_FOUND.value());
             return "error";
         }

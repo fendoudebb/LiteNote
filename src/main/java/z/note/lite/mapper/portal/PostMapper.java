@@ -17,7 +17,16 @@ public interface PostMapper {
     @Result(column = "topics", property = "topics", typeHandler = ListTypeHandler.class)
     List<Post> getOnlinePosts(int offset, int size);
 
-    @Select("select id, title, substring(description, 0, 100) as description, topics, content_html, word_count, status, pv, like_count, comment_count, comment_status, create_ts from post where id = #{postId} limit 1")
+    @Select("""
+            select * from (
+                select id, title, substring(description, 0, 100) as description, topics, content_html, word_count, status, pv, comment_status, create_ts,
+                lead(id) over (order by id desc)    as prev_id,
+                lead(title) over (order by id desc) as prev_title,
+                lag(id) over (order by id desc)     as next_id,
+                lag(title) over (order by id desc)  as next_title
+                from post where status=0) tmp
+            where tmp.id = #{postId}
+            """)
     @Result(column = "topics", property = "topics", typeHandler = ListTypeHandler.class)
     Post getPost(Integer postId);
 

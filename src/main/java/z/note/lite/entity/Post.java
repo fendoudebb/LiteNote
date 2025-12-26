@@ -46,4 +46,12 @@ public class Post {
 
     private List<String> images;
 
+    private Integer prevId;
+
+    private String prevTitle;
+
+    private Integer nextId;
+
+    private String nextTitle;
+
 }
