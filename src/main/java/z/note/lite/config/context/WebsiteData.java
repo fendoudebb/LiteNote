@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 import z.note.lite.entity.Link;
 import z.note.lite.entity.Post;
+import z.note.lite.entity.PostYearlyStats;
 import z.note.lite.entity.RecordSearchRank;
 import z.note.lite.entity.Topic;
 import z.note.lite.entity.TopicData;
@@ -33,5 +34,7 @@ public class WebsiteData {
     private List<Topic> recommendedTopics;
 
     private List<Post> todayInHistoryPosts;
+
+    private List<PostYearlyStats> postYearlyStatsList;
 
 }

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import z.note.lite.config.mybatis.ListTypeHandler;
 import z.note.lite.entity.Post;
+import z.note.lite.entity.PostYearlyStats;
 import z.note.lite.entity.TopicData;
 
 import java.util.List;
@@ -57,6 +58,14 @@ public interface PostMapper {
 
     @Select("select count(*) as count from post where status=0 and topics @> ARRAY[#{topic}::text]")
     int countPostByTopic(String topic);
+
+    @Select("""
+            select extract(year from create_ts) as year, count(*) as count from post
+            where status=0
+            group by year
+            order by year desc
+            """)
+    List<PostYearlyStats> getPostYearlyStatsList();
 
     @Select("""
             select

@@ -17,6 +17,16 @@
             <li><span th:text="|#{data_visitors_count}: ${@websiteData.ipCount}|">访客数：10</span></li>
             <li><span th:text="|#{data_views}: ${@websiteData.pageView}|">浏览量：10</span></li>
         </ul>
+        <th:block th:if="${!#lists.isEmpty(@websiteData.postYearlyStatsList)}">
+            <div class="shadow list-widget-section" style="margin-bottom: 0">
+                <span th:text="#{data_yearly_posts}" class="list-widget-title">历年文章数</span>
+            </div>
+            <ul class="shadow list-widget">
+                <li th:each="stats : ${@websiteData.postYearlyStatsList}">
+                    <span th:text="${#messages.msg('data_yearly_posts_info', stats.count, stats.year)}">2025 年 60 篇</span>
+                </li>
+            </ul>
+        </th:block>
         <th:block th:if="${!#lists.isEmpty(@websiteData.links)}">
             <div class="shadow list-widget-section" style="margin-bottom: 0">
                 <span th:text="#{data_links}" class="list-widget-title">友情链接</span>

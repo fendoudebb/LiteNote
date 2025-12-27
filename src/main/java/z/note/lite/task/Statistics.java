@@ -3,12 +3,14 @@ package z.note.lite.task;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import z.note.lite.config.context.WebsiteData;
 import z.note.lite.entity.Link;
 import z.note.lite.entity.Post;
+import z.note.lite.entity.PostYearlyStats;
 import z.note.lite.entity.RecordSearchRank;
 import z.note.lite.entity.Topic;
 import z.note.lite.entity.TopicData;
@@ -137,6 +139,7 @@ public class Statistics implements InitializingBean {
         websiteStatistics.setRecommendedTopics(recommendTopics);
     }
 
+    @Async
     @Scheduled(cron = "0 0 0 * * ?")
     public void todayInHistory() {
         List<Post> posts = postService.getTodayInHistoryPosts();
@@ -147,9 +150,21 @@ public class Statistics implements InitializingBean {
         websiteStatistics.setTodayInHistoryPosts(posts);
     }
 
+    @Async
+    @Scheduled(cron = "0 0 1 * * ?")
+    public void postYearlyStats() {
+        List<PostYearlyStats> statsList = postService.getPostYearlyStatsList();
+        if (CollectionUtils.isEmpty(statsList)) {
+            log.warn("post yearly stats is empty");
+            return;
+        }
+        websiteStatistics.setPostYearlyStatsList(statsList);
+    }
+
     @Override
     public void afterPropertiesSet() {
         todayInHistory();
+        postYearlyStats();
     }
 
 }
