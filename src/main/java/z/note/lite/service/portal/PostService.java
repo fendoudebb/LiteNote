@@ -3,6 +3,7 @@ package z.note.lite.service.portal;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import z.note.lite.entity.Post;
+import z.note.lite.entity.PostMonthlyStats;
 import z.note.lite.entity.PostYearlyStats;
 import z.note.lite.mapper.portal.PostMapper;
 
@@ -45,6 +46,10 @@ public class PostService {
 
     public List<PostYearlyStats> getPostYearlyStatsList() {
         return postMapper.getPostYearlyStatsList();
+    }
+
+    public List<PostMonthlyStats> getPostMonthStatsList() {
+        return postMapper.getPostMonthlyStatsList();
     }
 
     public String sitemap(String uri) {

@@ -10,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 import z.note.lite.config.context.WebsiteData;
 import z.note.lite.entity.Link;
 import z.note.lite.entity.Post;
+import z.note.lite.entity.PostMonthlyStats;
 import z.note.lite.entity.PostYearlyStats;
 import z.note.lite.entity.RecordSearchRank;
 import z.note.lite.entity.Topic;
@@ -161,10 +162,22 @@ public class Statistics implements InitializingBean {
         websiteStatistics.setPostYearlyStatsList(statsList);
     }
 
+    @Async
+    @Scheduled(cron = "0 0 1 * * ?")
+    public void postMonthlyStats() {
+        List<PostMonthlyStats> statsList = postService.getPostMonthStatsList();
+        if (CollectionUtils.isEmpty(statsList)) {
+            log.warn("post monthly stats is empty");
+            return;
+        }
+        websiteStatistics.setPostMonthlyStatsList(statsList);
+    }
+
     @Override
     public void afterPropertiesSet() {
         todayInHistory();
         postYearlyStats();
+        postMonthlyStats();
     }
 
 }

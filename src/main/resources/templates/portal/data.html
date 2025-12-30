@@ -18,7 +18,7 @@
             <li><span th:text="|#{data_views}: ${@websiteData.pageView}|">浏览量：10</span></li>
         </ul>
         <th:block th:if="${!#lists.isEmpty(@websiteData.postYearlyStatsList)}">
-            <div id="post-yearly-chart" style="height: 300px;margin-bottom: 10px" class="shadow "></div>
+            <div id="post-chart" style="height: 300px;margin-bottom: 10px" class="shadow "></div>
             <script th:inline="javascript">
                 document.addEventListener('DOMContentLoaded', ev => {
                     const loadECharts = () => {
@@ -35,42 +35,62 @@
                     loadECharts()
                         .then(() => {
                             if (typeof echarts !== 'undefined') {
-                                let chartDom = document.getElementById('post-yearly-chart');
-                                var yearlyChart = echarts.init(chartDom);
-                                let option;
-                                let stats = /*[[${@websiteData.postYearlyStatsList}]]*/ [];
-                                option = {
-                                    title: {
-                                        text: /*[[#{data_yearly_posts}]]*/ "历年文章数"
-                                    },
-                                    tooltip: {
-                                        show: true,
-                                    },
-                                    grid: {
-                                        bottom: '10%',
-                                    },
-                                    xAxis: {
-                                        type: 'category',
-                                        data: stats.map(item => item.year).reverse()
-                                    },
-                                    yAxis: {
-                                        type: 'value'
-                                    },
-                                    series: [
-                                        {
-                                            data: stats.map(item => item.count).reverse(),
+                                try {
+                                    let monthlyChartDom = document.getElementById('post-chart');
+                                    var monthlyChart = echarts.init(monthlyChartDom);
+                                    let monthlyStats = /*[[${@websiteData.postMonthlyStatsList}]]*/ [];
+                                    const years = [...new Set(monthlyStats.map(item => item.year))]
+                                    const monthNamesStr = /*[[#{data_months}]]*/ "";
+                                    const monthNames = monthNamesStr.split(",");
+                                    const series = monthNames.map((monthName, monthIndex) => {
+                                        const values = years.map(year => {
+                                            const matchItem = monthlyStats.find(item => item.year === year && item.month === (monthIndex + 1));
+                                            return matchItem ? matchItem.count : 0;
+                                        });
+                                        return {
+                                            name: monthName,
                                             type: 'bar',
-                                            colorBy: 'data',
-                                            showBackground: true,
+                                            stack: 'total',
+                                            data: values,
+                                        }
+                                    })
+                                    let yearlyStats = /*[[${@websiteData.postYearlyStatsList}]]*/ [];
+                                    if (yearlyStats?.length > 0) {
+                                        series.push({
+                                            data: yearlyStats.map(item => item.count),
+                                            type: 'line',
+                                            smooth: true,
                                             label: {
                                                 show: true,
                                             },
-                                        }
-                                    ]
-                                };
-                                option && yearlyChart.setOption(option);
+                                        });
+                                    }
+                                    let option = {
+                                        title: {
+                                            text: /*[[#{data_yearly_posts}]]*/ "历年文章数"
+                                        },
+                                        legend: {
+                                            type: 'scroll',
+                                        },
+                                        tooltip: {
+                                            show: true,
+                                        },
+                                        grid: {
+                                        },
+                                        xAxis: {
+                                            type: 'category',
+                                            data: years
+                                        },
+                                        yAxis: {
+                                            type: 'value'
+                                        },
+                                        series: series
+                                    };
+                                    option && monthlyChart.setOption(option);
+                                } catch (e) {
+                                }
                                 window.addEventListener('resize', () => {
-                                    yearlyChart.resize();
+                                    monthlyChart.resize();
                                 })
                             }
                         })

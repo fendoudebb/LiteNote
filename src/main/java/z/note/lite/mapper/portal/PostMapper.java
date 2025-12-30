@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import z.note.lite.config.mybatis.ListTypeHandler;
 import z.note.lite.entity.Post;
+import z.note.lite.entity.PostMonthlyStats;
 import z.note.lite.entity.PostYearlyStats;
 import z.note.lite.entity.TopicData;
 
@@ -63,9 +64,17 @@ public interface PostMapper {
             select extract(year from create_ts) as year, count(*) as count from post
             where status=0
             group by year
-            order by year desc
+            order by year
             """)
     List<PostYearlyStats> getPostYearlyStatsList();
+
+    @Select("""
+            select extract(year from create_ts) as year, extract(month from create_ts) as month, count(*) as count from post
+            where status=0
+            group by year, month
+            order by year, month
+            """)
+    List<PostMonthlyStats> getPostMonthlyStatsList();
 
     @Select("""
             select
