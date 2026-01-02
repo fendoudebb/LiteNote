@@ -18,7 +18,7 @@
             <li><span th:text="|#{data_views}: ${@websiteData.pageView}|">浏览量：10</span></li>
         </ul>
         <th:block th:if="${!#lists.isEmpty(@websiteData.postYearlyStatsList)}">
-            <div id="post-chart" style="height: 300px;margin-bottom: 10px" class="shadow "></div>
+            <div id="post-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
             <script th:inline="javascript">
                 document.addEventListener('DOMContentLoaded', ev => {
                     const loadECharts = () => {
@@ -36,8 +36,8 @@
                         .then(() => {
                             if (typeof echarts !== 'undefined') {
                                 try {
-                                    let monthlyChartDom = document.getElementById('post-chart');
-                                    var monthlyChart = echarts.init(monthlyChartDom);
+                                    let postChartDom = document.getElementById('post-chart');
+                                    var postChart = echarts.init(postChartDom);
                                     let monthlyStats = /*[[${@websiteData.postMonthlyStatsList}]]*/ [];
                                     const years = [...new Set(monthlyStats.map(item => item.year))]
                                     const monthNamesStr = /*[[#{data_months}]]*/ "";
@@ -71,11 +71,17 @@
                                         },
                                         legend: {
                                             type: 'scroll',
+                                            left: '5%',
                                         },
                                         tooltip: {
                                             show: true,
                                         },
                                         grid: {
+                                            show: false,
+                                            left: '5%',
+                                            right: '5%',
+                                            bottom: '15%',
+                                            containLabel: true,
                                         },
                                         xAxis: {
                                             type: 'category',
@@ -86,16 +92,16 @@
                                         },
                                         series: series
                                     };
-                                    option && monthlyChart.setOption(option);
+                                    option && postChart.setOption(option);
                                 } catch (e) {
                                 }
                                 window.addEventListener('resize', () => {
-                                    monthlyChart.resize();
+                                    postChart.resize();
                                 })
                             }
                         })
                         .catch((err) => {
-                            let chartDom = document.getElementById('post-yearly-chart');
+                            let chartDom = document.getElementById('post-chart');
                             chartDom.style.display = 'none';
                             console.log(err)
                         })
