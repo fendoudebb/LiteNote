@@ -38,7 +38,7 @@
                                 try {
                                     let postChartDom = document.getElementById('post-chart');
                                     var postChart = echarts.init(postChartDom);
-                                    let monthlyStats = /*[[${@websiteData.postMonthlyStatsList}]]*/ [];
+                                    const monthlyStats = /*[[${@websiteData.postMonthlyStatsList}]]*/ [];
                                     const years = [...new Set(monthlyStats.map(item => item.year))]
                                     const monthNamesStr = /*[[#{data_months}]]*/ "";
                                     const monthNames = monthNamesStr.split(",");
@@ -54,9 +54,11 @@
                                             data: values,
                                         }
                                     })
-                                    let yearlyStats = /*[[${@websiteData.postYearlyStatsList}]]*/ [];
+                                    const yearlyStats = /*[[${@websiteData.postYearlyStatsList}]]*/ [];
                                     if (yearlyStats?.length > 0) {
-                                        series.push({
+                                        series.unshift({
+                                            name: /*[[#{data_yearly_posts}]]*/ "历年文章数",
+                                            color: '#4CAF50',
                                             data: yearlyStats.map(item => item.count),
                                             type: 'line',
                                             smooth: true,
@@ -65,7 +67,7 @@
                                             },
                                         });
                                     }
-                                    let option = {
+                                    const option = {
                                         title: {
                                             text: /*[[#{data_yearly_posts}]]*/ "历年文章数"
                                         },
@@ -74,7 +76,12 @@
                                             left: '5%',
                                         },
                                         tooltip: {
-                                            show: true,
+                                            axisPointer: {
+                                                type: 'cross',
+                                                crossStyle: {
+                                                    color: '#999',
+                                                }
+                                            }
                                         },
                                         grid: {
                                             show: false,
@@ -85,14 +92,17 @@
                                         },
                                         xAxis: {
                                             type: 'category',
-                                            data: years
+                                            data: years,
+                                            axisPointer: {
+                                                type: 'shadow'
+                                            }
                                         },
                                         yAxis: {
                                             type: 'value'
                                         },
                                         series: series
                                     };
-                                    option && postChart.setOption(option);
+                                    postChart.setOption(option);
                                 } catch (e) {
                                 }
                                 window.addEventListener('resize', () => {
