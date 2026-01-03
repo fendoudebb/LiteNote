@@ -1,0 +1,185 @@
+<th:block th:if="${!#lists.isEmpty(@websiteData.postYearlyStatsList)}">
+    <div id="post-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div id="trend-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <script th:inline="javascript">
+        function getAxisBreakRange(data) {
+            const validData = data.filter(val => typeof val === 'number' && !isNaN(val)).sort((a, b) => a - b);
+            if (validData.length <= 4) return { hasOutlier: false };
+
+            const q1Index = Math.floor(validData.length * 0.25);
+            const q3Index = Math.ceil(validData.length * 0.75) - 1;
+            const Q1 = validData[q1Index];
+            const Q3 = validData[q3Index];
+            const IQR = Q3 - Q1;
+
+            const outlierThreshold = Q3 + 1.5 * IQR;
+            const outliers = validData.filter(val => val > outlierThreshold);
+            if (outliers.length === 0) return { hasOutlier: false };
+
+            const normalMax = Math.max(...validData.filter(val => val <= outlierThreshold));
+            const outlierMax = Math.max(...outliers);
+            return {
+                hasOutlier: true,
+                start: normalMax,
+                end: outlierMax,
+                gap: "1.5%"
+            };
+        }
+        document.addEventListener('DOMContentLoaded', ev => {
+            const loadECharts = () => {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.referrerPolicy = 'no-referrer';
+                    script.crossOrigin = 'anonymous';
+                    script.src = /*[[${@portal.js.get('echarts').getFirst()}]]*/ 'http://echarts.js';
+                    script.onload = () => resolve();
+                    script.onerror = () => reject(new Error('ECharts loads on error'))
+                    document.body.appendChild(script);
+                });
+            };
+            loadECharts()
+                .then(() => {
+                    if (typeof echarts !== 'undefined') {
+                        const monthlyStats = /*[[${@websiteData.postMonthlyStatsList}]]*/ [];
+                        const monthNamesStr = /*[[#{data_months}]]*/ "";
+                        const monthNames = monthNamesStr.split(",");
+                        try {
+                            let postChartDom = document.getElementById('post-chart');
+                            var postChart = echarts.init(postChartDom);
+                            const years = [...new Set(monthlyStats.map(item => item.year))]
+                            const series = monthNames.map((monthName, monthIndex) => {
+                                const values = years.map(year => {
+                                    const matchItem = monthlyStats.find(item => item.year === year && item.month === (monthIndex + 1));
+                                    return matchItem ? matchItem.count : 0;
+                                });
+                                return {
+                                    name: monthName,
+                                    type: 'bar',
+                                    stack: 'total',
+                                    data: values,
+                                }
+                            })
+                            const yearlyStats = /*[[${@websiteData.postYearlyStatsList}]]*/ [];
+                            if (yearlyStats?.length > 0) {
+                                series.unshift({
+                                    name: /*[[#{data_yearly_posts}]]*/ "历年文章数",
+                                    color: '#4CAF50',
+                                    data: yearlyStats.map(item => item.count),
+                                    type: 'line',
+                                    smooth: true,
+                                    label: {
+                                        show: true,
+                                    },
+                                });
+                            }
+                            const option = {
+                                title: {
+                                    text: /*[[#{data_yearly_posts}]]*/ "历年文章数"
+                                },
+                                legend: {
+                                    type: 'scroll',
+                                    left: '5%',
+                                },
+                                tooltip: {
+                                    axisPointer: {
+                                        type: 'cross',
+                                        crossStyle: {
+                                            color: '#999',
+                                        }
+                                    }
+                                },
+                                grid: {
+                                    show: false,
+                                    left: '5%',
+                                    right: '5%',
+                                    bottom: '15%',
+                                    containLabel: true,
+                                },
+                                xAxis: {
+                                    type: 'category',
+                                    data: years,
+                                    axisPointer: {
+                                        type: 'shadow'
+                                    }
+                                },
+                                yAxis: {
+                                    type: 'value'
+                                },
+                                series: series
+                            };
+                            postChart.setOption(option);
+                        } catch (e) {
+                        }
+                        try {
+                            const trendChartDom = document.getElementById('trend-chart');
+                            var trendChart = echarts.init(trendChartDom);
+                            const yearGroup = {};
+                            monthlyStats.forEach(item => {
+                                const year = item.year;
+                                if (!yearGroup[year]) {
+                                    yearGroup[year] = {};
+                                }
+                                yearGroup[year][item.month] = item.count;
+                            })
+                            const chartData = [];
+                            Object.keys(yearGroup).forEach(year => {
+                                const monthData = [];
+                                for (let i = 1; i <= 12; i++) {
+                                    monthData.push(yearGroup[year][i] || 0);
+                                }
+                                chartData.push({
+                                    year: year,
+                                    data: monthData,
+                                })
+                            })
+                            const breakConfig = getAxisBreakRange(monthlyStats.map(item => item.count));
+                            let option = {
+                                title: {
+                                    text: /*[[#{data_yearly_posts_trend}]]*/ ""
+                                },
+                                legend: {
+                                    type: 'scroll',
+                                    left: '5%',
+                                },
+                                tooltip: {
+                                    show: true,
+                                },
+                                grid: {
+                                },
+                                xAxis: {
+                                    type: 'category',
+                                    data: monthNames
+                                },
+                                yAxis: {
+                                    type: 'value',
+                                    breaks: breakConfig.hasOutlier ? [breakConfig] : null,
+                                    breakArea: {
+                                        itemStyle: {
+                                            opacity: 1
+                                        },
+                                        zigzagZ: 200
+                                    },
+                                },
+                                series: chartData.map(item => ({
+                                    name: `${item.year}`,
+                                    type: 'line',
+                                    data: item.data,
+                                }))
+                            };
+                            trendChart.setOption(option);
+                        } catch (e) {
+                        }
+                        window.addEventListener('resize', () => {
+                            postChart.resize();
+                            trendChart.resize();
+                        })
+                    }
+                })
+                .catch((err) => {
+                    document.getElementById('post-chart').style.display = 'none';
+                    document.getElementById('trend-chart').style.display = 'none';
+                    console.log(err)
+                })
+        })
+    </script>
+</th:block>
