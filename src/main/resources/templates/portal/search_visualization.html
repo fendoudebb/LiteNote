@@ -1,0 +1,73 @@
+<th:block th:if="${!#lists.isEmpty(@websiteData.rankSearches)}">
+    <div id="search-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', ev => {
+            const loadECharts = () => {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.referrerPolicy = 'no-referrer';
+                    script.crossOrigin = 'anonymous';
+                    script.src = /*[[${@portal.js.get('echarts').getFirst()}]]*/ 'http://echarts.js';
+                    script.onload = () => resolve();
+                    script.onerror = () => reject(new Error('ECharts loads on error'))
+                    document.body.appendChild(script);
+                });
+            };
+            loadECharts()
+                .then(() => {
+                    if (typeof echarts !== 'undefined') {
+                        const rankSearches = /*[[${@websiteData.rankSearches}]]*/ [];
+                        try {
+                            let searchChartDom = document.getElementById('search-chart');
+                            var searchChart = echarts.init(searchChartDom);
+
+                            const option = {
+                                title: {
+                                    text: /*[[#{data_leaderboard_search}]]*/ "搜索排行榜"
+                                },
+                                tooltip: {
+                                    axisPointer: {
+                                        type: 'cross',
+                                        crossStyle: {
+                                            color: '#999',
+                                        }
+                                    }
+                                },
+                                grid: {
+                                    show: false,
+                                    left: '5%',
+                                    right: '5%',
+                                    bottom: '15%',
+                                    containLabel: true,
+                                },
+                                xAxis: {
+                                    type: 'category',
+                                    data: rankSearches.map(item => item.keywords),
+                                },
+                                yAxis: {
+                                    type: 'value'
+                                },
+                                series: [{
+                                    type: 'bar',
+                                    data: rankSearches.map(item => item.count),
+                                    colorBy: 'data',
+                                    label: {
+                                        show: true
+                                    }
+                                }]
+                            };
+                            searchChart.setOption(option);
+                        } catch (e) {
+                        }
+                        window.addEventListener('resize', () => {
+                            searchChart.resize();
+                        })
+                    }
+                })
+                .catch((err) => {
+                    document.getElementById('search-chart').style.display = 'none';
+                    console.log(err)
+                })
+        })
+    </script>
+</th:block>

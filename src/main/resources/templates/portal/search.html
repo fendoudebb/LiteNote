@@ -107,12 +107,11 @@
         }
     </style>
     <style>
-        body {
+        .container {
             display: flex;
             flex-direction: column;
-        }
-        .footer{
-            margin-top: auto;
+            height: 100vh;
+            overflow-y: auto;
         }
         .main {
             flex: 1;
@@ -120,32 +119,34 @@
     </style>
 </head>
 <body>
-<th:block th:replace="~{portal/header}"></th:block>
-<div class="main">
-    <div class="content">
-        <div style="margin-bottom: 20px">
-            <input th:value="${keywords}" th:maxlength="${@portal.search.maxlength}" th:placeholder="#{search_input_placeholder}"
-                   list="custom-datalist" type="search" autocomplete="off" class="search-input">
-            <button th:text="#{search_btn_text}" type="button" class="search-button">搜索</button>
-            <datalist id="custom-datalist">
-                <th:block th:each="search : ${@websiteData.rankSearches}">
-                    <option th:value="${search.keywords}" th:text="|#{data_search_count}: ${search.count}|"></option>
-                </th:block>
-            </datalist>
-        </div>
-        <th:block th:if="${#lists.isEmpty(posts)}">
-            <div th:if="${keywords}" th:text="#{search_empty_data}" class="shadow"
-                 style="padding: 30px;text-align: center">未搜索到内容
+<div class="container">
+    <th:block th:replace="~{portal/header}"></th:block>
+    <div class="main">
+        <div class="content">
+            <div style="margin-bottom: 20px">
+                <input th:value="${keywords}" th:maxlength="${@portal.search.maxlength}" th:placeholder="#{search_input_placeholder}"
+                       list="custom-datalist" type="search" autocomplete="off" class="search-input">
+                <button th:text="#{search_btn_text}" type="button" class="search-button">搜索</button>
+                <datalist id="custom-datalist">
+                    <th:block th:each="search : ${@websiteData.rankSearches}">
+                        <option th:value="${search.keywords}" th:text="|#{data_search_count}: ${search.count}|"></option>
+                    </th:block>
+                </datalist>
             </div>
-        </th:block>
-        <th:block th:unless="${#lists.isEmpty(posts)}">
-            <ul th:each="post : ${posts}">
-                <li class="shadow index-post-item">
-                    <a th:utext="${post.title}" th:href="|/p/${post.id}.html|" class="index-post-title-a ellipsis">
-                        UnescapeHTML Title
-                    </a>
-                    <p th:utext="${post.description}" class="index-post-desc">UnescapeHTML Description</p>
-                    <p>
+            <th:block th:if="${#lists.isEmpty(posts)}">
+                <div th:if="${keywords}" th:text="#{search_empty_data}" class="shadow"
+                     style="padding: 30px;text-align: center">未搜索到内容
+                </div>
+                <th:block th:replace="~{portal/search_visualization}"></th:block>
+            </th:block>
+            <th:block th:unless="${#lists.isEmpty(posts)}">
+                <ul th:each="post : ${posts}">
+                    <li class="shadow index-post-item">
+                        <a th:utext="${post.title}" th:href="|/p/${post.id}.html|" class="index-post-title-a ellipsis">
+                            UnescapeHTML Title
+                        </a>
+                        <p th:utext="${post.description}" class="index-post-desc">UnescapeHTML Description</p>
+                        <p>
                         <span style="color: #8a8a8a">
                             <th:block th:text="|${#temporals.format(post.createTs, 'yyyy-MM-dd', T(java.time.ZoneId).systemDefault())}, |"/>
                             <th:block th:text="|#{index_views}: ${post.pv}|"/>
@@ -159,19 +160,20 @@
                                 </th:block>
                             </th:block>
                         </span>
-                    </p>
-                </li>
-            </ul>
-            <div class="pagination">
-                <a th:if="${page == 1}" th:text="#{pagination_prev}" class="disabled" href="javascript:void(0);">上一页</a>
-                <a th:unless="${page == 1}" th:text="#{pagination_prev}" th:href="@{/search.html(keywords=${keywords},page=${page - 1})}">上一页</a>
-                <a th:if="${@portal.search.size == #lists.size(posts)}" th:text="#{pagination_next}" th:href="@{/search.html(keywords=${keywords},page=${page + 1})}">下一页</a>
-                <a th:unless="${@portal.search.size == #lists.size(posts)}" th:text="#{pagination_next}" class="disabled" href="javascript:void(0);">下一页</a>
-            </div>
-        </th:block>
+                        </p>
+                    </li>
+                </ul>
+                <div class="pagination">
+                    <a th:if="${page == 1}" th:text="#{pagination_prev}" class="disabled" href="javascript:void(0);">上一页</a>
+                    <a th:unless="${page == 1}" th:text="#{pagination_prev}" th:href="@{/search.html(keywords=${keywords},page=${page - 1})}">上一页</a>
+                    <a th:if="${@portal.search.size == #lists.size(posts)}" th:text="#{pagination_next}" th:href="@{/search.html(keywords=${keywords},page=${page + 1})}">下一页</a>
+                    <a th:unless="${@portal.search.size == #lists.size(posts)}" th:text="#{pagination_next}" class="disabled" href="javascript:void(0);">下一页</a>
+                </div>
+            </th:block>
+        </div>
     </div>
+    <th:block th:replace="~{portal/footer}"></th:block>
 </div>
-<th:block th:replace="~{portal/footer}"></th:block>
 <script>
     let searchBtn = document.querySelector(".search-button");
     let searchInput = document.querySelector(".search-input");
