@@ -9,6 +9,7 @@ import z.note.lite.entity.Post;
 import z.note.lite.entity.PostMonthlyStats;
 import z.note.lite.entity.PostYearlyStats;
 import z.note.lite.entity.TopicData;
+import z.note.lite.entity.TopicPostMonthlyStats;
 
 import java.util.List;
 
@@ -75,6 +76,29 @@ public interface PostMapper {
             order by year, month
             """)
     List<PostMonthlyStats> getPostMonthlyStatsList();
+
+    @Select("""
+            WITH topic_monthly AS (
+              SELECT
+                DATE_TRUNC('month', create_ts) AS month,
+                unnest(topics) AS topic,
+                COUNT(id) AS month_count
+              FROM post
+              WHERE status = 0
+              GROUP BY month, topic
+            )
+            SELECT
+              topic,
+              month,
+              month_count,
+              SUM(month_count) OVER(
+                PARTITION BY topic
+                ORDER BY month
+              ) AS cumulative_count
+            FROM topic_monthly
+            ORDER BY topic, month
+            """)
+    List<TopicPostMonthlyStats> getTopicPostMonthStatsList();
 
     @Select("""
             select

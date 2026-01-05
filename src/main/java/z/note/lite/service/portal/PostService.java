@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import z.note.lite.entity.Post;
 import z.note.lite.entity.PostMonthlyStats;
 import z.note.lite.entity.PostYearlyStats;
+import z.note.lite.entity.TopicPostMonthlyStats;
 import z.note.lite.mapper.portal.PostMapper;
 
 import java.util.List;
@@ -50,6 +51,10 @@ public class PostService {
 
     public List<PostMonthlyStats> getPostMonthStatsList() {
         return postMapper.getPostMonthlyStatsList();
+    }
+
+    public List<TopicPostMonthlyStats> getTopicPostMonthStatsList() {
+        return postMapper.getTopicPostMonthStatsList();
     }
 
     public String sitemap(String uri) {

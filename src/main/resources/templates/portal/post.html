@@ -55,6 +55,8 @@
             </div>
         </div>
 
+        <th:block th:replace="~{portal/post_visualization}"></th:block>
+
         <div th:if="${@websiteData.todayInHistoryPosts}">
             <div class="shadow list-widget-section" style="margin-bottom: 0">
                 <span th:text="#{post_today_in_history}" class="list-widget-title">历史上的今天</span>

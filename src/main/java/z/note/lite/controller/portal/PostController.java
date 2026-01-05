@@ -5,16 +5,21 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import z.note.lite.config.advice.response.Response;
+import z.note.lite.config.context.WebsiteData;
 import z.note.lite.controller.Endpoint;
 import z.note.lite.entity.Post;
+import z.note.lite.entity.TopicPostMonthlyStats;
 import z.note.lite.service.portal.PostService;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Controller
 public class PostController {
@@ -22,12 +27,22 @@ public class PostController {
     @Resource
     private PostService postService;
 
+    @Resource
+    private WebsiteData websiteData;
+
     @GetMapping(Endpoint.Portal.POST) // /p/{postId}.html
     public String post(@PathVariable Integer postId, Model model, HttpServletResponse response) {
         Post post = postService.getPost(postId);
         if (Objects.isNull(post)) {
             response.setStatus(HttpStatus.NOT_FOUND.value());
             return "error";
+        }
+        if (!CollectionUtils.isEmpty(post.getTopics()) &&
+                !CollectionUtils.isEmpty(websiteData.getTopicPostMonthlyStatsList())) {
+            List<TopicPostMonthlyStats> list = websiteData.getTopicPostMonthlyStatsList().stream()
+                    .filter(item -> post.getTopics().contains(item.getTopic()))
+                    .collect(Collectors.toList());
+            model.addAttribute("topicPostMonthlyStatsList", list);
         }
         model.addAttribute("post", post);
         return "portal/post";

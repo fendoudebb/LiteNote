@@ -15,6 +15,7 @@ import z.note.lite.entity.PostYearlyStats;
 import z.note.lite.entity.RecordSearchRank;
 import z.note.lite.entity.Topic;
 import z.note.lite.entity.TopicData;
+import z.note.lite.entity.TopicPostMonthlyStats;
 import z.note.lite.service.portal.IpService;
 import z.note.lite.service.portal.LinkService;
 import z.note.lite.service.portal.PageViewService;
@@ -173,11 +174,23 @@ public class Statistics implements InitializingBean {
         websiteStatistics.setPostMonthlyStatsList(statsList);
     }
 
+    @Async
+    @Scheduled(cron = "0 0 1 * * ?")
+    public void topicPostMonthlyStats() {
+        List<TopicPostMonthlyStats> statsList = postService.getTopicPostMonthStatsList();
+        if (CollectionUtils.isEmpty(statsList)) {
+            log.warn("topic post monthly stats is empty");
+            return;
+        }
+        websiteStatistics.setTopicPostMonthlyStatsList(statsList);
+    }
+
     @Override
     public void afterPropertiesSet() {
         todayInHistory();
         postYearlyStats();
         postMonthlyStats();
+        topicPostMonthlyStats();
     }
 
 }

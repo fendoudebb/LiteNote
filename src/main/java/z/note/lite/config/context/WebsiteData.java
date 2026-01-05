@@ -9,6 +9,7 @@ import z.note.lite.entity.PostYearlyStats;
 import z.note.lite.entity.RecordSearchRank;
 import z.note.lite.entity.Topic;
 import z.note.lite.entity.TopicData;
+import z.note.lite.entity.TopicPostMonthlyStats;
 
 import java.util.List;
 
@@ -39,5 +40,7 @@ public class WebsiteData {
     private List<PostYearlyStats> postYearlyStatsList;
 
     private List<PostMonthlyStats> postMonthlyStatsList;
+
+    private List<TopicPostMonthlyStats> topicPostMonthlyStatsList;
 
 }

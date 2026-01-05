@@ -1,0 +1,87 @@
+<th:block th:if="${!#lists.isEmpty(topicPostMonthlyStatsList)}">
+    <div id="topic-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', ev => {
+            const loadECharts = () => {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.referrerPolicy = 'no-referrer';
+                    script.crossOrigin = 'anonymous';
+                    script.src = /*[[${@portal.js.get('echarts').getFirst()}]]*/ 'http://echarts.js';
+                    script.onload = () => resolve();
+                    script.onerror = () => reject(new Error('ECharts loads on error'))
+                    document.body.appendChild(script);
+                });
+            };
+            loadECharts()
+                .then(() => {
+                    if (typeof echarts !== 'undefined') {
+                        const monthlyStats = /*[[${topicPostMonthlyStatsList}]]*/ [];
+                        const topicGroup = {};
+                        monthlyStats.forEach(item => {
+                            const {topic, month, cumulativeCount} = item;
+                            if (!topicGroup[topic]) {
+                                topicGroup[topic] = [];
+                            }
+                            topicGroup[topic].push([
+                                new Date(month),
+                                cumulativeCount
+                            ])
+                        });
+                        try {
+                            const topicChartDom = document.getElementById('topic-chart');
+                            var topicChart = echarts.init(topicChartDom);
+                            const option = {
+                                title: {
+                                    text: /*[[#{v_topic_trend}]]*/ ""
+                                },
+                                legend: {
+                                    type: 'scroll',
+                                    left: 'center',
+                                },
+                                tooltip: {
+                                    trigger: 'axis',
+                                    formatter: (value) => {
+                                        return `${value[0].axisValueLabel.substring(0, 7)}<br>${value[0].seriesName}: ${value[0].data[1]}`;
+                                    }
+                                },
+                                grid: {
+                                    show: false,
+                                    left: '5%',
+                                    bottom: '15%',
+                                    containLabel: true,
+                                },
+                                xAxis: {
+                                    type: 'time',
+                                    axisLabel: {
+                                        formatter : (value) => {
+                                            return echarts.time.format(value,  '{yyyy}', false, 'zh-CN');
+                                        },
+                                    },
+                                },
+                                yAxis: {
+                                    type: 'value',
+                                },
+                                animationDuration: 5000,
+                                series: Object.entries(topicGroup).map(([topic, seriesData]) => ({
+                                    name: topic,
+                                    type: 'line',
+                                    data: seriesData,
+                                    smooth: true,
+                                }))
+                            };
+                            topicChart.setOption(option);
+                        } catch (e) {
+                        }
+                        window.addEventListener('resize', () => {
+                            topicChart.resize();
+                        })
+                    }
+                })
+                .catch((err) => {
+                    document.getElementById('topic-chart').style.display = 'none';
+                    console.log(err)
+                })
+        })
+    </script>
+</th:block>
