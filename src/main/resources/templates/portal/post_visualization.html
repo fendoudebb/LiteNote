@@ -19,12 +19,12 @@
                         const monthlyStats = /*[[${topicPostMonthlyStatsList}]]*/ [];
                         const topicGroup = {};
                         monthlyStats.forEach(item => {
-                            const {topic, month, cumulativeCount} = item;
+                            const {topic, year, month, cumulativeCount} = item;
                             if (!topicGroup[topic]) {
                                 topicGroup[topic] = [];
                             }
                             topicGroup[topic].push([
-                                new Date(month),
+                                `${year}-${month}`,
                                 cumulativeCount
                             ])
                         });
@@ -35,39 +35,75 @@
                                 title: {
                                     text: /*[[#{v_topic_trend}]]*/ ""
                                 },
+                                color: ['#4CAF50', '#ee6666', '#9a60b4',],
                                 legend: {
                                     type: 'scroll',
                                     left: 'center',
                                 },
                                 tooltip: {
                                     trigger: 'axis',
-                                    formatter: (value) => {
-                                        return `${value[0].axisValueLabel.substring(0, 7)}<br>${value[0].seriesName}: ${value[0].data[1]}`;
-                                    }
+                                    formatter: (params) => {
+                                        const param = params[0];
+                                        return `${echarts.time.format(param.data[0],  '{yyyy}-{MM}', false)}<br>${param.marker}${param.seriesName}: ${param.data[1]}`;
+                                    },
+                                    axisPointer: {
+                                        type: 'cross',
+                                        label: {
+                                            formatter: (params) => {
+                                                if (params.axisDimension === 'x') {
+                                                    return echarts.time.format(params.value,  '{yyyy}-{MM}', false)
+                                                } else {
+                                                    return params.value.toFixed(2);
+                                                }
+                                            }
+                                        },
+                                    },
                                 },
                                 grid: {
                                     show: false,
                                     left: '5%',
+                                    right: '80',
                                     bottom: '15%',
                                     containLabel: true,
                                 },
                                 xAxis: {
                                     type: 'time',
                                     axisLabel: {
-                                        formatter : (value) => {
-                                            return echarts.time.format(value,  '{yyyy}', false, 'zh-CN');
-                                        },
+                                        formatter : '{yyyy}',
+                                        hideOverlap: true,
                                     },
+                                    tooltip: {
+                                        show: true,
+                                        position: 'top',
+                                    }
                                 },
                                 yAxis: {
                                     type: 'value',
                                 },
-                                animationDuration: 5000,
+                                animationDuration: 3000,
                                 series: Object.entries(topicGroup).map(([topic, seriesData]) => ({
                                     name: topic,
                                     type: 'line',
                                     data: seriesData,
+                                    emphasis: {
+                                        focus: 'series',
+                                        label: {
+                                            show: true,
+                                        },
+                                    },
                                     smooth: true,
+                                    symbol: seriesData.length > 1 ? 'none' : 'emptyCircle',
+                                    endLabel: {
+                                        show: true,
+                                        color: 'inherit',
+                                        formatter: '{a}',
+                                        width: 75,
+                                        distance: 5,
+                                        overflow: 'breakAll',
+                                    },
+                                    labelLayout: {
+                                        moveOverlap: 'shiftY',
+                                    }
                                 }))
                             };
                             topicChart.setOption(option);
