@@ -1,0 +1,100 @@
+<th:block th:if="${!#lists.isEmpty(@websiteData.topicDataList)}">
+    <div id="topics-chart" style="height: 400px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', ev => {
+            const loadECharts = () => {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.referrerPolicy = 'no-referrer';
+                    script.crossOrigin = 'anonymous';
+                    script.src = /*[[${@portal.js.get('echarts').getFirst()}]]*/ 'http://echarts.js';
+                    script.onload = () => resolve();
+                    script.onerror = () => reject(new Error('ECharts loads on error'))
+                    document.body.appendChild(script);
+                });
+            };
+            loadECharts()
+                .then(() => {
+                    const script = document.createElement('script');
+                    script.referrerPolicy = 'no-referrer';
+                    script.crossOrigin = 'anonymous';
+                    script.src = /*[[${@portal.js.get('wordcloud').getFirst()}]]*/ 'http://wordcloud.js';
+                    script.onload = () => {
+                        if (typeof echarts !== 'undefined') {
+                            const topicDataList = /*[[${@websiteData.topicDataList}]]*/ [];
+                            try {
+                                let topicsChartDom = document.getElementById('topics-chart');
+                                var topicsChart = echarts.init(topicsChartDom);
+
+                                const option = {
+                                    title: {
+                                        text: /*[[#{topic_wordcloud}]]*/ "标签云"
+                                    },
+                                    tooltip: {
+                                        enterable: true,
+                                    },
+                                    series: [{
+                                        type: 'wordCloud',
+                                        shape: 'circle',
+                                        keepAspect: false,
+                                        left: 'center',
+                                        top: 'center',
+                                        width: '90%',
+                                        height: '80%',
+                                        right: null,
+                                        bottom: null,
+                                        sizeRange: [12, 60],
+                                        rotationRange: [-90, 90],
+                                        rotationStep: 45,
+                                        gridSize: 8,
+                                        drawOutOfBound: false,
+                                        shrinkToFit: false,
+                                        layoutAnimation: true,
+                                        textStyle: {
+                                            fontFamily: 'sans-serif',
+                                            fontWeight: 'bold',
+                                            color: function () {
+                                                return 'rgb(' + [
+                                                    Math.round(Math.random() * 160),
+                                                    Math.round(Math.random() * 160),
+                                                    Math.round(Math.random() * 160)
+                                                ].join(',') + ')';
+                                            }
+                                        },
+                                        emphasis: {
+                                            focus: 'self',
+                                            textStyle: {
+                                                textShadowBlur: 10,
+                                                textShadowColor: '#333'
+                                            }
+                                        },
+                                        data: topicDataList.map(item => ({
+                                            name: item.name,
+                                            value: item.count,
+                                        }))
+                                    }]
+                                };
+                                topicsChart.setOption(option);
+                                topicsChart.on('click', (params) => {
+                                    window.location.href = `/topic/${params.data.name}.html`
+                                });
+                            } catch (e) {
+                            }
+                            window.addEventListener('resize', () => {
+                                topicsChart.resize();
+                            })
+                        }
+                    };
+                    script.onerror = () => {
+                        document.getElementById('topics-chart').style.display = 'none';
+                        console.log("word cloud load error");
+                    }
+                    document.body.appendChild(script);
+                })
+                .catch((err) => {
+                    document.getElementById('topics-chart').style.display = 'none';
+                    console.log("echarts load error", err);
+                })
+        })
+    </script>
+</th:block>

@@ -34,6 +34,7 @@
 <th:block th:replace="~{portal/header}"></th:block>
 <div class="main">
     <div class="content">
+        <th:block th:replace="~{portal/topics_visualization}"></th:block>
         <div class="shadow">
             <h1 th:text="#{topic_data_title}">标签列表</h1>
             <th:block th:each="topicData : ${@websiteData.getTopicDataList}">
