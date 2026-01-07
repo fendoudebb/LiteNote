@@ -60,6 +60,8 @@ preferences:
         - https://cdn.bootcdn.net/ajax/libs/highlight.js/10.7.3/highlight.min.js
       echarts:
         - https://cdnjs.cloudflare.com/ajax/libs/echarts/6.0.0/echarts.min.js
+      wordcloud:
+        - https://cdnjs.cloudflare.com/ajax/libs/echarts-wordcloud/2.1.0/echarts-wordcloud.min.js
     icp:
       id: 123456
       link: https://beian.miit.gov.cn
