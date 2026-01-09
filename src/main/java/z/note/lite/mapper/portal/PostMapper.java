@@ -80,23 +80,25 @@ public interface PostMapper {
     @Select("""
             WITH topic_monthly AS (
               SELECT
-                DATE_TRUNC('month', create_ts) AS month,
+                extract(year from create_ts) as year,
+                extract(month from create_ts) as month,
                 unnest(topics) AS topic,
                 COUNT(id) AS month_count
               FROM post
               WHERE status = 0
-              GROUP BY month, topic
+              GROUP BY year, month, topic
             )
             SELECT
               topic,
+              year,
               month,
               month_count,
               SUM(month_count) OVER(
                 PARTITION BY topic
-                ORDER BY month
+                ORDER BY year, month
               ) AS cumulative_count
             FROM topic_monthly
-            ORDER BY topic, month
+            ORDER BY topic, year, month
             """)
     List<TopicPostMonthlyStats> getTopicPostMonthStatsList();
 

@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.OffsetDateTime;
-
 @Setter
 @Getter
 @ToString
@@ -13,7 +11,9 @@ public class TopicPostMonthlyStats {
 
     private String topic;
 
-    private OffsetDateTime month;
+    private Integer year;
+
+    private Integer month;
 
     private Integer monthCount;
 
