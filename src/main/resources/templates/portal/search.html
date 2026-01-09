@@ -135,7 +135,7 @@
             </div>
             <th:block th:if="${#lists.isEmpty(posts)}">
                 <div th:if="${keywords}" th:text="#{search_empty_data}" class="shadow"
-                     style="padding: 30px;text-align: center">未搜索到内容
+                     style="padding: 30px;text-align: center;margin-bottom: 20px">未搜索到内容
                 </div>
                 <th:block th:replace="~{portal/search_visualization}"></th:block>
             </th:block>

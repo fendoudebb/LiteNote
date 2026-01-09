@@ -20,12 +20,13 @@
                         try {
                             let searchChartDom = document.getElementById('search-chart');
                             var searchChart = echarts.init(searchChartDom);
-
+                            const title = /*[[#{data_leaderboard_search}]]*/ "搜索排行榜";
                             const option = {
                                 title: {
-                                    text: /*[[#{data_leaderboard_search}]]*/ "搜索排行榜"
+                                    text: title,
                                 },
                                 tooltip: {
+                                    trigger: 'item',
                                     axisPointer: {
                                         type: 'cross',
                                         crossStyle: {
@@ -48,12 +49,28 @@
                                     type: 'value'
                                 },
                                 series: [{
+                                    name: title,
                                     type: 'bar',
                                     data: rankSearches.map(item => item.count),
                                     colorBy: 'data',
+                                    showBackground: true,
                                     label: {
-                                        show: true
-                                    }
+                                        show: true,
+                                        position: 'top',
+                                    },
+                                    markLine: {
+                                        symbol: 'none',
+                                        data: [
+                                            {
+                                                name: 'Avg',
+                                                type: 'average',
+                                                label: {
+                                                    position: 'middle',
+                                                    formatter: '{b}: {c}'
+                                                },
+                                            }
+                                        ],
+                                    },
                                 }]
                             };
                             searchChart.setOption(option);
