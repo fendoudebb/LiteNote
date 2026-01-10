@@ -10,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 import z.note.lite.config.context.WebsiteData;
 import z.note.lite.entity.Link;
 import z.note.lite.entity.Post;
+import z.note.lite.entity.PostDailyStats;
 import z.note.lite.entity.PostMonthlyStats;
 import z.note.lite.entity.PostYearlyStats;
 import z.note.lite.entity.RecordSearchRank;
@@ -166,12 +167,23 @@ public class Statistics implements InitializingBean {
     @Async
     @Scheduled(cron = "0 0 1 * * ?")
     public void postMonthlyStats() {
-        List<PostMonthlyStats> statsList = postService.getPostMonthStatsList();
+        List<PostMonthlyStats> statsList = postService.getPostMonthlyStatsList();
         if (CollectionUtils.isEmpty(statsList)) {
             log.warn("post monthly stats is empty");
             return;
         }
         websiteStatistics.setPostMonthlyStatsList(statsList);
+    }
+
+    @Async
+    @Scheduled(cron = "0 15 * * * ?")
+    public void postDailyStats() {
+        List<PostDailyStats> statsList = postService.getPostDailyStatsList();
+        if (CollectionUtils.isEmpty(statsList)) {
+            log.warn("post daily stats is empty");
+            return;
+        }
+        websiteStatistics.setPostDailyStatsList(statsList);
     }
 
     @Async
@@ -190,6 +202,7 @@ public class Statistics implements InitializingBean {
         todayInHistory();
         postYearlyStats();
         postMonthlyStats();
+        postDailyStats();
         topicPostMonthlyStats();
     }
 

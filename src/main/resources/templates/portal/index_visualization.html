@@ -1,0 +1,154 @@
+<th:block th:if="${!#lists.isEmpty(@websiteData.postDailyStatsList)}">
+    <div id="calendar-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', ev => {
+            const loadECharts = () => {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.referrerPolicy = 'no-referrer';
+                    script.crossOrigin = 'anonymous';
+                    script.src = /*[[${@portal.js.get('echarts').getFirst()}]]*/ 'http://echarts.js';
+                    script.onload = () => resolve();
+                    script.onerror = () => reject(new Error('ECharts loads on error'))
+                    document.body.appendChild(script);
+                });
+            };
+            loadECharts()
+                .then(() => {
+                    if (typeof echarts !== 'undefined') {
+                        const postDailyStatsList = /*[[${@websiteData.postDailyStatsList}]]*/ [];
+                        const yearSet = new Set();
+                        const yearlyData = {};
+                        const yearMinMax = {};
+                        postDailyStatsList.forEach(item => {
+                            const year = item.year.toString();
+                            yearSet.add(year);
+                            if (!yearlyData[year]) {
+                                yearlyData[year] = [];
+                                yearMinMax[year] = {
+                                    min: 0,
+                                    max: 0,
+                                };
+                            }
+                            yearlyData[year].push([
+                                `${year}-${item.month}-${item.day}`,
+                                item.count
+                            ])
+                            yearMinMax[year].min = Math.min(yearMinMax[year].min, item.count);
+                            yearMinMax[year].max = Math.max(yearMinMax[year].max, item.count);
+                        })
+                        try {
+                            const calendarChartDom = document.getElementById('calendar-chart');
+                            var calendarChart = echarts.init(calendarChartDom);
+                            const timelineYear = [...yearSet];
+                            const option = {
+                                color: ['#4CAF50'],
+                                tooltip: {
+                                    formatter: (params) => {
+                                        console.log(params)
+                                        return `${echarts.time.format(params.data[0], '{yyyy}-{MM}-{dd}', false)}<div style="display: flex; align-items: center; justify-content: space-between;margin-top: 10px">${params.marker}<span>${params.data[1]}</span></div>`
+                                    }
+                                },
+                                visualMap: {
+                                    inRange: {
+                                        opacity: [0.1, 1],
+                                    }
+                                },
+                                options: timelineYear.map(item => ({
+                                    visualMap: {
+                                        show: false,
+                                        min: yearMinMax[item].min,
+                                        max: yearMinMax[item].max,
+                                        calculable: false,
+                                        orient: 'vertical',
+                                    },
+                                    calendar: {
+                                        range: item
+                                    },
+                                    series: [{
+                                        data: yearlyData[item],
+                                    }],
+                                })),
+                                timeline: {
+                                    orient: 'vertical',
+                                    right: 0,
+                                    top: 20,
+                                    bottom: 0,
+                                    axisType: 'category',
+                                    // inverse: true,
+                                    currentIndex: timelineYear.length - 1,
+                                    data: timelineYear,
+                                    // controlPosition: 'none',
+                                    controlStyle: {
+                                        color: '#4CAF50',
+                                        showPlayBtn: false,
+                                        itemSize: 12,
+                                        itemGap: 12,
+                                    },
+                                    label: {
+                                        show: false
+                                    },
+                                    symbolSize: 5,
+                                    checkpointStyle: {
+                                        color: '#4CAF50',
+                                        symbolSize: 6,
+                                    },
+                                    lineStyle: {
+                                    },
+                                    itemStyle: {
+                                    },
+                                    tooltip: {
+                                        formatter: '{b}'
+                                    }
+                                },
+                                calendar: [
+                                    {
+                                        // orient: 'vertical',
+                                        orient: 'horizontal',
+                                        left: 50,
+                                        right: 50,
+                                        top: 50,
+                                        bottom: 50,
+                                        yearLabel: {
+                                            // show: false,
+                                            margin: 15,
+                                            position: 'bottom',
+                                        },
+                                        dayLabel: {
+                                            firstDay: 0,
+                                        },
+                                        monthLabel: {
+                                            margin: 15,
+                                        },
+                                        // range: '2019',
+                                    }
+                                ],
+                                series: [{
+                                    type: 'heatmap',
+                                    coordinateSystem: 'calendar',
+                                    calendarIndex: 0,
+                                    emphasis: {
+                                        focus: 'self',
+                                        textStyle: {
+                                            textShadowBlur: 10,
+                                            textShadowColor: '#333'
+                                        }
+                                    },
+                                    // data: yearlyData['2019'],
+                                }]
+                            };
+                            calendarChart.setOption(option);
+                        } catch (e) {
+                        }
+                        window.addEventListener('resize', () => {
+                            calendarChart.resize();
+                        })
+                    }
+                })
+                .catch((err) => {
+                    document.getElementById('calendar-chart').style.display = 'none';
+                    console.log("echarts load error", err);
+                })
+        })
+    </script>
+</th:block>

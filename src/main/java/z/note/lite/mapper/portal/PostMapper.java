@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import z.note.lite.config.mybatis.ListTypeHandler;
 import z.note.lite.entity.Post;
+import z.note.lite.entity.PostDailyStats;
 import z.note.lite.entity.PostMonthlyStats;
 import z.note.lite.entity.PostYearlyStats;
 import z.note.lite.entity.TopicData;
@@ -76,6 +77,18 @@ public interface PostMapper {
             order by year, month
             """)
     List<PostMonthlyStats> getPostMonthlyStatsList();
+
+    @Select("""
+            select extract(year from create_ts) as year,
+                   extract(month from create_ts) as month,
+                   extract(day from create_ts) as day,
+                   count(*) as count
+            from post
+            where status=0
+            group by 1, 2, 3
+            order by 1, 2, 3
+            """)
+    List<PostDailyStats> getPostDailyStatsList();
 
     @Select("""
             WITH topic_monthly AS (

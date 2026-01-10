@@ -14,6 +14,7 @@
 <th:block th:replace="~{portal/header}"></th:block>
 <div class="main">
     <div class="content">
+        <th:block th:replace="~{portal/index_visualization}"></th:block>
         <ul th:each="post : ${posts}">
             <li class="shadow index-post-item">
                 <a th:text="${post.title}" th:href="|/p/${post.id}.html|" th:title="${post.title}"
