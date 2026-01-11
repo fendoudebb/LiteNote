@@ -34,6 +34,7 @@
         </div>
     </div>
     <div th:unless="${#lists.isEmpty(posts)}" class="content">
+        <th:block th:replace="~{portal/topic_visualization}"></th:block>
         <ul th:each="post : ${posts}">
             <li class="shadow index-post-item">
                 <a th:text="${post.title}" th:href="|/p/${post.id}.html|" th:title="${post.title}"
@@ -45,8 +46,9 @@
                         <th:block th:text="|#{index_views}: ${post.pv}|"/>
                         <th:block th:if="${!#lists.isEmpty(post.topics)}">
                             <th:block th:text="|, #{index_topics}: |"></th:block>
-                            <th:block th:each="topic : ${post.topics}">
-                                <a th:text="${topic}" th:href="|/topic/${topic}.html|" th:title="${topic}"
+                            <th:block th:each="t : ${post.topics}">
+                                <a th:text="${t}" th:href="|/topic/${t}.html|" th:title="${t}"
+                                   th:style="${t == topic} ? 'color: red' : ''"
                                    class="anchor-link-a"></a>
                             </th:block>
                         </th:block>

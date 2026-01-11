@@ -1,0 +1,107 @@
+<th:block th:if="${!#lists.isEmpty(topicPostMonthlyStatsList)}">
+    <div id="topic-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', ev => {
+            const loadECharts = () => {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.referrerPolicy = 'no-referrer';
+                    script.crossOrigin = 'anonymous';
+                    script.src = /*[[${@portal.js.get('echarts').getFirst()}]]*/ 'http://echarts.js';
+                    script.onload = () => resolve();
+                    script.onerror = () => reject(new Error('ECharts loads on error'))
+                    document.body.appendChild(script);
+                });
+            };
+            loadECharts()
+                .then(() => {
+                    if (typeof echarts !== 'undefined') {
+                        try {
+                            const topicChartDom = document.getElementById('topic-chart');
+                            var topicChart = echarts.init(topicChartDom);
+
+                            const monthlyStats = /*[[${topicPostMonthlyStatsList}]]*/ [];
+
+                            console.log(monthlyStats)
+
+                            const title = /*[[${topic}]]*/ "标签";
+                            const data = monthlyStats.map(item => ([`${item.year}-${item.month}`, item.monthCount]));
+                            const option = {
+                                title: {
+                                    text: title,
+                                },
+                                tooltip: {
+                                    trigger: 'axis',
+                                    axisPointer: {
+                                        type: 'cross',
+                                        crossStyle: {
+                                            color: '#999',
+                                        },
+                                        label: {
+                                            formatter: (params) => {
+                                                if (params.axisDimension === 'x') {
+                                                    return echarts.time.format(params.value,  '{yyyy}-{MM}', false)
+                                                } else {
+                                                    return params.value.toFixed(2);
+                                                }
+                                            }
+                                        },
+                                    }
+                                },
+                                grid: {
+                                    show: false,
+                                    left: '5%',
+                                    right: '5%',
+                                    bottom: '15%',
+                                    containLabel: true,
+                                },
+                                legend: {},
+                                xAxis: {
+                                    type: 'time',
+                                },
+                                yAxis: {
+                                    type: 'value',
+                                    axisLine: {
+                                        show: true,
+                                    },
+                                    axisTick: {
+                                        show: true,
+                                    },
+                                },
+                                dataZoom: [
+                                    {
+                                        type: 'inside',
+                                    }
+                                ],
+                                series: [{
+                                    name: 'Bar Chart',
+                                    type: 'bar',
+                                    data: data,
+                                    colorBy: 'data',
+                                },{
+                                    name: 'Line Chart',
+                                    type: 'line',
+                                    smooth: true,
+                                    data: data,
+                                    color: '#4CAF50',
+                                    label: {
+                                        show: true,
+                                        position: 'top',
+                                    },
+                                }]
+                            };
+                            topicChart.setOption(option);
+                        } catch (e) {
+                        }
+                        window.addEventListener('resize', () => {
+                            topicChart.resize();
+                        })
+                    }
+                })
+                .catch((err) => {
+                    document.getElementById('topic-chart').style.display = 'none';
+                    console.log(err)
+                })
+        })
+    </script>
+</th:block>
