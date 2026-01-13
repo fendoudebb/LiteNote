@@ -38,25 +38,25 @@
                                     show: false,
                                     left: '5%',
                                     right: '5%',
-                                    bottom: '15%',
+                                    bottom: '5%',
                                     containLabel: true,
                                 },
                                 xAxis: {
-                                    type: 'category',
-                                    data: rankSearches.map(item => item.keywords),
+                                    type: 'value',
                                 },
                                 yAxis: {
-                                    type: 'value'
+                                    type: 'category',
+                                    inverse: true,
                                 },
                                 series: [{
                                     name: title,
                                     type: 'bar',
-                                    data: rankSearches.map(item => item.count),
+                                    data: rankSearches.map(item => [item.count, item.keywords]),
                                     colorBy: 'data',
                                     showBackground: true,
                                     label: {
                                         show: true,
-                                        position: 'top',
+                                        position: 'right',
                                     },
                                     markLine: {
                                         symbol: 'none',
