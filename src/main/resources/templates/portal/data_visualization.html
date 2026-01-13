@@ -1,4 +1,5 @@
 <th:block th:if="${!#lists.isEmpty(@websiteData.postYearlyStatsList)}">
+    <div id="donut-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <div id="post-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <div id="trend-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <script th:inline="javascript">
@@ -40,11 +41,98 @@
             loadECharts()
                 .then(() => {
                     if (typeof echarts !== 'undefined') {
+                        const yearlyStats = /*[[${@websiteData.postYearlyStatsList}]]*/ [];
+                        const totalPosts = yearlyStats.reduce((acc, curr) => acc + curr.count, 0);
+                        const graphicTitle = /*[[#{data_posts_count}]]*/ "";
+                        try {
+                            const donutChartDom = document.getElementById('donut-chart');
+                            var donutChart = echarts.init(donutChartDom);
+                            const option = {
+                                graphic: {
+                                    elements: [
+                                        {
+                                            type: 'text',
+                                            left: 'center',
+                                            top: 'center',
+                                            style: {
+                                                text: `${graphicTitle}\n\n${totalPosts}`,
+                                                textAlign: 'center',
+                                                fontSize: 30,
+                                                fontWeight: 'bolder',
+                                                lineDash: [0, 200],
+                                                lineDashOffset: 0,
+                                                fill: '#FFE50B',
+                                                stroke: 'rgb(0,0,0,0.7)',
+                                                lineWidth: 1,
+                                            },
+                                            onclick: () => {
+                                                window.location.href = "/";
+                                            },
+                                            keyframeAnimation: {
+                                                duration: 3000,
+                                                loop: false,
+                                                keyframes: [
+                                                    {
+                                                        percent: 0.7,
+                                                        style: {
+                                                            fill: '#FC0006',
+                                                            lineDashOffset: 200,
+                                                            lineDash: [200, 0]
+                                                        }
+                                                    },
+                                                    {
+                                                        // Stop for a while.
+                                                        percent: 0.8,
+                                                        style: {
+                                                            fill: 'transparent'
+                                                        }
+                                                    },
+                                                    {
+                                                        percent: 1,
+                                                        style: {
+                                                            fill: '#4CAF50'
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ],
+                                },
+                                tooltip: {
+                                    valueFormatter: (value) => {
+                                        return `${value}/${totalPosts} (${(value*100/totalPosts).toFixed(0)}%)`
+                                    }
+                                },
+                                legend: {
+                                    type: 'scroll',
+                                    orient: 'vertical',
+                                    icon: 'circle',
+                                    right: 0,
+                                    top: 'center',
+                                    itemWidth: 10,
+                                    itemHeight: 10,
+                                },
+                                series: [{
+                                    type: 'pie',
+                                    radius: ['55%', '75%'],
+                                    label: {
+                                        show: false,
+                                    },
+                                    data: yearlyStats.map(item=>({
+                                        value: item.count,
+                                        name: item.year,
+                                    })),
+                                }],
+                            }
+                            donutChart.setOption(option);
+                        } catch (e) {
+                        }
+
                         const monthlyStats = /*[[${@websiteData.postMonthlyStatsList}]]*/ [];
                         const monthNamesStr = /*[[#{data_months}]]*/ "";
                         const monthNames = monthNamesStr.split(",");
                         try {
-                            let postChartDom = document.getElementById('post-chart');
+                            const postChartDom = document.getElementById('post-chart');
                             var postChart = echarts.init(postChartDom);
                             const years = [...new Set(monthlyStats.map(item => item.year))]
                             const series = monthNames.map((monthName, monthIndex) => {
@@ -57,9 +145,12 @@
                                     type: 'bar',
                                     stack: 'total',
                                     data: values,
+                                    emphasis: {
+                                        focus: 'series',
+                                    },
                                 }
                             })
-                            const yearlyStats = /*[[${@websiteData.postYearlyStatsList}]]*/ [];
+
                             if (yearlyStats?.length > 0) {
                                 series.unshift({
                                     name: /*[[#{data_yearly_posts}]]*/ "历年文章数",
@@ -98,9 +189,6 @@
                                 xAxis: {
                                     type: 'category',
                                     data: years,
-                                    axisPointer: {
-                                        type: 'shadow'
-                                    }
                                 },
                                 yAxis: {
                                     type: 'value'
@@ -135,7 +223,7 @@
                             const breakConfig = getAxisBreakRange(monthlyStats.map(item => item.count));
                             let option = {
                                 title: {
-                                    text: /*[[#{data_yearly_posts_trend}]]*/ ""
+                                    text: /*[[#{data_yearly_posts_distribution}]]*/ ""
                                 },
                                 legend: {
                                     type: 'scroll',
@@ -143,12 +231,21 @@
                                 },
                                 tooltip: {
                                     show: true,
+                                    trigger: 'axis',
                                 },
                                 grid: {
+                                    show: false,
+                                    left: '5%',
+                                    bottom: '15%',
+                                    containLabel: true,
                                 },
                                 xAxis: {
                                     type: 'category',
-                                    data: monthNames
+                                    data: monthNames,
+                                    axisLabel: {
+                                        margin: 15,
+                                        fontSize: 12
+                                    },
                                 },
                                 yAxis: {
                                     type: 'value',
@@ -160,22 +257,43 @@
                                         zigzagZ: 200
                                     },
                                 },
+                                animationDuration: 10000,
                                 series: chartData.map(item => ({
                                     name: `${item.year}`,
                                     type: 'line',
                                     data: item.data,
+                                    emphasis: {
+                                        focus: 'series',
+                                        label: {
+                                            show: true,
+                                        },
+                                    },
+                                    symbolSize: 10,
+                                    endLabel: {
+                                        show: true,
+                                        formatter: '{a}',
+                                        distance: 20,
+                                    },
+                                    // labelLayout: {
+                                    //     moveOverlap: 'shiftY'
+                                    // },
+                                    lineStyle: {
+                                        width: 3
+                                    },
                                 }))
                             };
                             trendChart.setOption(option);
                         } catch (e) {
                         }
                         window.addEventListener('resize', () => {
-                            postChart.resize();
-                            trendChart.resize();
+                            donutChart?.resize();
+                            postChart?.resize();
+                            trendChart?.resize();
                         })
                     }
                 })
                 .catch((err) => {
+                    document.getElementById('donut-chart').style.display = 'none';
                     document.getElementById('post-chart').style.display = 'none';
                     document.getElementById('trend-chart').style.display = 'none';
                     console.log(err)
