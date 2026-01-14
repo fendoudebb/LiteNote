@@ -45,7 +45,6 @@
                                 color: ['#4CAF50'],
                                 tooltip: {
                                     formatter: (params) => {
-                                        console.log(params)
                                         return `${echarts.time.format(params.data[0], '{yyyy}-{MM}-{dd}', false)}<div style="display: flex; align-items: center; justify-content: space-between;margin-top: 10px">${params.marker}<span>${params.data[1]}</span></div>`
                                     }
                                 },
@@ -79,23 +78,36 @@
                                     currentIndex: timelineYear.length - 1,
                                     data: timelineYear,
                                     // controlPosition: 'none',
+                                    symbolSize: 5,
+                                    checkpointStyle: {
+                                        color: '#4CAF50',
+                                        symbolSize: 16,
+                                        symbol: 'diamond',
+                                    },
+                                    lineStyle: {
+                                        color: '#4CAF50',
+                                        opacity: 1,
+                                    },
+                                    itemStyle: {
+                                        color: '#4CAF50',
+                                        opacity: 1,
+                                    },
+                                    label: {
+                                        show: false
+                                    },
                                     controlStyle: {
                                         color: '#4CAF50',
                                         showPlayBtn: false,
                                         itemSize: 12,
                                         itemGap: 12,
                                     },
-                                    label: {
-                                        show: false
-                                    },
-                                    symbolSize: 5,
-                                    checkpointStyle: {
-                                        color: '#4CAF50',
-                                        symbolSize: 6,
-                                    },
-                                    lineStyle: {
-                                    },
-                                    itemStyle: {
+                                    progress: {
+                                        lineStyle: {
+                                            color: '#B0E1B3',
+                                        },
+                                        itemStyle: {
+                                            color: '#B0E1B3',
+                                        },
                                     },
                                     tooltip: {
                                         formatter: '{b}'
