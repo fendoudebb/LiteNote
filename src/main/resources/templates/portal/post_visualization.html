@@ -1,4 +1,6 @@
 <th:block th:if="${!#lists.isEmpty(topicPostMonthlyStatsList)}">
+    <div id="gauge-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div id="pie-chart" style="height: 400px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <div id="topic-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <div id="topic-scatter-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <script th:inline="javascript">
@@ -17,6 +19,193 @@
             loadECharts()
                 .then(() => {
                     if (typeof echarts !== 'undefined') {
+                        try {
+                            const gaugeChartDom = document.getElementById('gauge-chart');
+                            var gaugeChart = echarts.init(gaugeChartDom);
+                            const progressStats = /*[[${@websiteData.postProgressStats}]]*/ {};
+                            if (Object.keys(progressStats).length === 0) {
+                                return;
+                            }
+                            const now = new Date();
+                            const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+                            const daysInYear = new Date(now.getFullYear(), 2, 0).getDate() === 29 ? 366 : 365;
+                            const gaugeData = [
+                                {
+                                    value: (progressStats.yearCount / daysInYear),
+                                    name: now.getFullYear(),
+                                    title: {
+                                        offsetCenter: ['0%', `-60%`],
+                                    },
+                                    detail: {
+                                        valueAnimation: true,
+                                        offsetCenter: ['0%', `-40%`],
+                                        formatter: function (value) {
+                                            return `${(value*daysInYear).toFixed(0)}/${daysInYear}`;
+                                        }
+                                    }
+                                },
+                                {
+                                    value: progressStats.monthCount / lastDayOfMonth,
+                                    name: echarts.time.format(now, '{MMM}', false),
+                                    title: {
+                                        offsetCenter: ['0%', `-15%`]
+                                    },
+                                    detail: {
+                                        valueAnimation: true,
+                                        offsetCenter: ['0%', `5%`],
+                                        formatter: function (value) {
+                                            return `${(value*lastDayOfMonth).toFixed(0)}/${lastDayOfMonth}`;
+                                        }
+                                    }
+                                },
+                                {
+                                    value: progressStats.dayCount,
+                                    name: now.getDate(),
+                                    title: {
+                                        offsetCenter: ['0%', `30%`]
+                                    },
+                                    detail: {
+                                        valueAnimation: true,
+                                        offsetCenter: ['0%', `50%`],
+                                        formatter: function (value) {
+                                            return `${value}/1`;
+                                        }
+                                    }
+                                }
+                            ];
+                            const option = {
+                                color: ['#4CAF50', '#FFE50B', '#fc0006',],
+                                tooltip: {},
+                                animationDuration: 10000,
+                                series: [{
+                                    type: 'gauge',
+                                    radius: '90%',
+                                    min: 0,
+                                    max: 1,
+                                    startAngle: 90,
+                                    endAngle: -270,
+                                    pointer: {
+                                        show: false
+                                    },
+                                    progress: {
+                                        show: true,
+                                        overlap: false,
+                                        roundCap: true,
+                                        clip: false,
+                                        itemStyle: {
+                                            borderWidth: 1,
+                                            borderColor: '#464646'
+                                        }
+                                    },
+                                    axisLine: {
+                                        lineStyle: {
+                                            width: 20
+                                        }
+                                    },
+                                    splitLine: {
+                                        show: false,
+                                        distance: 0,
+                                        length: 10
+                                    },
+                                    axisTick: {
+                                        show: false
+                                    },
+                                    axisLabel: {
+                                        show: false,
+                                        distance: 50,
+                                    },
+                                    data: gaugeData,
+                                    title: {
+                                        fontSize: 16,
+                                        fontWeight: 'bolder',
+                                    },
+                                    detail: {
+                                        height: 14,
+                                        fontSize: 14,
+                                        color: 'inherit',
+                                        borderColor: 'inherit',
+                                        borderRadius: 20,
+                                        borderWidth: 1,
+                                    },
+                                    tooltip: {
+                                        valueFormatter: (value, dataIndex) => {
+                                            return `${(value*100).toFixed(0)}%`
+                                        },
+                                    },
+                                }],
+                            }
+                            gaugeChart.setOption(option);
+                        } catch (err) {
+                            console.log(err)
+                        }
+
+                        const yearlyStats = /*[[${@websiteData.postYearlyStatsList}]]*/ [];
+                        try {
+                            const pieChartDom = document.getElementById('pie-chart');
+                            var pieChart = echarts.init(pieChartDom);
+                            const totalPosts = yearlyStats.reduce((acc, cur) => acc + cur.count, 0);
+                            const option = {
+                                title: {
+                                    text:  /*[[#{data_yearly_posts}]]*/ "历年文章数",
+                                    left: 20,
+                                },
+                                tooltip: {
+                                    valueFormatter: function (value) {
+                                        return `${value}/${totalPosts} (${(value*100/totalPosts).toFixed(2)}%)`
+                                    },
+                                },
+                                legend: {
+                                    type: 'scroll',
+                                    // orient: 'vertical',
+                                    left: '10%',
+                                    right: '10%',
+                                    bottom: 5,
+                                },
+                                series: [{
+                                    name: /*[[#{data_yearly_posts}]]*/ "历年文章数",
+                                    type: 'pie',
+                                    radius: '50%',
+                                    selectedMode: 'single',
+                                    data: yearlyStats.map(item=>({
+                                        value: item.count,
+                                        name: item.year,
+                                    })).reverse(),
+                                    label: {
+                                        formatter: '{b|{b}}\n{hr|}\n{c|{c}}',
+                                        backgroundColor: '#F6F8FC',
+                                        borderColor: '#8C8D8E',
+                                        borderWidth: 1,
+                                        borderRadius: 4,
+                                        rich: {
+                                            b: {
+                                                align: 'center',
+                                                color: '#4C5058',
+                                                fontSize: 14,
+                                                fontWeight: 'bold',
+                                                lineHeight: 33,
+                                                padding: 10,
+                                            },
+                                            hr: {
+                                                borderColor: '#8C8D8E',
+                                                width: '100%',
+                                                borderWidth: 1,
+                                                height: 0
+                                            },
+                                            c: {
+                                                align: 'center',
+                                                color: '#4CAF50',
+                                                lineHeight: 22,
+                                                padding: 10,
+                                            },
+                                        }
+                                    },
+                                }],
+                            }
+                            pieChart.setOption(option);
+                        } catch (err) {
+                            console.log(err)
+                        }
+
                         const monthlyStats = /*[[${topicPostMonthlyStatsList}]]*/ [];
                         const topicGroup = {};
                         const topicScatterGroup = {};
@@ -47,7 +236,7 @@
                                     text: /*[[#{v_topic_trend}]]*/ "",
                                     left: 20,
                                 },
-                                color: ['#4CAF50', '#ee6666', '#9a60b4',],
+                                color: ['#4CAF50', '#FFE50B', '#fc0006',],
                                 dataZoom: [
                                     {
                                         type: 'inside'
@@ -98,7 +287,11 @@
                                     type: 'value',
                                 },
                                 animationDuration: 3000,
-                                series: Object.entries(topicGroup).map(([topic, seriesData]) => ({
+                                series: Object.entries(topicGroup).sort((a, b) => {
+                                    const arrA = a[1];
+                                    const arrB = b[1];
+                                    return arrB[arrB.length - 1][1] - arrA[arrA.length - 1][1]
+                                }).map(([topic, seriesData]) => ({
                                     name: topic,
                                     type: 'line',
                                     data: seriesData,
@@ -135,7 +328,7 @@
                                     text: /*[[#{v_topic_scatter}]]*/ "",
                                     left: 20,
                                 },
-                                color: ['#4CAF50', '#ee6666', '#9a60b4',],
+                                color: ['#4CAF50', '#FFE50B', '#fc0006',],
                                 dataZoom: [
                                     {
                                         type: 'inside'
@@ -232,7 +425,10 @@
                                         }
                                     },
                                 ],
-                                series: Object.entries(topicScatterGroup).map(([topic, seriesData]) => ({
+                                series: Object.entries(topicScatterGroup).sort((a, b) => {
+                                    return b[1].map(arr => arr[1]).reduce((acc, cur) => acc + cur, 0)
+                                        - a[1].map(arr => arr[1]).reduce((acc, cur) => acc + cur, 0)
+                                }).map(([topic, seriesData]) => ({
                                     name: topic,
                                     type: 'effectScatter',
                                     data: seriesData,
@@ -243,13 +439,17 @@
                         } catch (e) {
                         }
                         window.addEventListener('resize', () => {
-                            topicChart.resize();
-                            topicScatterChart.resize();
+                            gaugeChart?.resize();
+                            pieChart?.resize();
+                            topicChart?.resize();
+                            topicScatterChart?.resize();
                         })
                     }
                 })
                 .catch((err) => {
-                    document.getElementById('topic-chart').style.display = 'none';
+                    document.getElementById('gaugeChart-chart').style.display = 'none';
+                    document.getElementById('pie-chart').style.display = 'none';
+                    document.getElementById('topic-scatter-chart').style.display = 'none';
                     document.getElementById('topic-scatter-chart').style.display = 'none';
                     console.log(err)
                 })
