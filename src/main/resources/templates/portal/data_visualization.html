@@ -1,5 +1,6 @@
 <th:block th:if="${!#lists.isEmpty(@websiteData.postYearlyStatsList)}">
     <div id="donut-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div id="radar-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <div id="post-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <div id="trend-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <script th:inline="javascript">
@@ -44,6 +45,16 @@
                         const yearlyStats = /*[[${@websiteData.postYearlyStatsList}]]*/ [];
                         const totalPosts = yearlyStats.reduce((acc, curr) => acc + curr.count, 0);
                         const graphicTitle = /*[[#{data_posts_count}]]*/ "";
+
+                        const legend = {
+                            type: 'scroll',
+                            orient: 'vertical',
+                            icon: 'circle',
+                            right: 0,
+                            top: 'center',
+                            itemWidth: 10,
+                            itemHeight: 10,
+                        };
                         try {
                             const donutChartDom = document.getElementById('donut-chart');
                             var donutChart = echarts.init(donutChartDom);
@@ -103,15 +114,7 @@
                                         return `${value}/${totalPosts} (${(value*100/totalPosts).toFixed(0)}%)`
                                     }
                                 },
-                                legend: {
-                                    type: 'scroll',
-                                    orient: 'vertical',
-                                    icon: 'circle',
-                                    right: 0,
-                                    top: 'center',
-                                    itemWidth: 10,
-                                    itemHeight: 10,
-                                },
+                                legend: legend,
                                 series: [{
                                     type: 'pie',
                                     radius: ['55%', '75%'],
@@ -131,6 +134,70 @@
                         const monthlyStats = /*[[${@websiteData.postMonthlyStatsList}]]*/ [];
                         const monthNamesStr = /*[[#{data_months}]]*/ "";
                         const monthNames = monthNamesStr.split(",");
+                        const yearGroup = {};
+                        const yearLegend = {};
+                        monthlyStats.forEach(item => {
+                            const year = item.year;
+                            if (!yearGroup[year]) {
+                                yearGroup[year] = {};
+                            }
+                            yearGroup[year][item.month] = item.count;
+                            if (!yearLegend[year]) {
+                                yearLegend[year] = false;
+                            }
+                        })
+                        const chartData = [];
+                        Object.keys(yearGroup).forEach(year => {
+                            const monthData = [];
+                            for (let i = 1; i <= 12; i++) {
+                                monthData.push(yearGroup[year][i] || 0);
+                            }
+                            chartData.push({
+                                year: year,
+                                data: monthData,
+                            })
+                        });
+
+                        let selectedLegend = {};
+                        if (Object.keys(yearLegend).length > 3) {
+                            Object.keys(yearLegend)
+                                .sort(() => 0.5 - Math.random())
+                                .slice(0, 3)
+                                .forEach(k => yearLegend[k] = true);
+                            selectedLegend = yearLegend;
+                        }
+                        try {
+                            const radarChartDom = document.getElementById('radar-chart');
+                            var radarChart = echarts.init(radarChartDom);
+                            const option = {
+                                legend: {
+                                    ...legend,
+                                    selected: selectedLegend,
+                                },
+                                tooltip: {},
+                                radar: [{
+                                    indicator: monthNames.map(item => ({
+                                        name: item,
+                                    })),
+                                    radius: '60%',
+                                    axisNameGap: 10,
+                                }],
+                                series: [{
+                                    type: 'radar',
+                                    areaStyle: {},
+                                    data: chartData.map(item => ({
+                                        name: item.year,
+                                        value: item.data,
+                                    })),
+                                    emphasis: {
+                                        focus: 'self',
+                                    },
+                                }],
+                            };
+                            radarChart.setOption(option);
+                        } catch (e) {
+                        }
+
                         try {
                             const postChartDom = document.getElementById('post-chart');
                             var postChart = echarts.init(postChartDom);
@@ -198,28 +265,10 @@
                             postChart.setOption(option);
                         } catch (e) {
                         }
+
                         try {
                             const trendChartDom = document.getElementById('trend-chart');
                             var trendChart = echarts.init(trendChartDom);
-                            const yearGroup = {};
-                            monthlyStats.forEach(item => {
-                                const year = item.year;
-                                if (!yearGroup[year]) {
-                                    yearGroup[year] = {};
-                                }
-                                yearGroup[year][item.month] = item.count;
-                            })
-                            const chartData = [];
-                            Object.keys(yearGroup).forEach(year => {
-                                const monthData = [];
-                                for (let i = 1; i <= 12; i++) {
-                                    monthData.push(yearGroup[year][i] || 0);
-                                }
-                                chartData.push({
-                                    year: year,
-                                    data: monthData,
-                                })
-                            })
                             const breakConfig = getAxisBreakRange(monthlyStats.map(item => item.count));
                             let option = {
                                 title: {
@@ -287,6 +336,7 @@
                         }
                         window.addEventListener('resize', () => {
                             donutChart?.resize();
+                            radarChart?.resize();
                             postChart?.resize();
                             trendChart?.resize();
                         })
@@ -294,6 +344,7 @@
                 })
                 .catch((err) => {
                     document.getElementById('donut-chart').style.display = 'none';
+                    document.getElementById('radar-chart').style.display = 'none';
                     document.getElementById('post-chart').style.display = 'none';
                     document.getElementById('trend-chart').style.display = 'none';
                     console.log(err)
