@@ -1,5 +1,6 @@
 <th:block th:if="${!#lists.isEmpty(@websiteData.postDailyStatsList)}">
     <div id="calendar-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div id="sankey-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', ev => {
             const loadECharts = () => {
@@ -152,13 +153,151 @@
                             calendarChart.setOption(option);
                         } catch (e) {
                         }
+
+                        const postHourlyStatsList = /*[[${@websiteData.postHourlyStatsList}]]*/ [];
+                        const hourArr = Array(24).fill(0);
+                        postHourlyStatsList.forEach(item => hourArr[item.hour] = item.count);
+                        try {
+                            const sankeyChartDom = document.getElementById('sankey-chart');
+                            var sankeyChart = echarts.init(sankeyChartDom);
+                            const allCount = hourArr.reduce((acc, curr) => acc + curr, 0);
+                            const dayCount = hourArr.slice(6, 18).reduce((acc, curr) => acc + curr, 0);
+                            const earlyMorningCount = hourArr.slice(0, 6).reduce((acc, curr) => acc + curr, 0);
+                            const morningCount = hourArr.slice(6, 12).reduce((acc, curr) => acc + curr, 0);
+                            const lunchtimeCount = hourArr.slice(12, 14).reduce((acc, curr) => acc + curr, 0);
+                            const afternoonCount = hourArr.slice(14, 18).reduce((acc, curr) => acc + curr, 0);
+                            const eveningCount = hourArr.slice(18, 21).reduce((acc, curr) => acc + curr, 0);
+                            const nightCount = hourArr.slice(21, 24).reduce((acc, curr) => acc + curr, 0);
+                            const option = {
+                                tooltip: {
+                                    formatter: '{b}: {c}',
+                                },
+                                toolbox: {
+                                    feature: {
+                                        restore: {
+                                            iconStyle: {
+                                                borderColor: '#4CAF50',
+                                            },
+                                            emphasis: {
+                                                iconStyle: {
+                                                    borderColor: '#4CAF50',
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                                series: {
+                                    type: 'sankey',
+                                    right: '10%',
+                                    nodeAlign: 'left',
+                                    layoutIterations: 0,
+                                    roam: true,
+                                    roamTrigger: 'selfRect',
+                                    label: {
+                                        // show: false,
+                                    },
+                                    edgeLabel: {
+                                        show: true,
+                                        // formatter: '{b}: {c}',
+                                    },
+                                    lineStyle: {
+                                        color: 'target',
+                                    },
+                                    links: [
+                                        {
+                                            source: '全天',
+                                            target: '白天',
+                                            value: dayCount,
+                                        },
+                                        {
+                                            source: '全天',
+                                            target: '夜晚',
+                                            value: allCount - dayCount,
+                                        },
+                                        {
+                                            source: '白天',
+                                            target: '上午',
+                                            value: morningCount,
+                                        },
+                                        {
+                                            source: '白天',
+                                            target: '中午',
+                                            value: lunchtimeCount,
+                                        },
+                                        {
+                                            source: '白天',
+                                            target: '下午',
+                                            value: afternoonCount,
+                                        },
+                                        {
+                                            source: '夜晚',
+                                            target: '傍晚',
+                                            value: eveningCount,
+                                        },
+                                        {
+                                            source: '夜晚',
+                                            target: '深夜',
+                                            value: nightCount,
+                                        },
+                                        {
+                                            source: '夜晚',
+                                            target: '凌晨',
+                                            value: earlyMorningCount,
+                                        },
+                                    ],
+                                    data: [
+                                        {
+                                            name: '全天',
+                                            depth: 0
+                                        },
+                                        {
+                                            name: '白天',
+                                            depth: 1,
+                                        },
+                                        {
+                                            name: '夜晚',
+                                            depth: 1,
+                                        },
+                                        {
+                                            name: '上午',
+                                            depth: 2,
+                                        },
+                                        {
+                                            name: '中午',
+                                            depth: 2,
+                                        },
+                                        {
+                                            name: '下午',
+                                            depth: 2,
+                                        },
+                                        {
+                                            name: '傍晚',
+                                            depth: 2,
+                                        },
+                                        {
+                                            name: '深夜',
+                                            depth: 2,
+                                        },
+                                        {
+                                            name: '凌晨',
+                                            depth: 2,
+                                        },
+                                    ],
+                                }
+                            };
+                            sankeyChart.setOption(option);
+                        } catch (e) {
+                        }
+
                         window.addEventListener('resize', () => {
-                            calendarChart.resize();
+                            calendarChart?.resize();
+                            sankeyChart?.resize();
                         })
                     }
                 })
                 .catch((err) => {
                     document.getElementById('calendar-chart').style.display = 'none';
+                    document.getElementById('sankey-chart').style.display = 'none';
                     console.log("echarts load error", err);
                 })
         })
