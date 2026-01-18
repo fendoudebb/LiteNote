@@ -46,7 +46,7 @@
                                 color: ['#4CAF50'],
                                 tooltip: {
                                     formatter: (params) => {
-                                        return `${echarts.time.format(params.data[0], '{yyyy}-{MM}-{dd}', false)}<div style="display: flex; align-items: center; justify-content: space-between;margin-top: 10px">${params.marker}<span>${params.data[1]}</span></div>`
+                                        return `${echarts.time.format(params.data[0], '{yyyy}-{MM}-{dd}', false)}<div style="display: flex; align-items: center; justify-content: space-between;margin-top: 10px">${params.marker}<b>${params.data[1]}</b></div>`
                                     }
                                 },
                                 visualMap: {
@@ -163,14 +163,15 @@
                             const allCount = hourArr.reduce((acc, curr) => acc + curr, 0);
                             const dayCount = hourArr.slice(6, 18).reduce((acc, curr) => acc + curr, 0);
                             const earlyMorningCount = hourArr.slice(0, 6).reduce((acc, curr) => acc + curr, 0);
-                            const morningCount = hourArr.slice(6, 12).reduce((acc, curr) => acc + curr, 0);
+                            const morningCount = hourArr.slice(6, 9).reduce((acc, curr) => acc + curr, 0);
+                            const forenoonCount = hourArr.slice(9, 12).reduce((acc, curr) => acc + curr, 0);
                             const lunchtimeCount = hourArr.slice(12, 14).reduce((acc, curr) => acc + curr, 0);
                             const afternoonCount = hourArr.slice(14, 18).reduce((acc, curr) => acc + curr, 0);
                             const eveningCount = hourArr.slice(18, 21).reduce((acc, curr) => acc + curr, 0);
                             const nightCount = hourArr.slice(21, 24).reduce((acc, curr) => acc + curr, 0);
                             const option = {
                                 tooltip: {
-                                    formatter: '{b}: {c}',
+                                    formatter: '{b} <b style="margin-left: 20px;">{c}</b>',
                                 },
                                 toolbox: {
                                     feature: {
@@ -200,6 +201,9 @@
                                         show: true,
                                         // formatter: '{b}: {c}',
                                     },
+                                    labelLayout: {
+                                        moveOverlap: 'shiftY',
+                                    },
                                     lineStyle: {
                                         color: 'target',
                                     },
@@ -218,6 +222,11 @@
                                             source: '白天',
                                             target: '上午',
                                             value: morningCount,
+                                        },
+                                        {
+                                            source: '白天',
+                                            target: '早晨',
+                                            value: forenoonCount,
                                         },
                                         {
                                             source: '白天',
@@ -253,34 +262,83 @@
                                         {
                                             name: '白天',
                                             depth: 1,
+                                            tooltip: {
+                                                formatter: (params) => {
+                                                    return `${params.marker}06:00-18:00<b style="margin-left: 20px">${params.value}</b>`
+                                                }
+                                            },
                                         },
                                         {
                                             name: '夜晚',
                                             depth: 1,
+                                            tooltip: {
+                                                formatter: (params) => {
+                                                    return `${params.marker}18:00-06:00<b style="margin-left: 20px">${params.value}</b>`
+                                                }
+                                            },
+                                        },
+                                        {
+                                            name: '早晨',
+                                            depth: 2,
+                                            tooltip: {
+                                                formatter: (params) => {
+                                                    return `${params.marker}06:00-09:00<b style="margin-left: 20px">${params.value}</b>`
+                                                }
+                                            },
                                         },
                                         {
                                             name: '上午',
                                             depth: 2,
+                                            tooltip: {
+                                                formatter: (params) => {
+                                                    return `${params.marker}09:00-12:00<b style="margin-left: 20px">${params.value}</b>`
+                                                }
+                                            },
                                         },
                                         {
                                             name: '中午',
                                             depth: 2,
+                                            tooltip: {
+                                                formatter: (params) => {
+                                                    return `${params.marker}12:00-14:00<b style="margin-left: 20px">${params.value}</b>`
+                                                }
+                                            },
                                         },
                                         {
                                             name: '下午',
                                             depth: 2,
+                                            tooltip: {
+                                                formatter: (params) => {
+                                                    return `${params.marker}14:00-18:00<b style="margin-left: 20px">${params.value}</b>`
+                                                }
+                                            },
                                         },
                                         {
                                             name: '傍晚',
                                             depth: 2,
+                                            tooltip: {
+                                                formatter: (params) => {
+                                                    return `${params.marker}18:00-21:00<b style="margin-left: 20px">${params.value}</b>`
+                                                }
+                                            },
                                         },
                                         {
                                             name: '深夜',
                                             depth: 2,
+                                            tooltip: {
+                                                formatter: (params) => {
+                                                    return `${params.marker}21:00-24:00<b style="margin-left: 20px">${params.value}</b>`
+                                                }
+                                            },
                                         },
                                         {
                                             name: '凌晨',
                                             depth: 2,
+                                            tooltip: {
+                                                formatter: (params) => {
+                                                    return `${params.marker}24:00-06:00<b style="margin-left: 20px">${params.value}</b>`
+                                                }
+                                            },
                                         },
                                     ],
                                 }
