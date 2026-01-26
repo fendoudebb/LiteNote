@@ -7,7 +7,9 @@ import org.apache.ibatis.annotations.Update;
 import z.note.lite.config.mybatis.ListTypeHandler;
 import z.note.lite.entity.Post;
 import z.note.lite.entity.PostDailyStats;
+import z.note.lite.entity.PostHourlyStats;
 import z.note.lite.entity.PostMonthlyStats;
+import z.note.lite.entity.PostProgressStats;
 import z.note.lite.entity.PostYearlyStats;
 import z.note.lite.entity.TopicData;
 import z.note.lite.entity.TopicPostMonthlyStats;
@@ -89,6 +91,25 @@ public interface PostMapper {
             order by 1, 2, 3
             """)
     List<PostDailyStats> getPostDailyStatsList();
+
+    @Select("""
+            select extract(hour from create_ts) as hour,
+                   count(*) as count
+            from post
+            where status=0
+            group by 1
+            order by 1
+            """)
+    List<PostHourlyStats> getPostHourlyStatsList();
+
+    @Select("""
+            select count(1) as year_count,
+                   count(1) filter ( where date_trunc('month', create_ts) =  date_trunc('month', current_timestamp)) as month_count,
+                   count(1) filter ( where date_trunc('day', create_ts) =  date_trunc('day', current_timestamp)) as day_count
+            from post
+            where status=0 and create_ts >= date_trunc('year', current_timestamp);
+            """)
+    PostProgressStats getPostProgressStats();
 
     @Select("""
             WITH topic_monthly AS (
