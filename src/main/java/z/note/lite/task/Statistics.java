@@ -11,7 +11,9 @@ import z.note.lite.config.context.WebsiteData;
 import z.note.lite.entity.Link;
 import z.note.lite.entity.Post;
 import z.note.lite.entity.PostDailyStats;
+import z.note.lite.entity.PostHourlyStats;
 import z.note.lite.entity.PostMonthlyStats;
+import z.note.lite.entity.PostProgressStats;
 import z.note.lite.entity.PostYearlyStats;
 import z.note.lite.entity.RecordSearchRank;
 import z.note.lite.entity.Topic;
@@ -143,7 +145,7 @@ public class Statistics implements InitializingBean {
     }
 
     @Async
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 0 1 * * ?")
     public void todayInHistory() {
         List<Post> posts = postService.getTodayInHistoryPosts();
         if (CollectionUtils.isEmpty(posts)) {
@@ -154,7 +156,7 @@ public class Statistics implements InitializingBean {
     }
 
     @Async
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void postYearlyStats() {
         List<PostYearlyStats> statsList = postService.getPostYearlyStatsList();
         if (CollectionUtils.isEmpty(statsList)) {
@@ -165,7 +167,7 @@ public class Statistics implements InitializingBean {
     }
 
     @Async
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void postMonthlyStats() {
         List<PostMonthlyStats> statsList = postService.getPostMonthlyStatsList();
         if (CollectionUtils.isEmpty(statsList)) {
@@ -176,7 +178,7 @@ public class Statistics implements InitializingBean {
     }
 
     @Async
-    @Scheduled(cron = "0 15 * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void postDailyStats() {
         List<PostDailyStats> statsList = postService.getPostDailyStatsList();
         if (CollectionUtils.isEmpty(statsList)) {
@@ -187,7 +189,29 @@ public class Statistics implements InitializingBean {
     }
 
     @Async
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
+    public void postHourlyStats() {
+        List<PostHourlyStats> statsList = postService.getPostHourlyStatsList();
+        if (CollectionUtils.isEmpty(statsList)) {
+            log.warn("post hourly stats is empty");
+            return;
+        }
+        websiteStatistics.setPostHourlyStatsList(statsList);
+    }
+
+    @Async
+    @Scheduled(cron = "0 0 * * * ?")
+    public void postProgressStats() {
+        PostProgressStats stats = postService.getPostProgressStats();
+        if (stats == null) {
+            log.warn("post progress stats is null");
+            return;
+        }
+        websiteStatistics.setPostProgressStats(stats);
+    }
+
+    @Async
+    @Scheduled(cron = "0 0 * * * ?")
     public void topicPostMonthlyStats() {
         List<TopicPostMonthlyStats> statsList = postService.getTopicPostMonthStatsList();
         if (CollectionUtils.isEmpty(statsList)) {
@@ -203,6 +227,8 @@ public class Statistics implements InitializingBean {
         postYearlyStats();
         postMonthlyStats();
         postDailyStats();
+        postHourlyStats();
+        postProgressStats();
         topicPostMonthlyStats();
     }
 
