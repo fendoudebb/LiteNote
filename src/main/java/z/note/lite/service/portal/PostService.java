@@ -4,7 +4,9 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import z.note.lite.entity.Post;
 import z.note.lite.entity.PostDailyStats;
+import z.note.lite.entity.PostHourlyStats;
 import z.note.lite.entity.PostMonthlyStats;
+import z.note.lite.entity.PostProgressStats;
 import z.note.lite.entity.PostYearlyStats;
 import z.note.lite.entity.TopicPostMonthlyStats;
 import z.note.lite.mapper.portal.PostMapper;
@@ -56,6 +58,14 @@ public class PostService {
 
     public List<PostDailyStats> getPostDailyStatsList() {
         return postMapper.getPostDailyStatsList();
+    }
+
+    public List<PostHourlyStats> getPostHourlyStatsList() {
+        return postMapper.getPostHourlyStatsList();
+    }
+
+    public PostProgressStats getPostProgressStats() {
+        return postMapper.getPostProgressStats();
     }
 
     public List<TopicPostMonthlyStats> getTopicPostMonthStatsList() {
