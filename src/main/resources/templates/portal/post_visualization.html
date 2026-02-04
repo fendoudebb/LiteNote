@@ -27,7 +27,7 @@
                                 return;
                             }
                             const now = new Date();
-                            const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+                            const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
                             const daysInYear = new Date(now.getFullYear(), 2, 0).getDate() === 29 ? 366 : 365;
                             const gaugeData = [
                                 {
