@@ -348,38 +348,24 @@
                         } catch (e) {
                         }
 
-                        const postBoxplotStatsList = /*[[${@websiteData.postBoxplotStatsList}]]*/ [];
+                        const topicViewBoxplotStatsList = /*[[${topicViewBoxplotStatsList}]]*/ [];
                         try {
                             const boxplotChartDom = document.getElementById('boxplot-chart');
                             var boxplotChart = echarts.init(boxplotChartDom);
                             const breaksConfig = {};
                             const xAxisData = [];
-                            const boxplotData = postBoxplotStatsList.map(item => {
-                                xAxisData.push(item.year);
-                                if (item.max > 2 * item.q3) {
+                            const boxplotData = topicViewBoxplotStatsList.map(item => {
+                                xAxisData.push(item.topic);
+                                if (item.max > 2 * item.whiskerMax) {
                                     breaksConfig.hasOutlier = true;
                                     breaksConfig.start = item.q3;
-                                    breaksConfig.end = item.whiskerMax + 2;
+                                    breaksConfig.end = item.whiskerMax;
                                     breaksConfig.gap = '15%';
                                 }
                                 return [item.whiskerMin, item.q1, item.q2, item.q3, item.whiskerMax];
                             })
                             const option = {
                                 tooltip: {},
-                                toolbox: {
-                                    feature: {
-                                        restore: {
-                                            iconStyle: {
-                                                borderColor: '#4CAF50',
-                                            },
-                                            emphasis: {
-                                                iconStyle: {
-                                                    borderColor: '#4CAF50',
-                                                },
-                                            },
-                                        },
-                                    },
-                                },
                                 grid: {
                                     show: false,
                                     left: '5%',
@@ -396,12 +382,12 @@
                                 },
                                 yAxis: {
                                     type: 'value',
-                                    breaks: breaksConfig.hasOutlier ? [{
-                                        ...breaksConfig
-                                    }] : null,
-                                    breakArea: {
-                                        show: true,
-                                    }
+                                    // breaks: breaksConfig.hasOutlier ? [{
+                                    //     ...breaksConfig
+                                    // }] : null,
+                                    // breakArea: {
+                                    //     show: true,
+                                    // }
                                 },
                                 series: {
                                     type: 'boxplot',

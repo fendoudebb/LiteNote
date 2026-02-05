@@ -4,14 +4,18 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import z.note.lite.controller.Endpoint;
 import z.note.lite.config.context.WebsiteData;
+import z.note.lite.controller.Endpoint;
 import z.note.lite.entity.Post;
+import z.note.lite.entity.TopicViewBoxplotStats;
 import z.note.lite.service.portal.PostService;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -33,6 +37,15 @@ public class IndexController {
         model.addAttribute("size", size);
         model.addAttribute("sumPage", sumPage);
         model.addAttribute("posts", posts);
+        if (!CollectionUtils.isEmpty(websiteData.getTopicViewBoxplotStats())) {
+            List<TopicViewBoxplotStats> list = websiteData.getTopicViewBoxplotStats().stream()
+                    .filter(item -> item.getNum() > 1)
+                    .collect(Collectors.collectingAndThen(Collectors.toList(), tempList -> {
+                        Collections.shuffle(tempList);
+                        return tempList.stream().limit(5).collect(Collectors.toList());
+                    }));
+            model.addAttribute("topicViewBoxplotStatsList", list);
+        }
         return "portal/index";
     }
 

@@ -9,9 +9,10 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 @ToString
-public class PostBoxplotStats {
+public class TopicViewBoxplotStats {
 
-    private Integer year;
+    private String topic;
+    private Integer num;
     private BigDecimal min;
     private BigDecimal q1;
     private BigDecimal q2;

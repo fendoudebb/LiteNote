@@ -9,7 +9,7 @@ import org.springframework.util.CollectionUtils;
 import z.note.lite.config.context.WebsiteData;
 import z.note.lite.entity.Link;
 import z.note.lite.entity.Post;
-import z.note.lite.entity.PostBoxplotStats;
+import z.note.lite.entity.TopicViewBoxplotStats;
 import z.note.lite.entity.PostDailyStats;
 import z.note.lite.entity.PostHourlyStats;
 import z.note.lite.entity.PostMonthlyStats;
@@ -223,13 +223,13 @@ public class Statistics {
 
     @Async
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
-    public void postBoxplotStats() {
-        List<PostBoxplotStats> statsList = postService.getPostBoxplotStatsList();
+    public void topicViewBoxplotStats() {
+        List<TopicViewBoxplotStats> statsList = postService.getTopicViewBoxplotStatsList();
         if (CollectionUtils.isEmpty(statsList)) {
-            log.warn("post boxplot stats is empty");
+            log.warn("topic view boxplot stats is empty");
             return;
         }
-        websiteStatistics.setPostBoxplotStatsList(statsList);
+        websiteStatistics.setTopicViewBoxplotStats(statsList);
     }
 
 }

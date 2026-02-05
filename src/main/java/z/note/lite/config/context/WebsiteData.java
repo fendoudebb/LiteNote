@@ -4,7 +4,7 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 import z.note.lite.entity.Link;
 import z.note.lite.entity.Post;
-import z.note.lite.entity.PostBoxplotStats;
+import z.note.lite.entity.TopicViewBoxplotStats;
 import z.note.lite.entity.PostDailyStats;
 import z.note.lite.entity.PostHourlyStats;
 import z.note.lite.entity.PostMonthlyStats;
@@ -53,6 +53,6 @@ public class WebsiteData {
 
     private List<TopicPostMonthlyStats> topicPostMonthlyStatsList;
 
-    private List<PostBoxplotStats> postBoxplotStatsList;
+    private List<TopicViewBoxplotStats> topicViewBoxplotStats;
 
 }
