@@ -282,6 +282,20 @@
                                     show: true,
                                     trigger: 'axis',
                                 },
+                                toolbox: {
+                                    feature: {
+                                        restore: {
+                                            iconStyle: {
+                                                borderColor: '#4CAF50',
+                                            },
+                                            emphasis: {
+                                                iconStyle: {
+                                                    borderColor: '#4CAF50',
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
                                 grid: {
                                     show: false,
                                     left: '5%',
@@ -306,7 +320,7 @@
                                         zigzagZ: 200
                                     },
                                 },
-                                animationDuration: 10000,
+                                animationDuration: 5000,
                                 series: chartData.map(item => ({
                                     name: `${item.year}`,
                                     type: 'line',

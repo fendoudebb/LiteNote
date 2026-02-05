@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import z.note.lite.config.mybatis.ListTypeHandler;
 import z.note.lite.entity.Post;
+import z.note.lite.entity.PostBoxplotStats;
 import z.note.lite.entity.PostDailyStats;
 import z.note.lite.entity.PostHourlyStats;
 import z.note.lite.entity.PostMonthlyStats;
@@ -162,4 +163,27 @@ public interface PostMapper {
             """)
     String sitemap(String uri);
 
+    @Select("""
+            with year_month_count as
+                     (select extract(year from create_ts)  as year,
+                             extract(month from create_ts) as month,
+                             count(1)                      as post_count
+                      from post
+                      where status = 0
+                      group by 1, 2),
+                 t as (select year,
+                              min(post_count) as                                         min,
+                              percentile_cont(0.25) within group ( order by post_count ) q1,
+                              percentile_cont(0.50) within group ( order by post_count ) q2,
+                              percentile_cont(0.75) within group ( order by post_count ) q3,
+                              max(post_count) as                                         max
+                       from year_month_count
+                       group by 1
+                       order by 1)
+            select *,
+                   greatest(min, (q1 - 1.5 * (q3 - q1))) as whisker_min,
+                   least(max, (q3 + 1.5 * (q3 - q1)))    as whisker_max
+            from t
+            """)
+    List<PostBoxplotStats> getPostBoxplotStatsList();
 }

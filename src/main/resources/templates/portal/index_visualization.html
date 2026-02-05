@@ -1,6 +1,7 @@
 <th:block th:if="${!#lists.isEmpty(@websiteData.postDailyStatsList)}">
     <div id="calendar-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <div id="sankey-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div id="boxplot-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', ev => {
             const loadECharts = () => {
@@ -347,15 +348,82 @@
                         } catch (e) {
                         }
 
+                        const postBoxplotStatsList = /*[[${@websiteData.postBoxplotStatsList}]]*/ [];
+                        try {
+                            const boxplotChartDom = document.getElementById('boxplot-chart');
+                            var boxplotChart = echarts.init(boxplotChartDom);
+                            const breaksConfig = {};
+                            const xAxisData = [];
+                            const boxplotData = postBoxplotStatsList.map(item => {
+                                xAxisData.push(item.year);
+                                if (item.max > 2 * item.q3) {
+                                    breaksConfig.hasOutlier = true;
+                                    breaksConfig.start = item.q3;
+                                    breaksConfig.end = item.whiskerMax + 2;
+                                    breaksConfig.gap = '15%';
+                                }
+                                return [item.whiskerMin, item.q1, item.q2, item.q3, item.whiskerMax];
+                            })
+                            const option = {
+                                tooltip: {},
+                                toolbox: {
+                                    feature: {
+                                        restore: {
+                                            iconStyle: {
+                                                borderColor: '#4CAF50',
+                                            },
+                                            emphasis: {
+                                                iconStyle: {
+                                                    borderColor: '#4CAF50',
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                                grid: {
+                                    show: false,
+                                    left: '5%',
+                                    top: '15%',
+                                    bottom: '5%',
+                                    containLabel: true,
+                                },
+                                xAxis: {
+                                    type: 'category',
+                                    axisTick: {
+                                        show: true,
+                                    },
+                                    data: xAxisData,
+                                },
+                                yAxis: {
+                                    type: 'value',
+                                    breaks: breaksConfig.hasOutlier ? [{
+                                        ...breaksConfig
+                                    }] : null,
+                                    breakArea: {
+                                        show: true,
+                                    }
+                                },
+                                series: {
+                                    type: 'boxplot',
+                                    colorBy: 'data',
+                                    data: boxplotData,
+                                }
+                            };
+                            boxplotChart.setOption(option);
+                        } catch (e) {
+                        }
+
                         window.addEventListener('resize', () => {
                             calendarChart?.resize();
                             sankeyChart?.resize();
+                            boxplotChart?.resize();
                         })
                     }
                 })
                 .catch((err) => {
                     document.getElementById('calendar-chart').style.display = 'none';
                     document.getElementById('sankey-chart').style.display = 'none';
+                    document.getElementById('boxplot-chart').style.display = 'none';
                     console.log("echarts load error", err);
                 })
         })

@@ -2,7 +2,6 @@ package z.note.lite.task;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -10,6 +9,7 @@ import org.springframework.util.CollectionUtils;
 import z.note.lite.config.context.WebsiteData;
 import z.note.lite.entity.Link;
 import z.note.lite.entity.Post;
+import z.note.lite.entity.PostBoxplotStats;
 import z.note.lite.entity.PostDailyStats;
 import z.note.lite.entity.PostHourlyStats;
 import z.note.lite.entity.PostMonthlyStats;
@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class Statistics implements InitializingBean {
+public class Statistics {
 
     @Resource
     private WebsiteData websiteStatistics;
@@ -124,7 +124,7 @@ public class Statistics implements InitializingBean {
         websiteStatistics.setRankSearches(rankSearches);
     }
 
-    @Scheduled(fixedRate = 6, timeUnit = TimeUnit.HOURS)
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
     public void topics() {
         List<TopicData> topicDataList = topicService.getTopicDataList();
         if (CollectionUtils.isEmpty(topicDataList)) {
@@ -145,7 +145,7 @@ public class Statistics implements InitializingBean {
     }
 
     @Async
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
     public void todayInHistory() {
         List<Post> posts = postService.getTodayInHistoryPosts();
         if (CollectionUtils.isEmpty(posts)) {
@@ -156,7 +156,7 @@ public class Statistics implements InitializingBean {
     }
 
     @Async
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
     public void postYearlyStats() {
         List<PostYearlyStats> statsList = postService.getPostYearlyStatsList();
         if (CollectionUtils.isEmpty(statsList)) {
@@ -167,7 +167,7 @@ public class Statistics implements InitializingBean {
     }
 
     @Async
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
     public void postMonthlyStats() {
         List<PostMonthlyStats> statsList = postService.getPostMonthlyStatsList();
         if (CollectionUtils.isEmpty(statsList)) {
@@ -178,7 +178,7 @@ public class Statistics implements InitializingBean {
     }
 
     @Async
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
     public void postDailyStats() {
         List<PostDailyStats> statsList = postService.getPostDailyStatsList();
         if (CollectionUtils.isEmpty(statsList)) {
@@ -189,7 +189,7 @@ public class Statistics implements InitializingBean {
     }
 
     @Async
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
     public void postHourlyStats() {
         List<PostHourlyStats> statsList = postService.getPostHourlyStatsList();
         if (CollectionUtils.isEmpty(statsList)) {
@@ -200,7 +200,7 @@ public class Statistics implements InitializingBean {
     }
 
     @Async
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
     public void postProgressStats() {
         PostProgressStats stats = postService.getPostProgressStats();
         if (stats == null) {
@@ -211,7 +211,7 @@ public class Statistics implements InitializingBean {
     }
 
     @Async
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
     public void topicPostMonthlyStats() {
         List<TopicPostMonthlyStats> statsList = postService.getTopicPostMonthStatsList();
         if (CollectionUtils.isEmpty(statsList)) {
@@ -221,15 +221,15 @@ public class Statistics implements InitializingBean {
         websiteStatistics.setTopicPostMonthlyStatsList(statsList);
     }
 
-    @Override
-    public void afterPropertiesSet() {
-        todayInHistory();
-        postYearlyStats();
-        postMonthlyStats();
-        postDailyStats();
-        postHourlyStats();
-        postProgressStats();
-        topicPostMonthlyStats();
+    @Async
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
+    public void postBoxplotStats() {
+        List<PostBoxplotStats> statsList = postService.getPostBoxplotStatsList();
+        if (CollectionUtils.isEmpty(statsList)) {
+            log.warn("post boxplot stats is empty");
+            return;
+        }
+        websiteStatistics.setPostBoxplotStatsList(statsList);
     }
 
 }
