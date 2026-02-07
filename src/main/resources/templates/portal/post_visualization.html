@@ -1,6 +1,6 @@
 <th:block th:if="${!#lists.isEmpty(topicPostMonthlyStatsList)}">
     <div id="gauge-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
-    <div id="pie-chart" style="height: 400px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div id="boxplot-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <div id="topic-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <div id="topic-scatter-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <script th:inline="javascript">
@@ -139,71 +139,56 @@
                             console.log(err)
                         }
 
-                        const yearlyStats = /*[[${@websiteData.postYearlyStatsList}]]*/ [];
+                        const topicViewBoxplotStatsList = /*[[${topicViewBoxplotStatsList}]]*/ [];
                         try {
-                            const pieChartDom = document.getElementById('pie-chart');
-                            var pieChart = echarts.init(pieChartDom);
-                            const totalPosts = yearlyStats.reduce((acc, cur) => acc + cur.count, 0);
+                            const boxplotChartDom = document.getElementById('boxplot-chart');
+                            var boxplotChart = echarts.init(boxplotChartDom);
+                            const breaksConfig = {};
+                            const xAxisData = [];
+                            const boxplotData = topicViewBoxplotStatsList.sort((a, b) => b.num - a.num).map(item => {
+                                xAxisData.push(item.topic);
+                                if (item.max > 2 * item.whiskerMax) {
+                                    breaksConfig.hasOutlier = true;
+                                    breaksConfig.start = item.q3;
+                                    breaksConfig.end = item.whiskerMax;
+                                    breaksConfig.gap = '15%';
+                                }
+                                return [item.whiskerMin, item.q1, item.q2, item.q3, item.whiskerMax];
+                            })
                             const option = {
-                                title: {
-                                    text:  /*[[#{data_yearly_posts}]]*/ "历年文章数",
-                                    left: 20,
+                                tooltip: {},
+                                color: ['#4CAF50', '#FFE50B', '#fc0006',],
+                                grid: {
+                                    show: false,
+                                    left: '5%',
+                                    top: '15%',
+                                    bottom: '5%',
+                                    containLabel: true,
                                 },
-                                tooltip: {
-                                    valueFormatter: function (value) {
-                                        return `${value}/${totalPosts} (${(value*100/totalPosts).toFixed(2)}%)`
+                                xAxis: {
+                                    type: 'category',
+                                    axisTick: {
+                                        show: true,
                                     },
+                                    data: xAxisData,
                                 },
-                                legend: {
-                                    type: 'scroll',
-                                    // orient: 'vertical',
-                                    left: '10%',
-                                    right: '10%',
-                                    bottom: 5,
+                                yAxis: {
+                                    type: 'value',
+                                    // breaks: breaksConfig.hasOutlier ? [{
+                                    //     ...breaksConfig
+                                    // }] : null,
+                                    // breakArea: {
+                                    //     show: true,
+                                    // }
                                 },
-                                series: [{
-                                    name: /*[[#{data_yearly_posts}]]*/ "历年文章数",
-                                    type: 'pie',
-                                    radius: '50%',
-                                    selectedMode: 'single',
-                                    data: yearlyStats.map(item=>({
-                                        value: item.count,
-                                        name: item.year,
-                                    })).reverse(),
-                                    label: {
-                                        formatter: '{b|{b}}\n{hr|}\n{c|{c}}',
-                                        backgroundColor: '#F6F8FC',
-                                        borderColor: '#8C8D8E',
-                                        borderWidth: 1,
-                                        borderRadius: 4,
-                                        rich: {
-                                            b: {
-                                                align: 'center',
-                                                color: '#4C5058',
-                                                fontSize: 14,
-                                                fontWeight: 'bold',
-                                                lineHeight: 33,
-                                                padding: 10,
-                                            },
-                                            hr: {
-                                                borderColor: '#8C8D8E',
-                                                width: '100%',
-                                                borderWidth: 1,
-                                                height: 0
-                                            },
-                                            c: {
-                                                align: 'center',
-                                                color: '#4CAF50',
-                                                lineHeight: 22,
-                                                padding: 10,
-                                            },
-                                        }
-                                    },
-                                }],
-                            }
-                            pieChart.setOption(option);
-                        } catch (err) {
-                            console.log(err)
+                                series: {
+                                    type: 'boxplot',
+                                    colorBy: 'data',
+                                    data: boxplotData,
+                                }
+                            };
+                            boxplotChart.setOption(option);
+                        } catch (e) {
                         }
 
                         const monthlyStats = /*[[${topicPostMonthlyStatsList}]]*/ [];
@@ -440,16 +425,16 @@
                         }
                         window.addEventListener('resize', () => {
                             gaugeChart?.resize();
-                            pieChart?.resize();
+                            boxplotChart?.resize();
                             topicChart?.resize();
                             topicScatterChart?.resize();
                         })
                     }
                 })
                 .catch((err) => {
-                    document.getElementById('gaugeChart-chart').style.display = 'none';
-                    document.getElementById('pie-chart').style.display = 'none';
-                    document.getElementById('topic-scatter-chart').style.display = 'none';
+                    document.getElementById('gauge-chart').style.display = 'none';
+                    document.getElementById('boxplot-chart').style.display = 'none';
+                    document.getElementById('topic-chart').style.display = 'none';
                     document.getElementById('topic-scatter-chart').style.display = 'none';
                     console.log(err)
                 })

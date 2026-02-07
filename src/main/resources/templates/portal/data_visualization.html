@@ -1,7 +1,7 @@
 <th:block th:if="${!#lists.isEmpty(@websiteData.postYearlyStatsList)}">
     <div id="donut-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <div id="radar-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
-    <div id="post-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div id="pie-chart" style="height: 400px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <div id="trend-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <script th:inline="javascript">
         function getAxisBreakRange(data) {
@@ -131,6 +131,72 @@
                         } catch (e) {
                         }
 
+                        try {
+                            const pieChartDom = document.getElementById('pie-chart');
+                            var pieChart = echarts.init(pieChartDom);
+                            const totalPosts = yearlyStats.reduce((acc, cur) => acc + cur.count, 0);
+                            const option = {
+                                title: {
+                                    text:  /*[[#{data_yearly_posts}]]*/ "历年文章数",
+                                    left: 20,
+                                },
+                                tooltip: {
+                                    valueFormatter: function (value) {
+                                        return `${value}/${totalPosts} (${(value*100/totalPosts).toFixed(2)}%)`
+                                    },
+                                },
+                                legend: {
+                                    type: 'scroll',
+                                    // orient: 'vertical',
+                                    left: '10%',
+                                    right: '10%',
+                                    bottom: 5,
+                                },
+                                series: [{
+                                    name: /*[[#{data_yearly_posts}]]*/ "历年文章数",
+                                    type: 'pie',
+                                    radius: '50%',
+                                    selectedMode: 'single',
+                                    data: yearlyStats.map(item=>({
+                                        value: item.count,
+                                        name: item.year,
+                                    })).reverse(),
+                                    label: {
+                                        formatter: '{b|{b}}\n{hr|}\n{c|{c}}',
+                                        backgroundColor: '#F6F8FC',
+                                        borderColor: '#8C8D8E',
+                                        borderWidth: 1,
+                                        borderRadius: 4,
+                                        rich: {
+                                            b: {
+                                                align: 'center',
+                                                color: '#4C5058',
+                                                fontSize: 14,
+                                                fontWeight: 'bold',
+                                                lineHeight: 33,
+                                                padding: 10,
+                                            },
+                                            hr: {
+                                                borderColor: '#8C8D8E',
+                                                width: '100%',
+                                                borderWidth: 1,
+                                                height: 0
+                                            },
+                                            c: {
+                                                align: 'center',
+                                                color: '#4CAF50',
+                                                lineHeight: 22,
+                                                padding: 10,
+                                            },
+                                        }
+                                    },
+                                }],
+                            }
+                            pieChart.setOption(option);
+                        } catch (err) {
+                            console.log(err)
+                        }
+
                         const monthlyStats = /*[[${@websiteData.postMonthlyStatsList}]]*/ [];
                         const monthNamesStr = /*[[#{data_months}]]*/ "";
                         const monthNames = monthNamesStr.split(",");
@@ -195,74 +261,6 @@
                                 }],
                             };
                             radarChart.setOption(option);
-                        } catch (e) {
-                        }
-
-                        try {
-                            const postChartDom = document.getElementById('post-chart');
-                            var postChart = echarts.init(postChartDom);
-                            const years = [...new Set(monthlyStats.map(item => item.year))]
-                            const series = monthNames.map((monthName, monthIndex) => {
-                                const values = years.map(year => {
-                                    const matchItem = monthlyStats.find(item => item.year === year && item.month === (monthIndex + 1));
-                                    return matchItem ? matchItem.count : 0;
-                                });
-                                return {
-                                    name: monthName,
-                                    type: 'bar',
-                                    stack: 'total',
-                                    data: values,
-                                    emphasis: {
-                                        focus: 'series',
-                                    },
-                                }
-                            })
-
-                            if (yearlyStats?.length > 0) {
-                                series.unshift({
-                                    name: /*[[#{data_yearly_posts}]]*/ "历年文章数",
-                                    color: '#4CAF50',
-                                    data: yearlyStats.map(item => item.count),
-                                    type: 'line',
-                                    smooth: true,
-                                    label: {
-                                        show: true,
-                                    },
-                                });
-                            }
-                            const option = {
-                                title: {
-                                    text: /*[[#{data_yearly_posts}]]*/ "历年文章数"
-                                },
-                                legend: {
-                                    type: 'scroll',
-                                    left: '5%',
-                                },
-                                tooltip: {
-                                    axisPointer: {
-                                        type: 'cross',
-                                        crossStyle: {
-                                            color: '#999',
-                                        }
-                                    }
-                                },
-                                grid: {
-                                    show: false,
-                                    left: '5%',
-                                    right: '5%',
-                                    bottom: '15%',
-                                    containLabel: true,
-                                },
-                                xAxis: {
-                                    type: 'category',
-                                    data: years,
-                                },
-                                yAxis: {
-                                    type: 'value'
-                                },
-                                series: series
-                            };
-                            postChart.setOption(option);
                         } catch (e) {
                         }
 
@@ -350,16 +348,16 @@
                         }
                         window.addEventListener('resize', () => {
                             donutChart?.resize();
+                            pieChart?.resize();
                             radarChart?.resize();
-                            postChart?.resize();
                             trendChart?.resize();
                         })
                     }
                 })
                 .catch((err) => {
                     document.getElementById('donut-chart').style.display = 'none';
+                    document.getElementById('pie-chart').style.display = 'none';
                     document.getElementById('radar-chart').style.display = 'none';
-                    document.getElementById('post-chart').style.display = 'none';
                     document.getElementById('trend-chart').style.display = 'none';
                     console.log(err)
                 })

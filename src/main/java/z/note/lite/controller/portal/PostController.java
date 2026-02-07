@@ -15,6 +15,7 @@ import z.note.lite.config.context.WebsiteData;
 import z.note.lite.controller.Endpoint;
 import z.note.lite.entity.Post;
 import z.note.lite.entity.TopicPostMonthlyStats;
+import z.note.lite.entity.TopicViewBoxplotStats;
 import z.note.lite.service.portal.PostService;
 
 import java.util.List;
@@ -43,6 +44,13 @@ public class PostController {
                     .filter(item -> post.getTopics().contains(item.getTopic()))
                     .collect(Collectors.toList());
             model.addAttribute("topicPostMonthlyStatsList", list);
+        }
+        if (!CollectionUtils.isEmpty(post.getTopics()) &&
+                !CollectionUtils.isEmpty(websiteData.getTopicViewBoxplotStats())) {
+            List<TopicViewBoxplotStats> list = websiteData.getTopicViewBoxplotStats().stream()
+                    .filter(item -> post.getTopics().contains(item.getTopic()))
+                    .collect(Collectors.toList());
+            model.addAttribute("topicViewBoxplotStatsList", list);
         }
         model.addAttribute("post", post);
         return "portal/post";

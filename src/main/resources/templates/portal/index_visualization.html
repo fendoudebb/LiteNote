@@ -1,5 +1,6 @@
 <th:block th:if="${!#lists.isEmpty(@websiteData.postDailyStatsList)}">
     <div id="calendar-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div id="post-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <div id="sankey-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <div id="boxplot-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <script th:inline="javascript">
@@ -155,6 +156,78 @@
                         } catch (e) {
                         }
 
+                        const yearlyStats = /*[[${@websiteData.postYearlyStatsList}]]*/ [];
+                        const monthlyStats = /*[[${@websiteData.postMonthlyStatsList}]]*/ [];
+                        const monthNamesStr = /*[[#{data_months}]]*/ "";
+                        const monthNames = monthNamesStr.split(",");
+                        try {
+                            const postChartDom = document.getElementById('post-chart');
+                            var postChart = echarts.init(postChartDom);
+                            const years = [...new Set(monthlyStats.map(item => item.year))]
+                            const series = monthNames.map((monthName, monthIndex) => {
+                                const values = years.map(year => {
+                                    const matchItem = monthlyStats.find(item => item.year === year && item.month === (monthIndex + 1));
+                                    return matchItem ? matchItem.count : 0;
+                                });
+                                return {
+                                    name: monthName,
+                                    type: 'bar',
+                                    stack: 'total',
+                                    data: values,
+                                    emphasis: {
+                                        focus: 'series',
+                                    },
+                                }
+                            })
+
+                            if (yearlyStats?.length > 0) {
+                                series.unshift({
+                                    name: /*[[#{data_yearly_posts}]]*/ "历年文章数",
+                                    color: '#4CAF50',
+                                    data: yearlyStats.map(item => item.count),
+                                    type: 'line',
+                                    smooth: true,
+                                    label: {
+                                        show: true,
+                                    },
+                                });
+                            }
+                            const option = {
+                                title: {
+                                    text: /*[[#{data_yearly_posts}]]*/ "历年文章数"
+                                },
+                                legend: {
+                                    type: 'scroll',
+                                    left: '5%',
+                                },
+                                tooltip: {
+                                    axisPointer: {
+                                        type: 'cross',
+                                        crossStyle: {
+                                            color: '#999',
+                                        }
+                                    }
+                                },
+                                grid: {
+                                    show: false,
+                                    left: '5%',
+                                    right: '5%',
+                                    bottom: '15%',
+                                    containLabel: true,
+                                },
+                                xAxis: {
+                                    type: 'category',
+                                    data: years,
+                                },
+                                yAxis: {
+                                    type: 'value'
+                                },
+                                series: series
+                            };
+                            postChart.setOption(option);
+                        } catch (e) {
+                        }
+
                         const postHourlyStatsList = /*[[${@websiteData.postHourlyStatsList}]]*/ [];
                         const hourArr = Array(24).fill(0);
                         postHourlyStatsList.forEach(item => hourArr[item.hour] = item.count);
@@ -174,27 +247,14 @@
                                 tooltip: {
                                     formatter: '{b} <b style="margin-left: 20px;">{c}</b>',
                                 },
-                                toolbox: {
-                                    feature: {
-                                        restore: {
-                                            iconStyle: {
-                                                borderColor: '#4CAF50',
-                                            },
-                                            emphasis: {
-                                                iconStyle: {
-                                                    borderColor: '#4CAF50',
-                                                },
-                                            },
-                                        },
-                                    },
-                                },
                                 series: {
                                     type: 'sankey',
+                                    draggable: false,
                                     right: '10%',
                                     nodeAlign: 'left',
                                     layoutIterations: 0,
-                                    roam: true,
-                                    roamTrigger: 'selfRect',
+                                    // roam: true,
+                                    // roamTrigger: 'selfRect',
                                     label: {
                                         // show: false,
                                     },
@@ -401,6 +461,7 @@
 
                         window.addEventListener('resize', () => {
                             calendarChart?.resize();
+                            postChart?.resize();
                             sankeyChart?.resize();
                             boxplotChart?.resize();
                         })
@@ -408,6 +469,7 @@
                 })
                 .catch((err) => {
                     document.getElementById('calendar-chart').style.display = 'none';
+                    document.getElementById('post-chart').style.display = 'none';
                     document.getElementById('sankey-chart').style.display = 'none';
                     document.getElementById('boxplot-chart').style.display = 'none';
                     console.log("echarts load error", err);
