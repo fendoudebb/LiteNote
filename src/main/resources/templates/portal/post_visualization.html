@@ -74,7 +74,7 @@
                                 }
                             ];
                             const option = {
-                                color: ['#4CAF50', '#FFE50B', '#fc0006',],
+                                color: ['#4CAF50', '#B55EDC', '#0DB8F5',],
                                 tooltip: {},
                                 animationDuration: 10000,
                                 series: [{
@@ -157,7 +157,7 @@
                             })
                             const option = {
                                 tooltip: {},
-                                color: ['#4CAF50', '#FFE50B', '#fc0006',],
+                                color: ['#4CAF50', '#B55EDC', '#0DB8F5',],
                                 grid: {
                                     show: false,
                                     left: '5%',
@@ -166,6 +166,8 @@
                                     containLabel: true,
                                 },
                                 xAxis: {
+                                    name: /*[[#{v_topic}]]*/ '',
+                                    nameGap: 5,
                                     type: 'category',
                                     axisTick: {
                                         show: true,
@@ -173,7 +175,20 @@
                                     data: xAxisData,
                                 },
                                 yAxis: {
+                                    name: /*[[#{v_view}]]*/ '',
+                                    nameTextStyle: {
+                                        align: 'right',
+                                    },
                                     type: 'value',
+                                    axisLine: {
+                                        show: true,
+                                    },
+                                    axisTick: {
+                                        show: true,
+                                    },
+                                    splitArea: {
+                                        show: true
+                                    },
                                     // breaks: breaksConfig.hasOutlier ? [{
                                     //     ...breaksConfig
                                     // }] : null,
@@ -221,7 +236,7 @@
                                     text: /*[[#{v_topic_trend}]]*/ "",
                                     left: 20,
                                 },
-                                color: ['#4CAF50', '#FFE50B', '#fc0006',],
+                                color: ['#4CAF50', '#B55EDC', '#0DB8F5',],
                                 dataZoom: [
                                     {
                                         type: 'inside'
@@ -263,6 +278,9 @@
                                         formatter : '{yyyy}',
                                         hideOverlap: true,
                                     },
+                                    splitLine: {
+                                        show: true,
+                                    },
                                     tooltip: {
                                         show: true,
                                         position: 'top',
@@ -270,6 +288,12 @@
                                 },
                                 yAxis: {
                                     type: 'value',
+                                    axisLine: {
+                                        show: true,
+                                    },
+                                    axisTick: {
+                                        show: true,
+                                    },
                                 },
                                 animationDuration: 3000,
                                 series: Object.entries(topicGroup).sort((a, b) => {
@@ -313,7 +337,7 @@
                                     text: /*[[#{v_topic_scatter}]]*/ "",
                                     left: 20,
                                 },
-                                color: ['#4CAF50', '#FFE50B', '#fc0006',],
+                                color: ['#4CAF50', '#B55EDC', '#0DB8F5',],
                                 dataZoom: [
                                     {
                                         type: 'inside'
@@ -361,6 +385,9 @@
                                         formatter : '{yyyy}-{MM}',
                                         hideOverlap: true,
                                     },
+                                    splitLine: {
+                                        show: true,
+                                    },
                                     tooltip: {
                                         show: true,
                                         position: 'top',
@@ -373,9 +400,6 @@
                                     },
                                     axisTick: {
                                         show: true,
-                                    },
-                                    splitLine: {
-                                        show: false,
                                     },
                                 },
                                 animationDuration: 3000,

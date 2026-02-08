@@ -193,9 +193,6 @@
                                 });
                             }
                             const option = {
-                                title: {
-                                    text: /*[[#{data_yearly_posts}]]*/ "历年文章数"
-                                },
                                 legend: {
                                     type: 'scroll',
                                     left: '5%',
@@ -211,16 +208,34 @@
                                 grid: {
                                     show: false,
                                     left: '5%',
-                                    right: '5%',
+                                    top: '15%',
                                     bottom: '15%',
                                     containLabel: true,
                                 },
                                 xAxis: {
+                                    name: /*[[#{v_year}]]*/ '',
+                                    nameGap: 5,
                                     type: 'category',
+                                    axisTick: {
+                                        show: true,
+                                    },
+                                    splitLine: {
+                                        show: true,
+                                    },
                                     data: years,
                                 },
                                 yAxis: {
-                                    type: 'value'
+                                    name: /*[[#{v_view}]]*/ '',
+                                    nameTextStyle: {
+                                        align: 'right',
+                                    },
+                                    type: 'value',
+                                    axisLine: {
+                                        show: true,
+                                    },
+                                    axisTick: {
+                                        show: true,
+                                    },
                                 },
                                 series: series
                             };
@@ -434,6 +449,8 @@
                                     containLabel: true,
                                 },
                                 xAxis: {
+                                    name: /*[[#{v_topic}]]*/ '',
+                                    nameGap: 5,
                                     type: 'category',
                                     axisTick: {
                                         show: true,
@@ -441,7 +458,20 @@
                                     data: xAxisData,
                                 },
                                 yAxis: {
+                                    name: /*[[#{v_view}]]*/ '',
+                                    nameTextStyle: {
+                                        align: 'right',
+                                    },
                                     type: 'value',
+                                    axisLine: {
+                                        show: true,
+                                    },
+                                    axisTick: {
+                                        show: true,
+                                    },
+                                    splitArea: {
+                                        show: true
+                                    },
                                     // breaks: breaksConfig.hasOutlier ? [{
                                     //     ...breaksConfig
                                     // }] : null,
