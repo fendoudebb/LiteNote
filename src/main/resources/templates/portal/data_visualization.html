@@ -1,8 +1,8 @@
-<th:block th:if="${!#lists.isEmpty(@websiteData.postYearlyStatsList)}">
-    <div id="donut-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
-    <div id="radar-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
-    <div id="pie-chart" style="height: 400px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
-    <div id="trend-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+<th:block>
+    <div th:if="${!#lists.isEmpty(@websiteData.postYearlyStatsList)}" id="donut-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div th:if="${!#lists.isEmpty(@websiteData.postMonthlyStatsList)}" id="radar-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div th:if="${!#lists.isEmpty(@websiteData.postYearlyStatsList)}" id="pie-chart" style="height: 400px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div th:if="${!#lists.isEmpty(@websiteData.postMonthlyStatsList)}" id="trend-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <script th:inline="javascript">
         function getAxisBreakRange(data) {
             const validData = data.filter(val => typeof val === 'number' && !isNaN(val)).sort((a, b) => a - b);
@@ -57,6 +57,7 @@
                         };
                         try {
                             const donutChartDom = document.getElementById('donut-chart');
+                            if (!donutChartDom) return;
                             var donutChart = echarts.init(donutChartDom);
                             const option = {
                                 graphic: {
@@ -133,6 +134,7 @@
 
                         try {
                             const pieChartDom = document.getElementById('pie-chart');
+                            if (!pieChartDom) return;
                             var pieChart = echarts.init(pieChartDom);
                             const totalPosts = yearlyStats.reduce((acc, cur) => acc + cur.count, 0);
                             const option = {
@@ -234,6 +236,7 @@
                         }
                         try {
                             const radarChartDom = document.getElementById('radar-chart');
+                            if (!radarChartDom) return;
                             var radarChart = echarts.init(radarChartDom);
                             const option = {
                                 legend: {
@@ -266,6 +269,7 @@
 
                         try {
                             const trendChartDom = document.getElementById('trend-chart');
+                            if (!trendChartDom) return;
                             var trendChart = echarts.init(trendChartDom);
                             const breakConfig = getAxisBreakRange(monthlyStats.map(item => item.count));
                             let option = {

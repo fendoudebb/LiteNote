@@ -1,7 +1,7 @@
-<th:block th:if="${!#lists.isEmpty(@websiteData.postDailyStatsList)}">
-    <div id="calendar-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
-    <div id="post-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
-    <div id="sankey-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+<th:block>
+    <div th:if="${!#lists.isEmpty(@websiteData.postDailyStatsList)}" id="calendar-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div th:if="${!#lists.isEmpty(@websiteData.postMonthlyStatsList)}" id="post-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div th:if="${!#lists.isEmpty(@websiteData.postHourlyStatsList)}" id="sankey-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <div id="boxplot-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', ev => {
@@ -42,6 +42,7 @@
                         })
                         try {
                             const calendarChartDom = document.getElementById('calendar-chart');
+                            if (!calendarChartDom) return;
                             var calendarChart = echarts.init(calendarChartDom);
                             const timelineYear = [...yearSet];
                             const option = {
@@ -162,6 +163,7 @@
                         const monthNames = monthNamesStr.split(",");
                         try {
                             const postChartDom = document.getElementById('post-chart');
+                            if (!postChartDom) return;
                             var postChart = echarts.init(postChartDom);
                             const years = [...new Set(monthlyStats.map(item => item.year))]
                             const series = monthNames.map((monthName, monthIndex) => {
@@ -248,6 +250,7 @@
                         postHourlyStatsList.forEach(item => hourArr[item.hour] = item.count);
                         try {
                             const sankeyChartDom = document.getElementById('sankey-chart');
+                            if (!sankeyChartDom) return;
                             var sankeyChart = echarts.init(sankeyChartDom);
                             const allCount = hourArr.reduce((acc, curr) => acc + curr, 0);
                             const dayCount = hourArr.slice(6, 18).reduce((acc, curr) => acc + curr, 0);
@@ -426,6 +429,7 @@
                         const topicViewBoxplotStatsList = /*[[${topicViewBoxplotStatsList}]]*/ [];
                         try {
                             const boxplotChartDom = document.getElementById('boxplot-chart');
+                            if (!boxplotChartDom) return;
                             var boxplotChart = echarts.init(boxplotChartDom);
                             const breaksConfig = {};
                             const xAxisData = [];

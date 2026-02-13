@@ -1,8 +1,8 @@
-<th:block th:if="${!#lists.isEmpty(topicPostMonthlyStatsList)}">
-    <div id="gauge-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
-    <div id="boxplot-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
-    <div id="topic-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
-    <div id="topic-scatter-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+<th:block>
+    <div th:if="${!#lists.isEmpty(@websiteData.postProgressStats)}" id="gauge-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div th:if="${!#lists.isEmpty(topicViewBoxplotStatsList)}" id="boxplot-chart" style="height: 250px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div th:if="${!#lists.isEmpty(topicPostMonthlyStatsList)}" id="topic-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
+    <div th:if="${!#lists.isEmpty(topicPostMonthlyStatsList)}" id="topic-scatter-chart" style="height: 300px;margin-bottom: 10px;padding: 1px" class="shadow"></div>
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', ev => {
             const loadECharts = () => {
@@ -21,6 +21,7 @@
                     if (typeof echarts !== 'undefined') {
                         try {
                             const gaugeChartDom = document.getElementById('gauge-chart');
+                            if (!gaugeChartDom) return;
                             var gaugeChart = echarts.init(gaugeChartDom);
                             const progressStats = /*[[${@websiteData.postProgressStats}]]*/ {};
                             if (Object.keys(progressStats).length === 0) {
@@ -138,10 +139,10 @@
                         } catch (err) {
                             console.log(err)
                         }
-
                         const topicViewBoxplotStatsList = /*[[${topicViewBoxplotStatsList}]]*/ [];
                         try {
                             const boxplotChartDom = document.getElementById('boxplot-chart');
+                            if (!boxplotChartDom) return;
                             var boxplotChart = echarts.init(boxplotChartDom);
                             const breaksConfig = {};
                             const xAxisData = [];
@@ -205,7 +206,6 @@
                             boxplotChart.setOption(option);
                         } catch (e) {
                         }
-
                         const monthlyStats = /*[[${topicPostMonthlyStatsList}]]*/ [];
                         const topicGroup = {};
                         const topicScatterGroup = {};
@@ -230,6 +230,7 @@
                         });
                         try {
                             const topicChartDom = document.getElementById('topic-chart');
+                            if (!topicChartDom) return;
                             var topicChart = echarts.init(topicChartDom);
                             const option = {
                                 title: {
@@ -330,6 +331,7 @@
                         }
                         try {
                             const topicScatterChartDom = document.getElementById('topic-scatter-chart');
+                            if (!topicScatterChartDom) return;
                             var topicScatterChart = echarts.init(topicScatterChartDom);
                             const topicAmount = /*[[#{v_topic_scatter_amount}]]*/ "";
                             const option = {
